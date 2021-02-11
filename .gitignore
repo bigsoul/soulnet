@@ -1,3 +1,13 @@
+.vscode*
+
 backend/Soulnet.Api/.vscode*
 backend/Soulnet.Api/obj*
 backend/Soulnet.Api/bin*
+
+backend/Soulnet.Data/.vscode*
+backend/Soulnet.Data/obj*
+backend/Soulnet.Data/bin*
+
+backend/Soulnet.Model/.vscode*
+backend/Soulnet.Model/obj*
+backend/Soulnet.Model/bin*

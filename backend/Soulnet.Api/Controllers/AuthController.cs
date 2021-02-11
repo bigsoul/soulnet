@@ -8,12 +8,17 @@ namespace Soulnet.Api.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
+        private AuthService authService;
+
+        public AuthController(AuthService authService)
+        {
+            this.authService = authService;
+        }
+
         [HttpPost("login")]
         public AuthData Post([FromBody]LoginViewModel model)
         {
-            var auth = new AuthService("0e0d33b3-0a6e-4d64-ae34-a45d767ec480", 120);
-
-            return auth.GetAuthData(model.Email);
+            return authService.GetAuthData(model.Email);
         }
 
         [HttpPost("register")]

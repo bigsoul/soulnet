@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Soulnet.Api.Services;
 
 namespace Soulnet.Api
 {
@@ -50,6 +51,13 @@ namespace Soulnet.Api
                         )
                     };
                 });
+
+            services.AddSingleton<AuthService>(
+                            new AuthService(
+                                Configuration.GetValue<string>("JWTSecretKey"),
+                                Configuration.GetValue<int>("JWTLifespan")
+                            )
+                        );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
