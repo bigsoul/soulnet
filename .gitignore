@@ -11,3 +11,5 @@ backend/Soulnet.Data/bin*
 backend/Soulnet.Model/.vscode*
 backend/Soulnet.Model/obj*
 backend/Soulnet.Model/bin*
+
+node_modules*
