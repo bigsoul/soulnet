@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Soulnet.Api.Services;
+using Soulnet.Data;
+using Microsoft.EntityFrameworkCore;
+using Soulnet.Data.Repositories;
 
 namespace Soulnet.Api
 {
@@ -36,6 +39,14 @@ namespace Soulnet.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Soulnet.Api", Version = "v1" });
             });
 
+            services
+                .AddDbContext<SoulnetContext>(options =>
+                    options.UseNpgsql(
+                        Configuration.GetConnectionString("SoulnetContext"),
+                        o => o.MigrationsAssembly("Soulnet.Api")
+                    )
+                );
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -51,6 +62,8 @@ namespace Soulnet.Api
                         )
                     };
                 });
+
+            services.AddScoped<UserRepository>();
 
             services.AddSingleton<AuthService>(
                             new AuthService(
