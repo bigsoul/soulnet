@@ -1,6 +1,9 @@
 import React from "react";
 import { Redirect, Route, Switch } from "react-router";
 import styled from "styled-components";
+import Content from "./Content";
+import ContentSignIn from "./Content/ContentSignIn";
+import ContentSignUp from "./Content/ContentSignUp";
 import Header from "./Header";
 
 const Root = styled.div`
@@ -15,9 +18,9 @@ function App() {
 		<Root>
 			<Header />
 			<Switch>
-				<Route exact path="/" component={() => <>Home</>} />
-				<Route exact path="/signin" component={() => <>LogIn</>} />
-				<Route exact path="/signup" component={() => <>LogUp</>} />
+				<Route exact path="/" component={Content} />
+				<Route exact path="/signin" component={ContentSignIn} />
+				<Route exact path="/signup" component={ContentSignUp} />
 				<Redirect to="/" />
 			</Switch>
 		</Root>
