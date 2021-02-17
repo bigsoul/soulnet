@@ -1,11 +1,36 @@
+//#region Import Styles
+
+import "./index.css";
+
+//#endregion
+
+//#region Import
+
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
+
+//#endregion
+
+//#region Import Components
+
+import App from "./components/App";
+import { Provider } from "react-redux";
+
+//#endregion
+
+//#region Import Clases
+
+import store from "./classes/store";
+
+//#endregion
+
+/* <React.StrictMode> */
 
 ReactDOM.render(
-	<React.StrictMode>
+	<Provider store={store}>
 		<App />
-	</React.StrictMode>,
+	</Provider>,
 	document.getElementById("root")
 );
+
+/* </React.StrictMode> */
