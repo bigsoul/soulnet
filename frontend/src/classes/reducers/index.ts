@@ -1,18 +1,12 @@
-//#region Import
-
 import { combineReducers } from "redux";
 
-//#endregion
-
-//#region Import Clases
-
 import userReducer from "./userReduser";
-
-//#endregion
+import routerReducer from "./routerReducer";
 
 const createRootReducer = () =>
 	combineReducers({
 		user: userReducer,
+		router: routerReducer,
 	});
 
 export default createRootReducer;

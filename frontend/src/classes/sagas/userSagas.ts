@@ -1,8 +1,4 @@
-//#region Import
-
 import { fork, put } from "redux-saga/effects";
-
-//#endregion
 
 import {
 	IUserLocalStorageLoadAction,
@@ -12,8 +8,8 @@ import {
 function* workerUserInit() {
 	yield put<IUserLocalStorageLoadAction>({
 		type: USER_LOCAL_STORAGE_LOAD,
-		serviceUrl: "http://localhost:3000/",
-		serviceJwtToken: "1",
+		serviceUrl: "http://localhost:5000/",
+		serviceJwtToken: "",
 	});
 }
 

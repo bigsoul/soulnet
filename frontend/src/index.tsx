@@ -1,34 +1,24 @@
-//#region Import Styles
-
 import "./index.css";
-
-//#endregion
-
-//#region Import
 
 import React from "react";
 import ReactDOM from "react-dom";
-
-//#endregion
-
-//#region Import Components
+import { ConnectedRouter } from "connected-react-router";
 
 import App from "./components/App";
 import { Provider } from "react-redux";
 
-//#endregion
+import configureStore from "./classes/store";
+import { history } from "./classes/reducers/routerReducer";
 
-//#region Import Clases
-
-import store from "./classes/store";
-
-//#endregion
+const store = configureStore();
 
 /* <React.StrictMode> */
 
 ReactDOM.render(
 	<Provider store={store}>
-		<App />
+		<ConnectedRouter history={history}>
+			<App />
+		</ConnectedRouter>
 	</Provider>,
 	document.getElementById("root")
 );

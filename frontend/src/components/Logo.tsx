@@ -1,12 +1,22 @@
-import React from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
+import { history } from "./../classes/reducers/routerReducer";
 
 const LogoDiv = styled.div`
 	font-size: 24px;
+	&:hover {
+		cursor: pointer;
+	}
 `;
 
-function Logo() {
-	return <LogoDiv>SOULNET</LogoDiv>;
+class Logo extends Component {
+	to = () => {
+		history.push("/");
+	};
+
+	render = () => {
+		return <LogoDiv onClick={this.to}>SOULNET</LogoDiv>;
+	};
 }
 
 export default Logo;

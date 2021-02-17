@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Button from "./Button";
+import ButtonSignIn from "./Button/ButtonSignIn";
+import ButtonSignUp from "./Button/ButtonSignUp";
 
 const PrfileDiv = styled.div`
 	width: 100%;
@@ -13,7 +14,8 @@ const PrfileDiv = styled.div`
 function Prfile() {
 	return (
 		<PrfileDiv>
-			<Button />
+			<ButtonSignIn path={"/signin"}>Sign In</ButtonSignIn>
+			<ButtonSignUp path={"/signup"}>Sign Un</ButtonSignUp>
 		</PrfileDiv>
 	);
 }

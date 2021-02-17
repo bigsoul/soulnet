@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect, Route, Switch } from "react-router";
 import styled from "styled-components";
 import Header from "./Header";
 
@@ -13,6 +14,12 @@ function App() {
 	return (
 		<Root>
 			<Header />
+			<Switch>
+				<Route exact path="/" component={() => <>Home</>} />
+				<Route exact path="/signin" component={() => <>LogIn</>} />
+				<Route exact path="/signup" component={() => <>LogUp</>} />
+				<Redirect to="/" />
+			</Switch>
 		</Root>
 	);
 }

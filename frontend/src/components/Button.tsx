@@ -1,5 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, ReactNode } from "react";
 import styled from "styled-components";
+import { history } from "./../classes/reducers/routerReducer";
 
 const ButtonDiv = styled.div`
 	padding-left: 5px;
@@ -11,16 +12,23 @@ const ButtonDiv = styled.div`
 	align-items: center;
 	justify-content: center;
 	font-size: 14px;
+	&:hover {
+		background-color: #666666;
+		cursor: pointer;
+	}
 `;
 
-class Button extends Component {
-	render = (): JSX.Element | null => {
-		return (
-			<>
-				<ButtonDiv>Sign In</ButtonDiv>
-				<ButtonDiv>Sign Up</ButtonDiv>
-			</>
-		);
+interface ButtonProps {
+	name?: ReactNode | string;
+	path: string;
+}
+class Button extends Component<ButtonProps> {
+	to = () => {
+		history.push(this.props.path);
+	};
+
+	render = () => {
+		return <ButtonDiv onClick={this.to}>{this.props.name}</ButtonDiv>;
 	};
 }
 
