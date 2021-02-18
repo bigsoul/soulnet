@@ -29,6 +29,7 @@ const EditInput = styled.input`
 interface EditProps {
 	className?: string;
 	placeholder?: string;
+	onChange: (value: string) => void;
 }
 
 class Edit extends Component<EditProps> {
@@ -37,6 +38,7 @@ class Edit extends Component<EditProps> {
 			<EditInput
 				className={this.props.className}
 				placeholder={this.props.placeholder}
+				onChange={(e) => this.props.onChange(e.currentTarget.value)}
 			/>
 		);
 	};

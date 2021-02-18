@@ -88,7 +88,9 @@ class Checkbox extends Component<CheckboxProps> {
 					checked={this.props.checked}
 					onChange={() => this.props.onChange(!this.props.checked)}
 				/>
-				<label>{this.props.label}</label>
+				<label>
+					{this.props.label ? this.props.label : this.props.children}
+				</label>
 			</Styled>
 		);
 	};

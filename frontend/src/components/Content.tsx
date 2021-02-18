@@ -9,7 +9,7 @@ const ContentDiv = styled.div`
 	border-right: 1px solid #8a8a8a;
 `;
 
-class Content extends Component {
+class Content<P = {}, S = {}, SS = {}> extends Component<P, S, SS> {
 	render = () => {
 		return <ContentDiv>{this.props.children}</ContentDiv>;
 	};

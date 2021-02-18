@@ -4,6 +4,8 @@ import Logo from "./../Logo";
 import Edit from "./../Edit";
 import Checkbox from "./../Checkbox";
 import ButtonSignInSubmit from "../Button/ButtonSignInSubmit";
+import { timeStamp } from "console";
+import ButtonSignUp from "../Button/ButtonSignUp";
 
 const ContentBoxDiv = styled.div`
 	width: 100%;
@@ -30,19 +32,52 @@ const CheckboxStyled = styled(Checkbox)`
 	margin-bottom: 15px;
 `;
 
-class ContentSignIn extends Content {
+interface ContentSignInState {
+	login: string;
+	password: string;
+	rememberMe: boolean;
+}
+
+class ContentSignIn extends Content<{}, ContentSignInState> {
+	constructor(props: {}) {
+		super(props);
+
+		this.state = {
+			login: "",
+			password: "",
+			rememberMe: false,
+		};
+	}
+
+	loginOnChange = (value: string) => {
+		this.setState({ login: value });
+	};
+
+	passwordOnChange = (value: string) => {
+		this.setState({ password: value });
+	};
+
+	rememberMeOnChange = () => {
+		this.setState({ rememberMe: !this.state.rememberMe });
+	};
+
 	render = () => {
+		console.log(this.state);
 		return (
 			<Content>
 				<ContentBoxDiv>
 					<LogoStyled />
-					<EditStyled10 placeholder="username" />
-					<EditStyled15 placeholder="password" />
+					<EditStyled10
+						placeholder="username"
+						onChange={this.loginOnChange}
+					/>
+					<EditStyled15
+						placeholder="password"
+						onChange={this.passwordOnChange}
+					/>
 					<CheckboxStyled
-						checked={true}
-						onChange={() => {
-							console.log("click");
-						}}
+						checked={this.state.rememberMe}
+						onChange={this.rememberMeOnChange}
 						label={"Remember me"}
 					/>
 					<ButtonSignInSubmit path={"/"}>Sign In</ButtonSignInSubmit>
