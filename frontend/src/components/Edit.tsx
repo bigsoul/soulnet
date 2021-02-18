@@ -28,11 +28,17 @@ const EditInput = styled.input`
 
 interface EditProps {
 	className?: string;
+	placeholder?: string;
 }
 
 class Edit extends Component<EditProps> {
 	render = () => {
-		return <EditInput className={this.props.className} />;
+		return (
+			<EditInput
+				className={this.props.className}
+				placeholder={this.props.placeholder}
+			/>
+		);
 	};
 }
 

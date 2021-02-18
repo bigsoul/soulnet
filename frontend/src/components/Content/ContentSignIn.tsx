@@ -36,9 +36,15 @@ class ContentSignIn extends Content {
 			<Content>
 				<ContentBoxDiv>
 					<LogoStyled />
-					<EditStyled10 />
-					<EditStyled15 />
-					<CheckboxStyled />
+					<EditStyled10 placeholder="username" />
+					<EditStyled15 placeholder="password" />
+					<CheckboxStyled
+						checked={true}
+						onChange={() => {
+							console.log("click");
+						}}
+						label={"Remember me"}
+					/>
 					<ButtonSignInSubmit path={"/"}>Sign In</ButtonSignInSubmit>
 				</ContentBoxDiv>
 			</Content>

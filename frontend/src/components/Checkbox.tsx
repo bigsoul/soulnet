@@ -1,22 +1,95 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 
-const CheckboxInput = styled.input``;
+const Styled = styled.div`
+	display: inline-block;
+	font-size: 14px;
+
+	> input {
+		position: absolute;
+		z-index: -1;
+		opacity: 0;
+		display: block;
+		top: 2px;
+		left: 2px;
+	}
+	> input + label {
+		position: relative;
+		padding-left: 25px;
+		cursor: pointer;
+		&:before {
+			content: "";
+			position: absolute;
+			left: 3px;
+			top: 0px;
+			width: 13px;
+			height: 13px;
+			border: 1px solid #ffffff;
+			background: #000000;
+		}
+		&:after {
+			content: "✔";
+			position: absolute;
+			top: -2px;
+			left: 5px;
+			font-size: 14px;
+			color: #09ad7e;
+		}
+	}
+	> input:not(:checked) + label {
+		&:after {
+			opacity: 0;
+		}
+	}
+	> input:disabled:not(:checked) + label {
+		&:before {
+			box-shadow: none;
+			border-color: #ffffff;
+			background-color: #000000;
+		}
+	}
+	> input:checked + label {
+		&:after {
+			opacity: 1;
+		}
+	}
+	> input:disabled:checked + label {
+		&:after {
+			color: #999;
+		}
+	}
+	> input:disabled + label {
+		color: #aaa;
+	}
+	> input:checked:focus + label,
+	input:not(:checked):focus + label {
+		&:before {
+			border: 1px dotted #ffffff;
+		}
+	}
+`;
 
 interface CheckboxProps {
 	className?: string;
+	checked: boolean;
+	label?: string;
+	onChange: (checked: boolean) => void;
 }
 
 class Checkbox extends Component<CheckboxProps> {
 	render = () => {
 		return (
-			<div>
-				<CheckboxInput
-					className={this.props.className}
-					type={"checkbox"}
+			<Styled
+				className={this.props.className}
+				onClick={() => this.props.onChange(!this.props.checked)}
+			>
+				<input
+					type="checkbox"
+					checked={this.props.checked}
+					onChange={() => this.props.onChange(!this.props.checked)}
 				/>
-				Remember me
-			</div>
+				<label>{this.props.label}</label>
+			</Styled>
 		);
 	};
 }
