@@ -9,13 +9,21 @@ const LogoDiv = styled.div`
 	}
 `;
 
-class Logo extends Component {
+interface LogoProps {
+	className?: string;
+}
+
+class Logo extends Component<LogoProps> {
 	to = () => {
 		history.push("/");
 	};
 
 	render = () => {
-		return <LogoDiv onClick={this.to}>SOULNET</LogoDiv>;
+		return (
+			<LogoDiv className={this.props.className} onClick={this.to}>
+				SOULNET
+			</LogoDiv>
+		);
 	};
 }
 

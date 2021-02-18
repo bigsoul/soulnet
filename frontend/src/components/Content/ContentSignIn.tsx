@@ -14,16 +14,32 @@ const ContentBoxDiv = styled.div`
 	flex-direction: column;
 `;
 
+const LogoStyled = styled(Logo)`
+	margin-bottom: 15px;
+`;
+
+const EditStyled10 = styled(Edit)`
+	margin-bottom: 10px;
+`;
+
+const EditStyled15 = styled(Edit)`
+	margin-bottom: 15px;
+`;
+
+const CheckboxStyled = styled(Checkbox)`
+	margin-bottom: 15px;
+`;
+
 class ContentSignIn extends Content {
 	render = () => {
 		return (
 			<Content>
 				<ContentBoxDiv>
-					<Logo />
-					<Edit />
-					<Edit />
-					<Checkbox />
-					<ButtonSignInSubmit path={"/"}>Submit</ButtonSignInSubmit>
+					<LogoStyled />
+					<EditStyled10 />
+					<EditStyled15 />
+					<CheckboxStyled />
+					<ButtonSignInSubmit path={"/"}>Sign In</ButtonSignInSubmit>
 				</ContentBoxDiv>
 			</Content>
 		);

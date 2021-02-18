@@ -3,9 +3,21 @@ import styled from "styled-components";
 
 const CheckboxInput = styled.input``;
 
-class Checkbox extends Component {
+interface CheckboxProps {
+	className?: string;
+}
+
+class Checkbox extends Component<CheckboxProps> {
 	render = () => {
-		return <CheckboxInput type={"checkbox"} />;
+		return (
+			<div>
+				<CheckboxInput
+					className={this.props.className}
+					type={"checkbox"}
+				/>
+				Remember me
+			</div>
+		);
 	};
 }
 
