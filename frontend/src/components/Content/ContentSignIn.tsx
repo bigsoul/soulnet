@@ -61,7 +61,6 @@ class ContentSignIn extends Content<{}, ContentSignInState> {
 	};
 
 	render = () => {
-		console.log(this.state);
 		return (
 			<Content>
 				<ContentBoxDiv>
