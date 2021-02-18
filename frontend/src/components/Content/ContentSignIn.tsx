@@ -3,9 +3,8 @@ import styled from "styled-components";
 import Logo from "./../Logo";
 import Edit from "./../Edit";
 import Checkbox from "./../Checkbox";
-import ButtonSignInSubmit from "../Button/ButtonSignInSubmit";
-import { timeStamp } from "console";
-import ButtonSignUp from "../Button/ButtonSignUp";
+import React from "react";
+import Button from "../Button";
 
 const ContentBoxDiv = styled.div`
 	width: 100%;
@@ -80,7 +79,7 @@ class ContentSignIn extends Content<{}, ContentSignInState> {
 						onChange={this.rememberMeOnChange}
 						label={"Remember me"}
 					/>
-					<ButtonSignInSubmit path={"/"}>Sign In</ButtonSignInSubmit>
+					<Button path={"/"}>Sign In</Button>
 				</ContentBoxDiv>
 			</Content>
 		);

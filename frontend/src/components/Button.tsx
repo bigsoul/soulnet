@@ -20,15 +20,19 @@ const ButtonDiv = styled.div`
 
 interface ButtonProps {
 	name?: ReactNode | string;
-	path: string;
+	path?: string;
 }
 class Button extends Component<ButtonProps> {
 	to = () => {
-		history.push(this.props.path);
+		if (this.props.path) history.push(this.props.path);
 	};
 
 	render = () => {
-		return <ButtonDiv onClick={this.to}>{this.props.name}</ButtonDiv>;
+		return (
+			<ButtonDiv onClick={this.to}>
+				{this.props.name ? this.props.name : this.props.children}
+			</ButtonDiv>
+		);
 	};
 }
 
