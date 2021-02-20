@@ -9,11 +9,11 @@ const LogoDiv = styled.div`
 	}
 `;
 
-interface LogoProps {
+interface ILogoProps {
 	className?: string;
 }
 
-class Logo extends Component<LogoProps> {
+class Logo extends Component<ILogoProps> {
 	to = () => {
 		history.push("/");
 	};

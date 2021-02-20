@@ -69,14 +69,14 @@ const Styled = styled.div`
 	}
 `;
 
-interface CheckboxProps {
+interface ICheckboxProps {
 	className?: string;
-	checked: boolean;
 	label?: string;
+	checked: boolean;
 	onChange: (checked: boolean) => void;
 }
 
-class Checkbox extends Component<CheckboxProps> {
+class Checkbox extends Component<ICheckboxProps> {
 	render = () => {
 		return (
 			<Styled

@@ -1,12 +1,14 @@
-import Content from "./../Content";
+/*import React from "react";
 import styled from "styled-components";
+import { Field, InjectedFormProps, reduxForm } from "redux-form";
+import { connect } from "react-redux";
 import Logo from "./../Logo";
 import Edit from "./../Edit";
 import Checkbox from "./../Checkbox";
-import React from "react";
+import Content from "./../Content";
 import Button from "../Button";
 
-const ContentBoxDiv = styled.div`
+const ContentFormDiv = styled.form`
 	width: 100%;
 	height: 100%;
 	display: flex;
@@ -31,23 +33,22 @@ const CheckboxStyled = styled(Checkbox)`
 	margin-bottom: 15px;
 `;
 
-interface IContentSignUpState {
+interface IContentSignInState {
 	login: string;
-	email: string;
 	password: string;
-	confirmPassword: string;
 	rememberMe: boolean;
 }
 
-class ContentSignUn extends Content<{}, IContentSignUpState> {
-	constructor(props: {}) {
+class ContentSignIn extends Content<
+	InjectedFormProps<IContentSignInState>,
+	IContentSignInState
+> {
+	constructor(props: InjectedFormProps<IContentSignInState>) {
 		super(props);
 
 		this.state = {
 			login: "",
-			email: "",
 			password: "",
-			confirmPassword: "",
 			rememberMe: false,
 		};
 	}
@@ -56,16 +57,8 @@ class ContentSignUn extends Content<{}, IContentSignUpState> {
 		this.setState({ login: value });
 	};
 
-	emailOnChange = (value: string) => {
-		this.setState({ email: value });
-	};
-
 	passwordOnChange = (value: string) => {
 		this.setState({ password: value });
-	};
-
-	confirmPasswordOnChange = (value: string) => {
-		this.setState({ confirmPassword: value });
 	};
 
 	rememberMeOnChange = () => {
@@ -73,36 +66,35 @@ class ContentSignUn extends Content<{}, IContentSignUpState> {
 	};
 
 	render = () => {
+		const { handleSubmit } = this.props;
 		return (
 			<Content>
-				<ContentBoxDiv>
+				<ContentFormDiv onSubmit={handleSubmit}>
 					<LogoStyled />
 					<EditStyled10
 						placeholder="username"
 						onChange={this.loginOnChange}
 					/>
-					<EditStyled10
-						placeholder="e-mail"
-						onChange={this.emailOnChange}
-					/>
-					<EditStyled10
+					<EditStyled15
 						placeholder="password"
 						onChange={this.passwordOnChange}
-					/>
-					<EditStyled15
-						placeholder="confirm password"
-						onChange={this.confirmPasswordOnChange}
 					/>
 					<CheckboxStyled
 						checked={this.state.rememberMe}
 						onChange={this.rememberMeOnChange}
 						label={"Remember me"}
 					/>
-					<Button path={"/"}>Sign Up</Button>
-				</ContentBoxDiv>
+					<Button path={"/"}>Sign In</Button>
+				</ContentFormDiv>
 			</Content>
 		);
 	};
 }
 
-export default ContentSignUn;
+const SignInForm = reduxForm<IContentSignInState>({
+	form: "signIn",
+})(ContentSignIn);
+
+export default SignInForm;
+*/
+export default null;

@@ -26,13 +26,13 @@ const EditInput = styled.input`
 	}
 `;
 
-interface EditProps {
+interface IEditProps {
 	className?: string;
 	placeholder?: string;
 	onChange: (value: string) => void;
 }
 
-class Edit extends Component<EditProps> {
+class Edit extends Component<IEditProps> {
 	render = () => {
 		return (
 			<EditInput

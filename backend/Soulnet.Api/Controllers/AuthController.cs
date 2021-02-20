@@ -21,9 +21,9 @@ namespace Soulnet.Api.Controllers
         }
 
         [HttpPost("login")]
-        public AuthData Post([FromBody]LoginViewModel model)
+        public ActionResult<AuthData> Post([FromBody]LoginViewModel model)
         {
-            //if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var user = userRepository.GetSingle(u => u.Email == model.Email);
 
