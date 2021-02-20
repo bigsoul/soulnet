@@ -1,4 +1,5 @@
 import React, { Component, ReactNode } from "react";
+import { submit } from "redux-form";
 import styled from "styled-components";
 import { history } from "./../classes/reducers/routerReducer";
 
@@ -23,11 +24,21 @@ const ButtonStyled = styled.button`
 		background-color: #666666;
 		cursor: pointer;
 	}
+	&:disabled {
+		outline: 0;
+		outline-offset: 0;
+		color: #606060;
+		background-color: #1f1e1e;
+		border: 1px solid #606060;
+		cursor: auto;
+	}
 `;
 
 interface IButtonProps {
 	name?: ReactNode | string;
 	path?: string;
+	type?: "button" | "submit" | "reset" | undefined;
+	disabled?: boolean;
 }
 class Button extends Component<IButtonProps> {
 	to = () => {
@@ -36,7 +47,11 @@ class Button extends Component<IButtonProps> {
 
 	render = () => {
 		return (
-			<ButtonStyled onClick={this.to}>
+			<ButtonStyled
+				type={this.props.type}
+				onClick={this.to}
+				disabled={this.props.disabled}
+			>
 				{this.props.name ? this.props.name : this.props.children}
 			</ButtonStyled>
 		);

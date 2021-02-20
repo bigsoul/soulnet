@@ -5,6 +5,7 @@ import Logo from "./../Logo";
 import Button from "../Button";
 import EditForm from "../EditForm";
 import CheckboxForm from "./../CheckboxForm";
+import { maxLength15 } from "./../../classes/utils/validators";
 
 const Form = styled.form`
 	display: flex;
@@ -41,7 +42,7 @@ class SignInForm extends Component<InjectedFormProps<ISignInProps>> {
 	};
 
 	render = () => {
-		const { handleSubmit } = this.props;
+		const { handleSubmit, invalid, pristine, submitting } = this.props;
 		return (
 			<Form onSubmit={handleSubmit}>
 				<LogoStyled />
@@ -50,12 +51,14 @@ class SignInForm extends Component<InjectedFormProps<ISignInProps>> {
 					type="text"
 					placeholder="username"
 					component={EditStyled10}
+					validate={[maxLength15]}
 				/>
 				<Field
 					name="password"
 					type="text"
 					placeholder="password"
 					component={EditStyled15}
+					validate={[maxLength15]}
 				/>
 				<Field
 					name="rememberMe"
@@ -64,8 +67,12 @@ class SignInForm extends Component<InjectedFormProps<ISignInProps>> {
 					label={"Remember me"}
 					component={CheckboxStyled}
 				/>
-				<button type="submit">Submit</button>
-				<Button path={"/"}>Sign In</Button>
+				<Button
+					type="submit"
+					disabled={invalid || pristine || submitting}
+				>
+					Sign In
+				</Button>
 			</Form>
 		);
 	};
@@ -73,4 +80,9 @@ class SignInForm extends Component<InjectedFormProps<ISignInProps>> {
 
 export default reduxForm<ISignInProps>({
 	form: "signIn",
+	initialValues: {
+		login: "",
+		password: "",
+		rememberMe: false,
+	},
 })(SignInForm);

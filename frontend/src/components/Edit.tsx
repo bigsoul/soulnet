@@ -1,10 +1,10 @@
 import { Component } from "react";
 import styled from "styled-components";
 
-const EditInput = styled.input`
+const EditInput = styled.input<{ error?: string }>`
 	width: 154px;
 	height: 18px;
-	border: 1px solid #00f0ff;
+	border: 1px solid ${(props) => (props.error ? "#ff0000" : "#00f0ff")};
 	background-color: #001819;
 	color: #ffffff;
 	font-size: 14px;
@@ -21,7 +21,7 @@ const EditInput = styled.input`
 	&:focus {
 		outline: 0;
 		outline-offset: 0;
-		border: 1px solid #00f0ff;
+		border: 1px solid ${(props) => (props.error ? "#ff0000" : "#00f0ff")};
 		background-color: #006066;
 	}
 `;
@@ -29,6 +29,7 @@ const EditInput = styled.input`
 interface IEditProps {
 	className?: string;
 	placeholder?: string;
+	error?: string;
 	onChange: (value: string) => void;
 }
 
@@ -39,6 +40,7 @@ class Edit extends Component<IEditProps> {
 				className={this.props.className}
 				placeholder={this.props.placeholder}
 				onChange={(e) => this.props.onChange(e.currentTarget.value)}
+				error={this.props.error}
 			/>
 		);
 	};
