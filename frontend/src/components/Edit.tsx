@@ -30,6 +30,7 @@ interface IEditProps {
 	className?: string;
 	placeholder?: string;
 	error?: string;
+	type?: string;
 	onChange: (value: string) => void;
 }
 
@@ -38,6 +39,7 @@ class Edit extends Component<IEditProps> {
 		return (
 			<EditInput
 				className={this.props.className}
+				type={this.props.type}
 				placeholder={this.props.placeholder}
 				onChange={(e) => this.props.onChange(e.currentTarget.value)}
 				error={this.props.error}

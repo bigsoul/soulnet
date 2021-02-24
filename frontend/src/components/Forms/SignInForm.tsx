@@ -55,7 +55,7 @@ class SignInForm extends Component<InjectedFormProps<ISignInProps>> {
 				/>
 				<Field
 					name="password"
-					type="text"
+					type="password"
 					placeholder="password"
 					component={EditStyled15}
 					validate={[maxLength15]}
