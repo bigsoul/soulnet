@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Content from "./../Content";
 import SignInForm from "../Forms/SignInForm";
+import { ISignInFormProps } from "./../Forms/SignInForm";
 
 const ContentBoxDiv = styled.div`
 	width: 100%;
@@ -13,7 +14,10 @@ const ContentBoxDiv = styled.div`
 `;
 
 class ContentSignIn extends Content {
-	handleSubmit = (data: any) => {
+	handleSubmit = (data: ISignInFormProps) => {
+		for (let i = 0; i < 10000; i++) {
+			console.log(data.login);
+		}
 		console.log(data);
 	};
 

@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Soulnet.Api.ViewModels
 {
-    public class RegisterViewModel
+    public class SignUpViewModel
     {
         [Required]
         [StringLength(60, MinimumLength = 2)]
-        public string Username { get; set; }
+        public string Login { get; set; }
         
         [Required]
         [EmailAddress]

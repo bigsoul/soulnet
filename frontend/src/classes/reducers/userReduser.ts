@@ -5,7 +5,11 @@ const preloadedState: IUser = {
 	serviceUrl: "",
 	serviceLogin: "",
 	servicePassword: "",
+	serviceRememberMe: false,
 	serviceJwtToken: "",
+	serviceJwtTokenExpirationTime: 0,
+	id: "",
+	isAuth: false,
 };
 
 const userReducer = (

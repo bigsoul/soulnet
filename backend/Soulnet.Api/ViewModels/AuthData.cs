@@ -2,8 +2,8 @@ namespace Soulnet.Api.ViewModels
 {
     public class AuthData
     {
-        public string Token { get; set; }
-        public long TokenExpirationTime { get; set; }
+        public string JwtToken { get; set; }
+        public long JwtTokenExpirationTime { get; set; }
         public string Id { get; set; }
     }
 }

@@ -5,7 +5,7 @@ import Logo from "./../Logo";
 import Button from "../Button";
 import EditForm from "../EditForm";
 import CheckboxForm from "./../CheckboxForm";
-import { maxLength15 } from "./../../classes/utils/validators";
+import { maxLength15 } from "../../classes/utils/validators";
 
 const Form = styled.form`
 	display: flex;
@@ -30,13 +30,13 @@ const CheckboxStyled = styled(CheckboxForm)`
 	margin-bottom: 15px;
 `;
 
-interface ISignInProps {
+export interface ISignInFormProps {
 	login: string;
 	password: string;
 	rememberMe: boolean;
 }
 
-class SignInForm extends Component<InjectedFormProps<ISignInProps>> {
+class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 	onChange = (value: number) => {
 		console.log(value);
 	};
@@ -78,7 +78,7 @@ class SignInForm extends Component<InjectedFormProps<ISignInProps>> {
 	};
 }
 
-export default reduxForm<ISignInProps>({
+export default reduxForm<ISignInFormProps>({
 	form: "signIn",
 	initialValues: {
 		login: "",

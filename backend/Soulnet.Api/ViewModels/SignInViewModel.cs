@@ -2,11 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Soulnet.Api.ViewModels
 {
-    public class LoginViewModel
+    public class SignInViewModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string Login { get; set; }
 
         [Required]
         public string Password { get; set; }

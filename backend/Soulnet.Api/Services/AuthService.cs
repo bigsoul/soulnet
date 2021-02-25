@@ -38,8 +38,8 @@ namespace Soulnet.Api.Services
             var token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
 
             return new AuthData{
-                Token = token,
-                TokenExpirationTime = ((DateTimeOffset)expirationTime).ToUnixTimeSeconds(),
+                JwtToken = token,
+                JwtTokenExpirationTime = ((DateTimeOffset)expirationTime).ToUnixTimeSeconds(),
                 Id = id
             };
         }

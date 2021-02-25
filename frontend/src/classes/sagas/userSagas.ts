@@ -1,8 +1,10 @@
-import { fork, put } from "redux-saga/effects";
+import { fork, put, takeLatest } from "redux-saga/effects";
 
 import {
 	IUserLocalStorageLoadAction,
+	IUserSignInAction,
 	USER_LOCAL_STORAGE_LOAD,
+	USER_SIGNIN,
 } from "../actions/IUserAction";
 
 function* workerUserInit() {
@@ -13,8 +15,11 @@ function* workerUserInit() {
 	});
 }
 
+function* workerUserSignIn(action: IUserSignInAction) {}
+
 function* userSagas() {
 	yield fork(workerUserInit);
+	yield takeLatest(USER_SIGNIN, workerUserSignIn);
 }
 
 export default userSagas;

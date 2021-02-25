@@ -20,12 +20,12 @@ namespace Soulnet.Api.Controllers
             this.userRepository = userRepository;
         }
 
-        [HttpPost("login")]
-        public ActionResult<AuthData> Post([FromBody]LoginViewModel model)
+        [HttpPost("signin")]
+        public ActionResult<AuthData> Post([FromBody]SignInViewModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var user = userRepository.GetSingle(u => u.Email == model.Email);
+            var user = userRepository.GetSingle(u => u.Email == model.Login);
 
             if (user == null) {
                 return authService.GetAuthData("user == null");
@@ -42,8 +42,8 @@ namespace Soulnet.Api.Controllers
             return authService.GetAuthData(user.Username);
         }
 
-        [HttpPost("register")]
-        public AuthData Post([FromBody]RegisterViewModel model)
+        [HttpPost("signup")]
+        public AuthData Post([FromBody]SignUpViewModel model)
         {
             //if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -52,17 +52,17 @@ namespace Soulnet.Api.Controllers
             //if (!emailUniq) return BadRequest(new { email = "user with this email already exists" });
             if (!emailUniq) return new AuthData() {
                 Id = "!emailUniq",
-                Token = "Token",
-                TokenExpirationTime = 0
+                JwtToken = "Token",
+                JwtTokenExpirationTime = 0
             };
             
-            var usernameUniq = userRepository.IsUsernameUniq(model.Username);
+            var usernameUniq = userRepository.IsUsernameUniq(model.Login);
             
             //if (!usernameUniq) return BadRequest(new { username = "user with this email already exists" });
             if (!usernameUniq) return new AuthData() {
                 Id = "!usernameUniq",
-                Token = "Token",
-                TokenExpirationTime = 0
+                JwtToken = "Token",
+                JwtTokenExpirationTime = 0
             };
 
             var id = Guid.NewGuid().ToString();
@@ -70,7 +70,7 @@ namespace Soulnet.Api.Controllers
             var user = new User
             {
                 Id = id,
-                Username = model.Username,
+                Username = model.Login,
                 Email = model.Email,
                 Password = authService.HashPassword(model.Password)
             };
