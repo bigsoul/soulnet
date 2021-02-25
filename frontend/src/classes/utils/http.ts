@@ -2,17 +2,12 @@ import axios from "axios";
 import { TRequest } from "../../interfaces/IRequest";
 import { TResponse } from "../../interfaces/IResponse";
 
-const serviceUrl = "";
-const serviceLogin = "";
-const servicePassword = "";
+import store from "./../../classes/store";
 
-function axiosAsync(endpoint: string, requestData: TRequest) {
-	return axios.post<TResponse>(serviceUrl + endpoint, requestData, {
-		auth: {
-			username: serviceLogin,
-			password: servicePassword,
-		},
-	});
-}
+const axiosAsync = (endpoint: string, requestData: TRequest) => {
+	const { user } = store.getState();
+
+	return axios.post<TResponse>(user.serviceUrl + endpoint, requestData);
+};
 
 export default axiosAsync;

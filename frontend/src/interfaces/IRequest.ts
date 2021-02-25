@@ -1,6 +1,6 @@
-export interface ILoginRequest {
+export interface ISignInRequest {
 	login: string;
 	password: string;
 }
 
-export type TRequest = ILoginRequest;
+export type TRequest = ISignInRequest;

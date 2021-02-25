@@ -1,5 +1,8 @@
 import IUser from "../../interfaces/IUser";
-import TUserAction, { USER_LOCAL_STORAGE_LOAD } from "../actions/IUserAction";
+import TUserAction, {
+	USER_ENVIROMENT_LOAD,
+	USER_LOCAL_STORAGE_LOAD,
+} from "../actions/IUserAction";
 
 const preloadedState: IUser = {
 	serviceUrl: "",
@@ -20,8 +23,15 @@ const userReducer = (
 		case USER_LOCAL_STORAGE_LOAD: {
 			return {
 				...curState,
-				serviceUrl: action.serviceUrl,
 				serviceJwtToken: action.serviceJwtToken,
+				serviceJwtTokenExpirationTime:
+					action.serviceJwtTokenExpirationTime,
+			};
+		}
+		case USER_ENVIROMENT_LOAD: {
+			return {
+				...curState,
+				serviceUrl: action.serviceUrl,
 			};
 		}
 		default:
