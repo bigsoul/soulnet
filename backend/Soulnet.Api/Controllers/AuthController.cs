@@ -4,6 +4,7 @@ using Soulnet.Api.Services;
 using Soulnet.Data.Repositories;
 using System;
 using Soulnet.Model.Entity;
+using Microsoft.AspNetCore.Cors;
 
 namespace Soulnet.Api.Controllers
 {
@@ -28,42 +29,30 @@ namespace Soulnet.Api.Controllers
             var user = userRepository.GetSingle(u => u.Email == model.Login);
 
             if (user == null) {
-                return authService.GetAuthData("user == null");
-                //return BadRequest(new { email = "no user with this email" });
+                return BadRequest(new { login = "no user with this login" });
             }
 
             var passwordValid = authService.VerifyPassword(model.Password, user.Password);
 
             if (!passwordValid) {
-                return authService.GetAuthData("!passwordValid");
-                //return BadRequest(new { password = "invalid password" });
+                return BadRequest(new { password = "invalid password" });
             }
 
             return authService.GetAuthData(user.Username);
         }
 
         [HttpPost("signup")]
-        public AuthData Post([FromBody]SignUpViewModel model)
+        public ActionResult<AuthData> Post([FromBody]SignUpViewModel model)
         {
-            //if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var emailUniq = userRepository.IsEmailUniq(model.Email);
 
-            //if (!emailUniq) return BadRequest(new { email = "user with this email already exists" });
-            if (!emailUniq) return new AuthData() {
-                Id = "!emailUniq",
-                JwtToken = "Token",
-                JwtTokenExpirationTime = 0
-            };
+            if (!emailUniq) return BadRequest(new { email = "user with this email already exists" });
             
             var usernameUniq = userRepository.IsUsernameUniq(model.Login);
             
-            //if (!usernameUniq) return BadRequest(new { username = "user with this email already exists" });
-            if (!usernameUniq) return new AuthData() {
-                Id = "!usernameUniq",
-                JwtToken = "Token",
-                JwtTokenExpirationTime = 0
-            };
+            if (!usernameUniq) return BadRequest(new { username = "user with this email already exists" });
 
             var id = Guid.NewGuid().ToString();
             

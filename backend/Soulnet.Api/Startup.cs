@@ -32,6 +32,7 @@ namespace Soulnet.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -85,6 +86,12 @@ namespace Soulnet.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+            );
 
             app.UseAuthentication();
             app.UseAuthorization();

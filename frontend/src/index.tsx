@@ -12,8 +12,6 @@ import { history } from "./classes/reducers/routerReducer";
 
 /* <React.StrictMode> */
 
-console.log(process.env.REACT_APP_SERVICE_URL);
-
 ReactDOM.render(
 	<Provider store={store}>
 		<ConnectedRouter history={history}>

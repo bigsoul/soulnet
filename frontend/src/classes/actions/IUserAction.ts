@@ -6,6 +6,7 @@ export const USER_SIGNIN_FIELD = "USER/USER-SIGNIN-FIELD";
 
 export interface IUserLocalStorageLoadAction {
 	type: typeof USER_LOCAL_STORAGE_LOAD;
+	id: string;
 	serviceJwtToken: string;
 	serviceJwtTokenExpirationTime: number;
 }
@@ -24,7 +25,10 @@ export interface IUserSignInAction {
 
 export interface IUserSignInSuccessAction {
 	type: typeof USER_SIGNIN_SUCCESS;
+	id: string;
+	login: string;
 	jwtToken: string;
+	jwtTokenExpirationTime: number;
 }
 
 export interface IUserSignInFieldAction {
