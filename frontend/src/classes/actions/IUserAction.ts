@@ -1,8 +1,9 @@
 export const USER_LOCAL_STORAGE_LOAD = "USER/LOCAL-STORAGE-LOAD";
 export const USER_ENVIROMENT_LOAD = "USER/ENVIROMENT_LOAD";
 export const USER_SIGNIN = "USER/USER-SIGNIN";
-export const USER_SIGNIN_SUCCESS = "USER/USER-SIGNIN-SUCCESS";
-export const USER_SIGNIN_FIELD = "USER/USER-SIGNIN-FIELD";
+export const USER_SIGNUP = "USER/USER-SIGNUP";
+export const USER_SIGN_SUCCESS = "USER/USER-SIGN-SUCCESS";
+export const USER_SIGN_FIELD = "USER/USER-SIGN-FIELD";
 
 export interface IUserLocalStorageLoadAction {
 	type: typeof USER_LOCAL_STORAGE_LOAD;
@@ -23,16 +24,24 @@ export interface IUserSignInAction {
 	rememberMe: boolean;
 }
 
-export interface IUserSignInSuccessAction {
-	type: typeof USER_SIGNIN_SUCCESS;
+export interface IUserSignUpAction {
+	type: typeof USER_SIGNUP;
+	login: string;
+	email: string;
+	password: string;
+	rememberMe: boolean;
+}
+
+export interface IUserSignSuccessAction {
+	type: typeof USER_SIGN_SUCCESS;
 	id: string;
 	login: string;
 	jwtToken: string;
 	jwtTokenExpirationTime: number;
 }
 
-export interface IUserSignInFieldAction {
-	type: typeof USER_SIGNIN_FIELD;
+export interface IUserSignFieldAction {
+	type: typeof USER_SIGN_FIELD;
 	error: string;
 }
 
@@ -40,7 +49,8 @@ export type TUserAction =
 	| IUserLocalStorageLoadAction
 	| IUserEnviromentLoadAction
 	| IUserSignInAction
-	| IUserSignInSuccessAction
-	| IUserSignInFieldAction;
+	| IUserSignUpAction
+	| IUserSignSuccessAction
+	| IUserSignFieldAction;
 
 export default TUserAction;

@@ -3,4 +3,10 @@ export interface ISignInRequest {
 	password: string;
 }
 
-export type TRequest = ISignInRequest;
+export interface ISignUpRequest {
+	login: string;
+	email: string;
+	password: string;
+}
+
+export type TRequest = ISignInRequest | ISignUpRequest;

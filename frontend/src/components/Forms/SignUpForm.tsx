@@ -5,7 +5,7 @@ import Logo from "./../Logo";
 import Button from "../Button";
 import EditForm from "../EditForm";
 import CheckboxForm from "./../CheckboxForm";
-import { maxLength15 } from "../../classes/utils/validators";
+import { maxLength20 } from "../../classes/utils/validators";
 
 const Form = styled.form`
 	display: flex;
@@ -30,17 +30,15 @@ const CheckboxStyled = styled(CheckboxForm)`
 	margin-bottom: 15px;
 `;
 
-export interface ISignInFormProps {
+export interface ISignUpFormProps {
 	login: string;
+	email: string;
 	password: string;
+	confirmPassword: string;
 	rememberMe: boolean;
 }
 
-class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
-	onChange = (value: number) => {
-		console.log(value);
-	};
-
+class SignUpForm extends Component<InjectedFormProps<ISignUpFormProps>> {
 	render = () => {
 		const { handleSubmit, invalid, pristine, submitting } = this.props;
 		return (
@@ -51,14 +49,28 @@ class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 					type="text"
 					placeholder="username"
 					component={EditStyled10}
-					validate={[maxLength15]}
+					validate={[maxLength20]}
+				/>
+				<Field
+					name="email"
+					type="text"
+					placeholder="e-mail"
+					component={EditStyled10}
+					validate={[maxLength20]}
 				/>
 				<Field
 					name="password"
 					type="password"
 					placeholder="password"
+					component={EditStyled10}
+					validate={[maxLength20]}
+				/>
+				<Field
+					name="confirmPassword"
+					type="password"
+					placeholder="confirm password"
 					component={EditStyled15}
-					validate={[maxLength15]}
+					validate={[maxLength20]}
 				/>
 				<Field
 					name="rememberMe"
@@ -71,18 +83,20 @@ class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 					type="submit"
 					disabled={invalid || pristine || submitting}
 				>
-					Sign In
+					Sign Up
 				</Button>
 			</Form>
 		);
 	};
 }
 
-export default reduxForm<ISignInFormProps>({
-	form: "signIn",
+export default reduxForm<ISignUpFormProps>({
+	form: "signUp",
 	initialValues: {
 		login: "",
+		email: "",
 		password: "",
+		confirmPassword: "",
 		rememberMe: false,
 	},
-})(SignInForm);
+})(SignUpForm);

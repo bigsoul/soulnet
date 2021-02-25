@@ -4,18 +4,20 @@ import axiosAsync from "./../utils/http";
 import {
 	IUserEnviromentLoadAction,
 	IUserLocalStorageLoadAction,
+	IUserSignFieldAction,
 	IUserSignInAction,
-	IUserSignInFieldAction,
-	IUserSignInSuccessAction,
+	IUserSignSuccessAction,
+	IUserSignUpAction,
 	USER_ENVIROMENT_LOAD,
 	USER_LOCAL_STORAGE_LOAD,
 	USER_SIGNIN,
-	USER_SIGNIN_FIELD,
-	USER_SIGNIN_SUCCESS,
+	USER_SIGNUP,
+	USER_SIGN_FIELD,
+	USER_SIGN_SUCCESS,
 } from "../actions/IUserAction";
 
-import { ISignInRequest } from "../../interfaces/IRequest";
-import { ISignInResponse } from "../../interfaces/IResponse";
+import { ISignInRequest, ISignUpRequest } from "../../interfaces/IRequest";
+import { IAuthDataResponse } from "../../interfaces/IResponse";
 
 function* workerUserInit() {
 	yield put<IUserLocalStorageLoadAction>({
@@ -39,7 +41,7 @@ function* workerUserSignIn(action: IUserSignInAction) {
 			password: action.password,
 		};
 
-		const responseData: ISignInResponse = (yield call(
+		const responseData: IAuthDataResponse = (yield call(
 			axiosAsync,
 			"/auth/signin",
 			requestData
@@ -58,8 +60,8 @@ function* workerUserSignIn(action: IUserSignInAction) {
 			localStorage.setItem("serviceJwtTokenExpirationTime", "");
 		}
 
-		yield put<IUserSignInSuccessAction>({
-			type: USER_SIGNIN_SUCCESS,
+		yield put<IUserSignSuccessAction>({
+			type: USER_SIGN_SUCCESS,
 			id: responseData.id,
 			login: action.login,
 			jwtToken: responseData.jwtToken,
@@ -70,8 +72,37 @@ function* workerUserSignIn(action: IUserSignInAction) {
 		localStorage.setItem("serviceJwtToken", "");
 		localStorage.setItem("serviceJwtTokenExpirationTime", "");
 
-		yield put<IUserSignInFieldAction>({
-			type: USER_SIGNIN_FIELD,
+		yield put<IUserSignFieldAction>({
+			type: USER_SIGN_FIELD,
+			error: "",
+		});
+	}
+}
+
+function* workerUserSignUp(action: IUserSignUpAction) {
+	try {
+		const requestData: ISignUpRequest = {
+			login: action.login,
+			email: action.email,
+			password: action.password,
+		};
+
+		const responseData: IAuthDataResponse = (yield call(
+			axiosAsync,
+			"/auth/signup",
+			requestData
+		)).data;
+
+		yield put<IUserSignSuccessAction>({
+			type: USER_SIGN_SUCCESS,
+			id: responseData.id,
+			login: action.login,
+			jwtToken: responseData.jwtToken,
+			jwtTokenExpirationTime: responseData.jwtTokenExpirationTime,
+		});
+	} catch (err) {
+		yield put<IUserSignFieldAction>({
+			type: USER_SIGN_FIELD,
 			error: "",
 		});
 	}
@@ -80,6 +111,7 @@ function* workerUserSignIn(action: IUserSignInAction) {
 function* userSagas() {
 	yield fork(workerUserInit);
 	yield takeLatest(USER_SIGNIN, workerUserSignIn);
+	yield takeLatest(USER_SIGNUP, workerUserSignUp);
 }
 
 export default userSagas;

@@ -1,7 +1,7 @@
-export interface ISignInResponse {
+export interface IAuthDataResponse {
 	jwtToken: string;
 	jwtTokenExpirationTime: number;
 	id: string;
 }
 
-export type TResponse = ISignInResponse;
+export type TResponse = IAuthDataResponse;

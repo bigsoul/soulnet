@@ -3,4 +3,4 @@ const maxLength = (max: number) => (value: string) =>
 		? `Must be ${max} characters or less`
 		: undefined;
 
-export const maxLength15 = maxLength(15);
+export const maxLength20 = maxLength(20);

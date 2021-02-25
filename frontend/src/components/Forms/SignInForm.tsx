@@ -5,7 +5,7 @@ import Logo from "./../Logo";
 import Button from "../Button";
 import EditForm from "../EditForm";
 import CheckboxForm from "./../CheckboxForm";
-import { maxLength15 } from "../../classes/utils/validators";
+import { maxLength20 } from "../../classes/utils/validators";
 
 const Form = styled.form`
 	display: flex;
@@ -37,10 +37,6 @@ export interface ISignInFormProps {
 }
 
 class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
-	onChange = (value: number) => {
-		console.log(value);
-	};
-
 	render = () => {
 		const { handleSubmit, invalid, pristine, submitting } = this.props;
 		return (
@@ -51,14 +47,14 @@ class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 					type="text"
 					placeholder="username"
 					component={EditStyled10}
-					validate={[maxLength15]}
+					validate={[maxLength20]}
 				/>
 				<Field
 					name="password"
 					type="password"
 					placeholder="password"
 					component={EditStyled15}
-					validate={[maxLength15]}
+					validate={[maxLength20]}
 				/>
 				<Field
 					name="rememberMe"

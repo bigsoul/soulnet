@@ -2,8 +2,8 @@ import IUser from "../../interfaces/IUser";
 import TUserAction, {
 	USER_ENVIROMENT_LOAD,
 	USER_LOCAL_STORAGE_LOAD,
-	USER_SIGNIN_FIELD,
-	USER_SIGNIN_SUCCESS,
+	USER_SIGN_FIELD,
+	USER_SIGN_SUCCESS,
 } from "../actions/IUserAction";
 
 const preloadedState: IUser = {
@@ -35,7 +35,7 @@ const userReducer = (
 				serviceUrl: action.serviceUrl,
 			};
 		}
-		case USER_SIGNIN_SUCCESS: {
+		case USER_SIGN_SUCCESS: {
 			return {
 				...curState,
 				serviceJwtToken: action.jwtToken,
@@ -45,7 +45,7 @@ const userReducer = (
 				isAuth: true,
 			};
 		}
-		case USER_SIGNIN_FIELD: {
+		case USER_SIGN_FIELD: {
 			return {
 				...curState,
 				serviceJwtToken: "",
