@@ -75,9 +75,9 @@ Endpoint: `/auth`
 }
 ```
 
-## Dataset
+## Datasets
 
-Endpoint: `/dataset`
+Endpoint: `/datasets`
 
 ---
 
@@ -85,7 +85,7 @@ Endpoint: `/dataset`
 
 #### _`Request`_
 
-> GET `/dataset`
+> GET `/datasets`
 
 #### _`Response`_
 
@@ -114,7 +114,7 @@ Endpoint: `/dataset`
 
 #### _`Request`_
 
-> POST `/dataset`
+> POST `/datasets`
 
 ```JSON
 {
@@ -149,7 +149,7 @@ Endpoint: `/dataset`
 
 #### _`Request`_
 
-> DELETE `/dataset`
+> DELETE `/datasets`
 
 ```JSON
 {
@@ -180,9 +180,9 @@ Endpoint: `/dataset`
 }
 ```
 
-## Learning
+## Learnings
 
-Endpoint: `/dataset`
+Endpoint: `/learnings`
 
 ---
 
@@ -190,7 +190,7 @@ Endpoint: `/dataset`
 
 #### _`Request`_
 
-> GET `/learning`
+> GET `/learnings`
 
 #### _`Response`_
 
@@ -213,9 +213,9 @@ Endpoint: `/dataset`
 }
 ```
 
-## Testing
+## Testings
 
-Endpoint: `/testing`
+Endpoint: `/testings`
 
 ---
 
@@ -223,7 +223,7 @@ Endpoint: `/testing`
 
 #### _`Request`_
 
-> GET `/testing`
+> GET `/testings`
 
 #### _`Response`_
 
