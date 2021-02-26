@@ -110,11 +110,54 @@ Endpoint: `/dataset`
 
 ---
 
-### Item
+### Post
 
 #### _`Request`_
 
-> GET `/dataset/item?item=0`
+> POST `/dataset`
+
+```JSON
+{
+    "email": "",
+    "login": "",
+    "password": ""
+}
+```
+
+#### _`Response`_
+
+> 200
+
+```JSON
+[
+    {
+        "id": "",
+        "name": 0,
+    }
+]
+```
+
+> 400
+
+```JSON
+{
+    ... something
+}
+```
+
+### Delete
+
+#### _`Request`_
+
+> DELETE `/dataset`
+
+```JSON
+{
+    "email": "",
+    "login": "",
+    "password": ""
+}
+```
 
 #### _`Response`_
 
