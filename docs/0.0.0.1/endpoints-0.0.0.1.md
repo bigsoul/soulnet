@@ -18,8 +18,8 @@ Endpoint: `/auth`
 
 ```JSON
 {
-    "login": "string",
-    "password": "string"
+    "login": "",
+    "password": ""
 }
 ```
 
@@ -31,9 +31,9 @@ Endpoint: `/auth`
 
 ```JSON
 {
-    "jwtToken": "string",
-    "jwtTokenExpirationTime": number,
-    "id": "string"
+    "jwtToken": "",
+    "jwtTokenExpirationTime": 0,
+    "id": ""
 }
 ```
 
