@@ -8,11 +8,7 @@ Endpoint: `/auth`
 
 ### SignIn
 
-</br>
-
 #### _`Request`_
-
-</br>
 
 > POST
 
@@ -24,8 +20,6 @@ Endpoint: `/auth`
 ```
 
 #### _`Response`_
-
-</br>
 
 > 200
 
@@ -49,11 +43,7 @@ Endpoint: `/auth`
 
 ### SignUp
 
-</br>
-
 #### _`Request`_
-
-</br>
 
 > POST
 
@@ -66,8 +56,6 @@ Endpoint: `/auth`
 ```
 
 #### _`Response`_
-
-</br>
 
 > 200
 
@@ -95,19 +83,11 @@ Endpoint: `/dataset`
 
 ### Get
 
-</br>
-
 #### _`Request`_
-
-</br>
 
 > GET `/dataset`
 
-</br>
-
 #### _`Response`_
-
-</br>
 
 > 200
 
@@ -132,19 +112,11 @@ Endpoint: `/dataset`
 
 ### Item
 
-</br>
-
 #### _`Request`_
-
-</br>
 
 > GET `/dataset/item?item=0`
 
-</br>
-
 #### _`Response`_
-
-</br>
 
 > 200
 
@@ -173,19 +145,11 @@ Endpoint: `/dataset`
 
 ### Get
 
-</br>
-
 #### _`Request`_
-
-</br>
 
 > GET `/learning`
 
-</br>
-
 #### _`Response`_
-
-</br>
 
 > 200
 
@@ -214,19 +178,11 @@ Endpoint: `/testing`
 
 ### Get
 
-</br>
-
 #### _`Request`_
-
-</br>
 
 > GET `/testing`
 
-</br>
-
 #### _`Response`_
-
-</br>
 
 > 200
 
@@ -255,19 +211,11 @@ Endpoint: `/results`
 
 ### Get
 
-</br>
-
 #### _`Request`_
-
-</br>
 
 > GET `/results`
 
-</br>
-
 #### _`Response`_
-
-</br>
 
 > 200
 
