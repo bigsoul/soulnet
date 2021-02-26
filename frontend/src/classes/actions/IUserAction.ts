@@ -4,6 +4,7 @@ export const USER_SIGNIN = "USER/USER-SIGNIN";
 export const USER_SIGNUP = "USER/USER-SIGNUP";
 export const USER_SIGN_SUCCESS = "USER/USER-SIGN-SUCCESS";
 export const USER_SIGN_FIELD = "USER/USER-SIGN-FIELD";
+export const USER_SIGNOUT = "USER/USER-SIGNOUT";
 
 export interface IUserLocalStorageLoadAction {
 	type: typeof USER_LOCAL_STORAGE_LOAD;
@@ -22,6 +23,10 @@ export interface IUserSignInAction {
 	login: string;
 	password: string;
 	rememberMe: boolean;
+}
+
+export interface IUserSignOutAction {
+	type: typeof USER_SIGNOUT;
 }
 
 export interface IUserSignUpAction {
@@ -50,6 +55,7 @@ export type TUserAction =
 	| IUserEnviromentLoadAction
 	| IUserSignInAction
 	| IUserSignUpAction
+	| IUserSignOutAction
 	| IUserSignSuccessAction
 	| IUserSignFieldAction;
 

@@ -42,7 +42,7 @@ const userReducer = (
 				serviceJwtTokenExpirationTime: action.jwtTokenExpirationTime,
 				id: action.id,
 				login: action.login,
-				isAuth: true,
+				isAuth: !!action.jwtToken,
 			};
 		}
 		case USER_SIGN_FIELD: {

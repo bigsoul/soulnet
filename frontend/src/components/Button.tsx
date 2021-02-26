@@ -1,5 +1,4 @@
 import React, { Component, ReactNode } from "react";
-import { submit } from "redux-form";
 import styled from "styled-components";
 import { history } from "./../classes/reducers/routerReducer";
 
@@ -39,9 +38,11 @@ interface IButtonProps {
 	path?: string;
 	type?: "button" | "submit" | "reset" | undefined;
 	disabled?: boolean;
+	onClick?: () => void;
 }
 class Button extends Component<IButtonProps> {
 	to = () => {
+		if (this.props.onClick) this.props.onClick();
 		if (this.props.path) history.push(this.props.path);
 	};
 
