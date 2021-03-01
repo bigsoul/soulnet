@@ -33,8 +33,8 @@
 
 ```JSON
 {
-    "login": "string: username or email",
-    "password": "string: user password"
+    "login": "/* string: username or email */",
+    "password": "/* string: user password */"
 }
 ```
 
@@ -42,9 +42,9 @@
 
 ```JSON
 {
-    "jwtToken": "string: jwt token",
-    "jwtTokenExpirationTime": "number: expiration time",
-    "userId": "string: user id (GUID)"
+    "jwtToken": "/* string: jwt token */",
+    "jwtTokenExpirationTime": "/* number: expiration time */",
+    "userId": "/* string: user id (GUID) */"
 }
 ```
 
