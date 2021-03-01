@@ -119,7 +119,7 @@
 ```JSON
 [
     {
-        "datasetId": "string: dataset id (GUID)",
+        "id": "string: dataset id (GUID)",
         "name": "string: dataset name",
         "isLoaded": "dataset hed loaded on server"
     }
@@ -145,7 +145,7 @@
 ```JSON
 
 {
-    "datasetId": "string: dataset id (GUID)",
+    "id": "string: dataset id (GUID)",
     "name": "string: dataset name"
 }
 
@@ -155,7 +155,7 @@
 
 ```JSON
 {
-    "datasetId": "string: dataset id (GUID)",
+    "id": "string: dataset id (GUID)",
     "name": "string: dataset name",
     "isLoaded": "dataset hed loaded on server"
 }
@@ -178,7 +178,7 @@
 
 ```JSON
 {
-    "datasetId": "string: dataset id (GUID)"
+    "id": "string: dataset id (GUID)"
 }
 ```
 
