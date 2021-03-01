@@ -39,6 +39,7 @@ export interface ISignInFormProps {
 class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 	render = () => {
 		const { handleSubmit, invalid, pristine, submitting } = this.props;
+		console.log(this.props);
 		return (
 			<Form onSubmit={handleSubmit}>
 				<LogoStyled />

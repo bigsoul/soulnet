@@ -1,5 +1,28 @@
 # Endpoints doc
 
+-   Autorisation
+    -   /auth
+        -   SignIn: `POST`
+        -   SignUp: `POST`
+-   Datasets [Текст ссылки](#abcd)
+    -   /datasets
+        -   Get: `GET`
+        -   Post: `POST`
+        -   Delete: `DELETE`
+-   Learnings
+    -   /learnings
+        -   Get: `GET`
+        -   Post: `POST`
+        -   Delete: `DELETE`
+-   Testings
+    -   /testings
+        -   Get: `GET`
+        -   Post: `POST`
+        -   Delete: `DELETE`
+-   Results
+    -   /results
+        -   Get: `GET`
+
 ## Autorisation
 
 Endpoint: `/auth`
@@ -74,6 +97,8 @@ Endpoint: `/auth`
     ... something
 }
 ```
+
+<a name="abcd"></a>
 
 ## Datasets
 
