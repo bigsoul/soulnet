@@ -10,8 +10,12 @@
         -   [_Datasets/Delete_ `DELETE`](#datasetsdelete-delete)
     -   [Learnings](#learnings)
         -   [_Learnings/Get_ `GET`](#learningsget-get)
+        -   [_Learnings/Post_ `POST`](#learningspost-post)
+        -   [_Learnings/Delete_ `DELETE`](#learningsdelete-delete)
     -   [Testings](#testings)
         -   [_Testings/Get_ `GET`](#testingsget-get)
+        -   [_Testings/Post_ `POST`](#testingspost-post)
+        -   [_Testings/Delete_ `DELETE`](#testingsdelete-delete)
     -   [Results](#results)
         -   [_Results/Get_ `GET`](#resultsget-get)
 
@@ -66,9 +70,9 @@
 
 ```JSON
 {
-    "email": "",
-    "login": "",
-    "password": ""
+    "email": "string: email",
+    "login": "string: username",
+    "password": "string: password"
 }
 ```
 
@@ -76,9 +80,9 @@
 
 ```JSON
 {
-    "jwtToken": "",
-    "jwtTokenExpirationTime": 0,
-    "id": ""
+    "jwtToken": "string: jwt token",
+    "jwtTokenExpirationTime": "number: expiration time",
+    "userId": "string: user id (GUID)"
 }
 ```
 
@@ -236,6 +240,72 @@
 }
 ```
 
+<a name="/learnings/post"></a>
+
+#### _Learnings/Post_ `POST`
+
+> _Request: POST_ => <span style="color:green">/learnings/post</span>
+
+```JSON
+{
+    "email": "",
+    "login": "",
+    "password": ""
+}
+```
+
+> _Response: 200_ <= <span style="color:green">/learnings/post</span>
+
+```JSON
+[
+    {
+        "id": "",
+        "name": 0,
+    }
+]
+```
+
+> _Response: 400_ <= <span style="color:yellow">/learnings/post</span>
+
+```JSON
+{
+    ... something
+}
+```
+
+<a name="/learnings/delete"></a>
+
+#### _Learnings/Delete_ `DELETE`
+
+> _Request: DELETE_ => <span style="color:green">/learnings/delete</span>
+
+```JSON
+{
+    "email": "",
+    "login": "",
+    "password": ""
+}
+```
+
+> _Response: 200_ <= <span style="color:green">/learnings/delete</span>
+
+```JSON
+[
+    {
+        "id": "",
+        "name": 0,
+    }
+]
+```
+
+> _Response: 400_ <= <span style="color:yellow">/learnings/delete</span>
+
+```JSON
+{
+    ... something
+}
+```
+
 <a name="testings"></a>
 
 ## Testings
@@ -268,6 +338,72 @@
 ```
 
 > _Response: 400_ <= <span style="color:yellow">/testings/get</span>
+
+```JSON
+{
+    ... something
+}
+```
+
+<a name="/testings/post"></a>
+
+#### _Testings/Post_ `POST`
+
+> _Request: POST_ => <span style="color:green">/testings/post</span>
+
+```JSON
+{
+    "email": "",
+    "login": "",
+    "password": ""
+}
+```
+
+> _Response: 200_ <= <span style="color:green">/testings/post</span>
+
+```JSON
+[
+    {
+        "id": "",
+        "name": 0,
+    }
+]
+```
+
+> _Response: 400_ <= <span style="color:yellow">/testings/post</span>
+
+```JSON
+{
+    ... something
+}
+```
+
+<a name="/testings/delete"></a>
+
+#### _Testings/Delete_ `DELETE`
+
+> _Request: DELETE_ => <span style="color:green">/testings/delete</span>
+
+```JSON
+{
+    "email": "",
+    "login": "",
+    "password": ""
+}
+```
+
+> _Response: 200_ <= <span style="color:green">/testings/delete</span>
+
+```JSON
+[
+    {
+        "id": "",
+        "name": 0,
+    }
+]
+```
+
+> _Response: 400_ <= <span style="color:yellow">/testings/delete</span>
 
 ```JSON
 {
