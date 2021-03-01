@@ -29,17 +29,15 @@
 
 <a name="/auth"></a>
 
-Endpoint: `/auth`
+> #### Endpoint: /auth
 
 ---
 
 <a name="/auth/signin"></a>
 
-### SignIn
+#### _Auth/SignIn_
 
-#### _`Request`_
-
-> POST
+> _Request: POST_ => <span style="color:green">/auth/signin</span>
 
 ```JSON
 {
@@ -48,9 +46,7 @@ Endpoint: `/auth`
 }
 ```
 
-#### _`Response`_
-
-> 200
+> _Response: 200_ <= <span style="color:green">/auth/signin</span>
 
 ```JSON
 {
@@ -60,7 +56,7 @@ Endpoint: `/auth`
 }
 ```
 
-> 400
+> _Response: 400_ <= <span style="color:yellow">/auth/signin</span>
 
 ```JSON
 {
@@ -72,11 +68,9 @@ Endpoint: `/auth`
 
 <a name="/auth/signup"></a>
 
-### SignUp
+#### _Auth/SignUp_
 
-#### _`Request`_
-
-> POST
+> _Request: POST_ => <span style="color:green">/auth/signup</span>
 
 ```JSON
 {
@@ -86,9 +80,7 @@ Endpoint: `/auth`
 }
 ```
 
-#### _`Response`_
-
-> 200
+> _Response: 200_ <= <span style="color:green">/auth/signup</span>
 
 ```JSON
 {
@@ -98,7 +90,7 @@ Endpoint: `/auth`
 }
 ```
 
-> 400
+> _Response: 400_ <= <span style="color:yellow">/auth/signup</span>
 
 ```JSON
 {
@@ -184,7 +176,7 @@ Endpoint: `/datasets`
 }
 ```
 
-<a name="/datasets/post"></a>
+<a name="/datasets/delete"></a>
 
 ### Delete
 
