@@ -1,27 +1,19 @@
 # Endpoints doc
 
--   [Autorisation](#autorisation)
-    -   [/auth](#/auth)
-        -   [SignIn: `POST`](#/auth/signin)
-        -   [SignUp: `POST`](#/auth/signup)
--   [Datasets](#datasets)
-    -   [/datasets](#/datasets)
-        -   [Get: `GET`](#/datasets/get)
-        -   [Post: `POST`](#/datasets/post)
-        -   [Delete: `DELETE`](#/datasets/delete)
--   [Learnings](#learnings)
-    -   [/learnings](#/learnings)
-        -   [Get: `GET`](#/learnings/get)
-        -   [Post: `POST`](#learnings/post)
-        -   [Delete: `DELETE`](#learnings/delete)
--   [Testings](#testings)
-    -   [/testings](#/testings)
-        -   [Get: `GET`](#/testings/get)
-        -   [Post: `POST`](#/testings/post)
-        -   [Delete: `DELETE`](#/testings/delete)
--   [Results](#results)
-    -   [/results](#/results)
-        -   [Get: `GET`](#/results/get)
+-   [Endpoints doc](#endpoints-doc)
+    -   [Autorisation](#autorisation)
+        -   [_Auth/SignIn_ `POST`](#authsignin-post)
+        -   [_Auth/SignUp_ `POST`](#authsignup-post)
+    -   [Datasets](#datasets)
+        -   [_Datasets/Get_ `GET`](#datasetsget-get)
+        -   [_Datasets/Post_ `POST`](#datasetspost-post)
+        -   [_Datasets/Delete_ `DELETE`](#datasetsdelete-delete)
+    -   [Learnings](#learnings)
+        -   [_Learnings/Get_ `GET`](#learningsget-get)
+    -   [Testings](#testings)
+        -   [_Testings/Get_ `GET`](#testingsget-get)
+    -   [Results](#results)
+        -   [_Results/Get_ `GET`](#resultsget-get)
 
 <a name="autorisation"></a>
 
@@ -35,7 +27,7 @@
 
 <a name="/auth/signin"></a>
 
-#### _Auth/SignIn_
+#### _Auth/SignIn_ `POST`
 
 > _Request: POST_ => <span style="color:green">/auth/signin</span>
 
@@ -68,7 +60,7 @@
 
 <a name="/auth/signup"></a>
 
-#### _Auth/SignUp_
+#### _Auth/SignUp_ `POST`
 
 > _Request: POST_ => <span style="color:green">/auth/signup</span>
 
@@ -104,21 +96,21 @@
 
 <a name="/datasets"></a>
 
-Endpoint: `/datasets`
+> #### Endpoint: /datasets
 
 ---
 
 <a name="/datasets/get"></a>
 
-### Get
+#### _Datasets/Get_ `GET`
 
-#### _`Request`_
+> _Request: GET_ => <span style="color:green">/datasets/get</span>
 
-> GET `/datasets`
+```JSON
+{}
+```
 
-#### _`Response`_
-
-> 200
+> _Response: 200_ <= <span style="color:green">/datasets/get</span>
 
 ```JSON
 [
@@ -129,7 +121,7 @@ Endpoint: `/datasets`
 ]
 ```
 
-> 400
+> _Response: 400_ <= <span style="color:yellow">/datasets/get</span>
 
 ```JSON
 {
@@ -141,11 +133,9 @@ Endpoint: `/datasets`
 
 <a name="/datasets/post"></a>
 
-### Post
+#### _Datasets/Post_ `POST`
 
-#### _`Request`_
-
-> POST `/datasets`
+> _Request: POST_ => <span style="color:green">/datasets/post</span>
 
 ```JSON
 {
@@ -155,9 +145,7 @@ Endpoint: `/datasets`
 }
 ```
 
-#### _`Response`_
-
-> 200
+> _Response: 200_ <= <span style="color:green">/datasets/post</span>
 
 ```JSON
 [
@@ -168,7 +156,7 @@ Endpoint: `/datasets`
 ]
 ```
 
-> 400
+> _Response: 400_ <= <span style="color:yellow">/datasets/post</span>
 
 ```JSON
 {
@@ -178,11 +166,9 @@ Endpoint: `/datasets`
 
 <a name="/datasets/delete"></a>
 
-### Delete
+#### _Datasets/Delete_ `DELETE`
 
-#### _`Request`_
-
-> DELETE `/datasets`
+> _Request: DELETE_ => <span style="color:green">/datasets/delete</span>
 
 ```JSON
 {
@@ -192,9 +178,7 @@ Endpoint: `/datasets`
 }
 ```
 
-#### _`Response`_
-
-> 200
+> _Response: 200_ <= <span style="color:green">/datasets/delete</span>
 
 ```JSON
 [
@@ -205,7 +189,7 @@ Endpoint: `/datasets`
 ]
 ```
 
-> 400
+> _Response: 400_ <= <span style="color:yellow">/datasets/delete</span>
 
 ```JSON
 {
@@ -219,21 +203,21 @@ Endpoint: `/datasets`
 
 <a name="/learnings"></a>
 
-Endpoint: `/learnings`
+> #### Endpoint: /learnings
 
 ---
 
 <a name="/learnings/get"></a>
 
-### Get
+#### _Learnings/Get_ `GET`
 
-#### _`Request`_
+> _Request: GET_ => <span style="color:green">/learnings/get</span>
 
-> GET `/learnings`
+```JSON
+{}
+```
 
-#### _`Response`_
-
-> 200
+> _Response: 200_ <= <span style="color:green">/learnings/get</span>
 
 ```JSON
 [
@@ -244,7 +228,7 @@ Endpoint: `/learnings`
 ]
 ```
 
-> 400
+> _Response: 400_ <= <span style="color:yellow">/learnings/get</span>
 
 ```JSON
 {
@@ -258,21 +242,21 @@ Endpoint: `/learnings`
 
 <a name="/testings"></a>
 
-Endpoint: `/testings`
+> #### Endpoint: /testings
 
 ---
 
 <a name="/testings/get"></a>
 
-### Get
+#### _Testings/Get_ `GET`
 
-#### _`Request`_
+> _Request: GET_ => <span style="color:green">/testings/get</span>
 
-> GET `/testings`
+```JSON
+{}
+```
 
-#### _`Response`_
-
-> 200
+> _Response: 200_ <= <span style="color:green">/testings/get</span>
 
 ```JSON
 [
@@ -283,7 +267,7 @@ Endpoint: `/testings`
 ]
 ```
 
-> 400
+> _Response: 400_ <= <span style="color:yellow">/testings/get</span>
 
 ```JSON
 {
@@ -297,21 +281,21 @@ Endpoint: `/testings`
 
 <a name="/results"></a>
 
-Endpoint: `/results`
+> #### Endpoint: /results
 
 ---
 
 <a name="/results/get"></a>
 
-### Get
+#### _Results/Get_ `GET`
 
-#### _`Request`_
+> _Request: GET_ => <span style="color:green">/results/get</span>
 
-> GET `/results`
+```JSON
+{}
+```
 
-#### _`Response`_
-
-> 200
+> _Response: 200_ <= <span style="color:green">/results/get</span>
 
 ```JSON
 [
@@ -322,7 +306,7 @@ Endpoint: `/results`
 ]
 ```
 
-> 400
+> _Response: 400_ <= <span style="color:yellow">/results/get</span>
 
 ```JSON
 {
