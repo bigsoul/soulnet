@@ -33,8 +33,8 @@
 
 ```JSON
 {
-    "login": "",
-    "password": ""
+    "login": "", // username or email
+    "password": "" // user password
 }
 ```
 
