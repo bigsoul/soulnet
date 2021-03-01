@@ -1,10 +1,10 @@
 # Endpoints doc
 
--   Autorisation
-    -   /auth
-        -   SignIn: `POST`
+-   [Autorisation](#autorisation)
+    -   [/auth](#auth)
+        -   [SignIn: `POST`](#auth/SignIn)
         -   SignUp: `POST`
--   Datasets [Текст ссылки](#abcd)
+-   [Datasets](#datasets)
     -   /datasets
         -   Get: `GET`
         -   Post: `POST`
@@ -23,11 +23,17 @@
     -   /results
         -   Get: `GET`
 
+<a name="autorisation"></a>
+
 ## Autorisation
+
+<a name="auth"></a>
 
 Endpoint: `/auth`
 
 ---
+
+<a name="auth/SignIn"></a>
 
 ### SignIn
 
@@ -98,7 +104,7 @@ Endpoint: `/auth`
 }
 ```
 
-<a name="abcd"></a>
+<a name="datasets"></a>
 
 ## Datasets
 
