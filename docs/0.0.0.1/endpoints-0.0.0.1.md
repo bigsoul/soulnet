@@ -119,8 +119,9 @@
 ```JSON
 [
     {
-        "id": "",
-        "name": 0,
+        "datasetId": "string: dataset id (GUID)",
+        "name": "string: dataset name",
+        "isLoaded": "dataset hed loaded on server"
     }
 ]
 ```
@@ -142,22 +143,23 @@
 > _Request: POST_ => <span style="color:green">/datasets/post</span>
 
 ```JSON
+
 {
-    "email": "",
-    "login": "",
-    "password": ""
+    "datasetId": "string: dataset id (GUID)",
+    "name": "string: dataset name"
 }
+
 ```
 
 > _Response: 200_ <= <span style="color:green">/datasets/post</span>
 
 ```JSON
-[
-    {
-        "id": "",
-        "name": 0,
-    }
-]
+{
+    "datasetId": "string: dataset id (GUID)",
+    "name": "string: dataset name",
+    "isLoaded": "dataset hed loaded on server"
+}
+
 ```
 
 > _Response: 400_ <= <span style="color:yellow">/datasets/post</span>
@@ -176,21 +178,14 @@
 
 ```JSON
 {
-    "email": "",
-    "login": "",
-    "password": ""
+    "datasetId": "string: dataset id (GUID)"
 }
 ```
 
 > _Response: 200_ <= <span style="color:green">/datasets/delete</span>
 
 ```JSON
-[
-    {
-        "id": "",
-        "name": 0,
-    }
-]
+{}
 ```
 
 > _Response: 400_ <= <span style="color:yellow">/datasets/delete</span>
