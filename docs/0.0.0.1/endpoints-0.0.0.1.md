@@ -1,39 +1,39 @@
 # Endpoints doc
 
 -   [Autorisation](#autorisation)
-    -   [/auth](#auth)
-        -   [SignIn: `POST`](#auth/SignIn)
-        -   SignUp: `POST`
+    -   [/auth](#/auth)
+        -   [SignIn: `POST`](#/auth/signin)
+        -   [SignUp: `POST`](#/auth/signup)
 -   [Datasets](#datasets)
-    -   /datasets
-        -   Get: `GET`
-        -   Post: `POST`
-        -   Delete: `DELETE`
--   Learnings
-    -   /learnings
-        -   Get: `GET`
-        -   Post: `POST`
-        -   Delete: `DELETE`
--   Testings
-    -   /testings
-        -   Get: `GET`
-        -   Post: `POST`
-        -   Delete: `DELETE`
--   Results
-    -   /results
-        -   Get: `GET`
+    -   [/datasets](#/datasets)
+        -   [Get: `GET`](#/datasets/get)
+        -   [Post: `POST`](#/datasets/post)
+        -   [Delete: `DELETE`](#/datasets/delete)
+-   [Learnings](#learnings)
+    -   [/learnings](#/learnings)
+        -   [Get: `GET`](#/learnings/get)
+        -   [Post: `POST`](#learnings/post)
+        -   [Delete: `DELETE`](#learnings/delete)
+-   [Testings](#testings)
+    -   [/testings](#/testings)
+        -   [Get: `GET`](#/testings/get)
+        -   [Post: `POST`](#/testings/post)
+        -   [Delete: `DELETE`](#/testings/delete)
+-   [Results](#results)
+    -   [/results](#/results)
+        -   [Get: `GET`](#/results/get)
 
 <a name="autorisation"></a>
 
 ## Autorisation
 
-<a name="auth"></a>
+<a name="/auth"></a>
 
 Endpoint: `/auth`
 
 ---
 
-<a name="auth/SignIn"></a>
+<a name="/auth/signin"></a>
 
 ### SignIn
 
@@ -69,6 +69,8 @@ Endpoint: `/auth`
 ```
 
 ---
+
+<a name="/auth/signup"></a>
 
 ### SignUp
 
@@ -108,9 +110,13 @@ Endpoint: `/auth`
 
 ## Datasets
 
+<a name="/datasets"></a>
+
 Endpoint: `/datasets`
 
 ---
+
+<a name="/datasets/get"></a>
 
 ### Get
 
@@ -140,6 +146,8 @@ Endpoint: `/datasets`
 ```
 
 ---
+
+<a name="/datasets/post"></a>
 
 ### Post
 
@@ -176,6 +184,8 @@ Endpoint: `/datasets`
 }
 ```
 
+<a name="/datasets/post"></a>
+
 ### Delete
 
 #### _`Request`_
@@ -211,11 +221,17 @@ Endpoint: `/datasets`
 }
 ```
 
+<a name="learnings"></a>
+
 ## Learnings
+
+<a name="/learnings"></a>
 
 Endpoint: `/learnings`
 
 ---
+
+<a name="/learnings/get"></a>
 
 ### Get
 
@@ -244,11 +260,17 @@ Endpoint: `/learnings`
 }
 ```
 
+<a name="testings"></a>
+
 ## Testings
+
+<a name="/testings"></a>
 
 Endpoint: `/testings`
 
 ---
+
+<a name="/testings/get"></a>
 
 ### Get
 
@@ -277,11 +299,17 @@ Endpoint: `/testings`
 }
 ```
 
+<a name="results"></a>
+
 ## Results
+
+<a name="/results"></a>
 
 Endpoint: `/results`
 
 ---
+
+<a name="/results/get"></a>
 
 ### Get
 
