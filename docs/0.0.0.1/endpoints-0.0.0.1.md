@@ -398,9 +398,9 @@
         "iterationCurrent": "number: current iteration in this testings",
         "stopLossPercent": "number: percent to stop losing",
         "startDeposit": "number: a start deposit to testing a learning",
-        "datasetLearning": {
-            "id": "string: dataset id (GUID)",
-            "name": "string: dataset name"
+        "learning": {
+            "id": "string: learning id (GUID)",
+            "name": "string: learning name"
         },
         "datasetTesting": {
             "id": "string: dataset id (GUID)",
@@ -432,7 +432,7 @@
     "iterationCurrent": "number: current iteration in this testings",
     "stopLossPercent": "number: percent to stop losing",
     "startDeposit": "number: a start deposit to testing a learning",
-    "datasetLearningId": "string: dataset id (GUID)",
+    "learningId": "string: learning id (GUID)",
     "datasetTestingId": "string: dataset id (GUID)"
 }
 ```
@@ -449,9 +449,9 @@
     "iterationCurrent": "number: current iteration in this testings",
     "stopLossPercent": "number: percent to stop losing",
     "startDeposit": "number: a start deposit to testing a learning",
-    "datasetLearning": {
-        "id": "string: dataset id (GUID)",
-        "name": "string: dataset name"
+    "learning": {
+        "id": "string: learning id (GUID)",
+        "name": "string: learning name"
     },
     "datasetTesting": {
         "id": "string: dataset id (GUID)",
@@ -484,7 +484,7 @@
     "iterationCurrent": "number: current iteration in this testings",
     "stopLossPercent": "number: percent to stop losing",
     "startDeposit": "number: a start deposit to testing a learning",
-    "datasetLearningId": "string: dataset id (GUID)",
+    "learningId": "string: learning id (GUID)",
     "datasetTestingId": "string: dataset id (GUID)"
 }
 ```
@@ -501,9 +501,9 @@
     "iterationCurrent": "number: current iteration in this testings",
     "stopLossPercent": "number: percent to stop losing",
     "startDeposit": "number: a start deposit to testing a learning",
-    "datasetLearning": {
-        "id": "string: dataset id (GUID)",
-        "name": "string: dataset name"
+    "learning": {
+        "id": "string: learning id (GUID)",
+        "name": "string: learning name"
     },
     "datasetTesting": {
         "id": "string: dataset id (GUID)",
