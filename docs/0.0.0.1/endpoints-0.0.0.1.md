@@ -11,10 +11,12 @@
     -   [Learnings](#learnings)
         -   [_Learnings/Get_ `GET`](#learningsget-get)
         -   [_Learnings/Post_ `POST`](#learningspost-post)
+        -   [_Learnings/Put_ `PUT`](#learningsput-put)
         -   [_Learnings/Delete_ `DELETE`](#learningsdelete-delete)
     -   [Testings](#testings)
         -   [_Testings/Get_ `GET`](#testingsget-get)
         -   [_Testings/Post_ `POST`](#testingspost-post)
+        -   [_Testings/Put_ `PUT`](#testingsput-put)
         -   [_Testings/Delete_ `DELETE`](#testingsdelete-delete)
     -   [Results](#results)
         -   [_Results/Get_ `GET`](#resultsget-get)
@@ -221,8 +223,18 @@
 ```JSON
 [
     {
-        "id": "",
-        "name": 0,
+        "id": "string: learning id (GUID)",
+        "name": "string: learning name",
+        "state": "number: current learning state; 0 - config; 1 - playing; 2 - paused; 3 - completed",
+        "isArchive": "boolean: this learning has archiveted",
+        "iterationCount": "number: iteration count in dataset file",
+        "iterationCurrent": "number: current iteration in this learning",
+        "inputNeuronsCount": "number: input neurons count for dataset",
+        "deepLayersCount": "number: deep layers count",
+        "datasetLearning": {
+            "id": "string: dataset id (GUID)",
+            "name": "string: dataset name"
+        }
     }
 ]
 ```
@@ -243,24 +255,83 @@
 
 ```JSON
 {
-    "email": "",
-    "login": "",
-    "password": ""
+    "id": "string: learning id (GUID)",
+    "name": "string: learning name",
+    "iterationCount": "number: iteration count in dataset file",
+    "iterationCurrent": "number: current iteration in this learning",
+    "inputNeuronsCount": "number: input neurons count for dataset",
+    "deepLayersCount": "number: deep layers count",
+    "datasetLearningId": "string: dataset id (GUID)"
 }
 ```
 
 > _Response: 200_ <= <span style="color:green">/learnings/post</span>
 
 ```JSON
-[
-    {
-        "id": "",
-        "name": 0,
+{
+    "id": "string: learning id (GUID)",
+    "name": "string: learning name",
+    "state": "number: current learning state; 0 - config; 1 - playing; 2 - paused; 3 - completed",
+    "isArchive": "boolean: this learning has archiveted",
+    "iterationCount": "number: iteration count in dataset file",
+    "iterationCurrent": "number: current iteration in this learning",
+    "inputNeuronsCount": "number: input neurons count for dataset",
+    "deepLayersCount": "number: deep layers count",
+    "datasetLearning": {
+        "id": "string: dataset id (GUID)",
+        "name": "string: dataset name"
     }
-]
+}
 ```
 
 > _Response: 400_ <= <span style="color:yellow">/learnings/post</span>
+
+```JSON
+{
+    ... something
+}
+```
+
+<a name="/learnings/put"></a>
+
+#### _Learnings/Put_ `PUT`
+
+> _Request: PUT_ => <span style="color:green">/learnings/put</span>
+
+```JSON
+{
+    "id": "string: learning id (GUID)",
+    "name": "string: learning name",
+    "state": "number: current learning state; 0 - config; 1 - playing; 2 - paused; 3 - completed",
+    "isArchive": "boolean: this learning has archiveted",
+    "iterationCount": "number: iteration count in dataset file",
+    "iterationCurrent": "number: current iteration in this learning",
+    "inputNeuronsCount": "number: input neurons count for dataset",
+    "deepLayersCount": "number: deep layers count",
+    "datasetLearningId": "string: dataset id (GUID)"
+}
+```
+
+> _Response: 200_ <= <span style="color:green">/learnings/put</span>
+
+```JSON
+{
+    "id": "string: learning id (GUID)",
+    "name": "string: learning name",
+    "state": "number: current learning state; 0 - config; 1 - playing; 2 - paused; 3 - completed",
+    "isArchive": "boolean: this learning has archiveted",
+    "iterationCount": "number: iteration count in dataset file",
+    "iterationCurrent": "number: current iteration in this learning",
+    "inputNeuronsCount": "number: input neurons count for dataset",
+    "deepLayersCount": "number: deep layers count",
+    "datasetLearning": {
+        "id": "string: dataset id (GUID)",
+        "name": "string: dataset name"
+    }
+}
+```
+
+> _Response: 400_ <= <span style="color:yellow">/learnings/put</span>
 
 ```JSON
 {
@@ -276,21 +347,14 @@
 
 ```JSON
 {
-    "email": "",
-    "login": "",
-    "password": ""
+    "id": "string: learning id (GUID)",
 }
 ```
 
 > _Response: 200_ <= <span style="color:green">/learnings/delete</span>
 
 ```JSON
-[
-    {
-        "id": "",
-        "name": 0,
-    }
-]
+{}
 ```
 
 > _Response: 400_ <= <span style="color:yellow">/learnings/delete</span>
@@ -326,8 +390,22 @@
 ```JSON
 [
     {
-        "id": "",
-        "name": 0,
+        "id": "string: testings id (GUID)",
+        "name": "string: testings name",
+        "state": "number: current testings state; 0 - config; 1 - playing; 2 - paused; 3 - completed",
+        "isArchive": "boolean: this testings has archiveted",
+        "iterationCount": "number: iteration count in dataset file",
+        "iterationCurrent": "number: current iteration in this testings",
+        "stopLossPercent": "number: percent to stop losing",
+        "startDeposit": "number: a start deposit to testing a learning",
+        "datasetLearning": {
+            "id": "string: dataset id (GUID)",
+            "name": "string: dataset name"
+        },
+        "datasetTesting": {
+            "id": "string: dataset id (GUID)",
+            "name": "string: dataset name"
+        }
     }
 ]
 ```
@@ -348,24 +426,93 @@
 
 ```JSON
 {
-    "email": "",
-    "login": "",
-    "password": ""
+    "id": "string: testings id (GUID)",
+    "name": "string: testings name",
+    "iterationCount": "number: iteration count in dataset file",
+    "iterationCurrent": "number: current iteration in this testings",
+    "stopLossPercent": "number: percent to stop losing",
+    "startDeposit": "number: a start deposit to testing a learning",
+    "datasetLearningId": "string: dataset id (GUID)",
+    "datasetTestingId": "string: dataset id (GUID)"
 }
 ```
 
 > _Response: 200_ <= <span style="color:green">/testings/post</span>
 
 ```JSON
-[
-    {
-        "id": "",
-        "name": 0,
+{
+    "id": "string: testings id (GUID)",
+    "name": "string: testings name",
+    "state": "number: current testings state; 0 - config; 1 - playing; 2 -paused; 3 - completed",
+    "isArchive": "boolean: this testings has archiveted",
+    "iterationCount": "number: iteration count in dataset file",
+    "iterationCurrent": "number: current iteration in this testings",
+    "stopLossPercent": "number: percent to stop losing",
+    "startDeposit": "number: a start deposit to testing a learning",
+    "datasetLearning": {
+        "id": "string: dataset id (GUID)",
+        "name": "string: dataset name"
+    },
+    "datasetTesting": {
+        "id": "string: dataset id (GUID)",
+        "name": "string: dataset name"
     }
-]
+}
 ```
 
 > _Response: 400_ <= <span style="color:yellow">/testings/post</span>
+
+```JSON
+{
+    ... something
+}
+```
+
+<a name="/testings/put"></a>
+
+#### _Testings/Put_ `PUT`
+
+> _Request: PUT_ => <span style="color:green">/testings/put</span>
+
+```JSON
+{
+    "id": "string: testings id (GUID)",
+    "name": "string: testings name",
+    "state": "number: current testings state; 0 - config; 1 - playing; 2 -paused; 3 - completed",
+    "isArchive": "boolean: this testings has archiveted",
+    "iterationCount": "number: iteration count in dataset file",
+    "iterationCurrent": "number: current iteration in this testings",
+    "stopLossPercent": "number: percent to stop losing",
+    "startDeposit": "number: a start deposit to testing a learning",
+    "datasetLearningId": "string: dataset id (GUID)",
+    "datasetTestingId": "string: dataset id (GUID)"
+}
+```
+
+> _Response: 200_ <= <span style="color:green">/testings/put</span>
+
+```JSON
+{
+    "id": "string: testings id (GUID)",
+    "name": "string: testings name",
+    "state": "number: current testings state; 0 - config; 1 - playing; 2 -paused; 3 - completed",
+    "isArchive": "boolean: this testings has archiveted",
+    "iterationCount": "number: iteration count in dataset file",
+    "iterationCurrent": "number: current iteration in this testings",
+    "stopLossPercent": "number: percent to stop losing",
+    "startDeposit": "number: a start deposit to testing a learning",
+    "datasetLearning": {
+        "id": "string: dataset id (GUID)",
+        "name": "string: dataset name"
+    },
+    "datasetTesting": {
+        "id": "string: dataset id (GUID)",
+        "name": "string: dataset name"
+    }
+}
+```
+
+> _Response: 400_ <= <span style="color:yellow">/testings/put</span>
 
 ```JSON
 {
@@ -381,21 +528,14 @@
 
 ```JSON
 {
-    "email": "",
-    "login": "",
-    "password": ""
+    "id": "string: testings id (GUID)"
 }
 ```
 
 > _Response: 200_ <= <span style="color:green">/testings/delete</span>
 
 ```JSON
-[
-    {
-        "id": "",
-        "name": 0,
-    }
-]
+{}
 ```
 
 > _Response: 400_ <= <span style="color:yellow">/testings/delete</span>
@@ -431,8 +571,13 @@
 ```JSON
 [
     {
-        "id": "",
-        "name": 0,
+        "learning": "string: learning name",
+        "testing": "string: testing name",
+        "datasetLearning": "string: dataset learning name",
+        "datasetTesting": "string: dataset testing name",
+        "startDeposit": "number: a start deposit of testing",
+        "endDeposit": "number: a end deposit of testing",
+        "margin": "number: trading efficiency"
     }
 ]
 ```
