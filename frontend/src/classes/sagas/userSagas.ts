@@ -1,6 +1,6 @@
 import { call, fork, put, takeLatest } from "redux-saga/effects";
 import axiosAsync from "./../utils/http";
-import { startSubmit, stopSubmit, change } from "redux-form";
+import { startSubmit, stopSubmit, change, destroy } from "redux-form";
 
 import {
 	IUserEnviromentLoadAction,
@@ -98,8 +98,7 @@ function* workerUserSignIn(action: IUserSignInAction) {
 			jwtTokenExpirationTime: responseData.jwtTokenExpirationTime,
 		});
 
-		yield put(stopSubmit("signIn"));
-		yield put(change("signIn", "password", ""));
+		yield put(destroy("signIn"));
 
 		history.push("/");
 	} catch (err) {
