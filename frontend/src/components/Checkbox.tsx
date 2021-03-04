@@ -73,20 +73,27 @@ interface ICheckboxProps {
 	className?: string;
 	label?: string;
 	checked: boolean;
+	disabled?: boolean;
 	onChange: (checked: boolean) => void;
 }
 
 class Checkbox extends Component<ICheckboxProps> {
 	render = () => {
+		const { checked, disabled } = this.props;
 		return (
 			<Styled
 				className={this.props.className}
-				onClick={() => this.props.onChange(!this.props.checked)}
+				onClick={() =>
+					this.props.onChange(disabled ? checked : !checked)
+				}
 			>
 				<input
 					type="checkbox"
 					checked={this.props.checked}
-					onChange={() => this.props.onChange(!this.props.checked)}
+					onChange={() =>
+						this.props.onChange(disabled ? checked : !checked)
+					}
+					disabled={this.props.disabled}
 				/>
 				<label>
 					{this.props.label ? this.props.label : this.props.children}

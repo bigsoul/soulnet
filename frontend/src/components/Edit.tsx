@@ -29,8 +29,10 @@ const EditInput = styled.input<{ error?: string }>`
 interface IEditProps {
 	className?: string;
 	placeholder?: string;
+	value?: string;
 	error?: string;
 	type?: string;
+	disabled?: boolean;
 	onChange: (value: string) => void;
 }
 
@@ -41,8 +43,10 @@ class Edit extends Component<IEditProps> {
 				className={this.props.className}
 				type={this.props.type}
 				placeholder={this.props.placeholder}
+				value={this.props.value}
 				onChange={(e) => this.props.onChange(e.currentTarget.value)}
 				error={this.props.error}
+				disabled={this.props.disabled}
 			/>
 		);
 	};

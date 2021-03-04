@@ -1,6 +1,6 @@
 import { call, fork, put, takeLatest } from "redux-saga/effects";
 import axiosAsync from "./../utils/http";
-import { startSubmit, stopSubmit } from "redux-form";
+import { startSubmit, stopSubmit, change } from "redux-form";
 
 import {
 	IUserEnviromentLoadAction,
@@ -22,6 +22,8 @@ import {
 import { ISignInRequest, ISignUpRequest } from "../../interfaces/IRequest";
 import { IAuthDataResponse } from "../../interfaces/IResponse";
 import { history } from "../reducers/routerReducer";
+import store from "./../store";
+import { stat } from "fs";
 
 function* workerUserInit() {
 	yield put<IUserLocalStorageLoadAction>({
@@ -73,6 +75,9 @@ function* workerUserSignIn(action: IUserSignInAction) {
 			jwtToken: responseData.jwtToken,
 			jwtTokenExpirationTime: responseData.jwtTokenExpirationTime,
 		});
+
+		yield put(stopSubmit("signIn"));
+		yield put(change("signIn", "password", ""));
 
 		history.push("/");
 	} catch (err) {

@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import styled from "styled-components";
+import TPathAction, {
+	IPathToSignInAction,
+	PATH_TO_SIGNIN,
+} from "../classes/actions/IPathAction";
 import TUserAction, {
 	IUserSignOutAction,
 	USER_SIGNOUT,
@@ -23,6 +27,7 @@ interface IProfileProps {
 
 interface IProfileDispatch {
 	signOutAction: () => void;
+	pathToSignIn: () => void;
 }
 
 class Prfile extends Component<IProfileProps & IProfileDispatch> {
@@ -37,7 +42,9 @@ class Prfile extends Component<IProfileProps & IProfileDispatch> {
 					<Button onClick={this.hendleSignOut}>Sign Out</Button>
 				) : (
 					<>
-						<Button path={"/signin"}>Sign In</Button>
+						<Button onClick={this.props.pathToSignIn}>
+							Sign In
+						</Button>
 						<Button path={"/signup"}>Sign Un</Button>
 					</>
 				)}
@@ -54,12 +61,18 @@ const mapStateToProps = (state: IStore): IProfileProps => {
 };
 
 const mapDispatchToProps = (
-	dispatch: Dispatch<TUserAction>
+	dispatch: Dispatch<TUserAction | TPathAction>
 ): IProfileDispatch => {
 	return {
 		signOutAction: (): void => {
 			dispatch<IUserSignOutAction>({
 				type: USER_SIGNOUT,
+			});
+		},
+		pathToSignIn: (): void => {
+			dispatch<IPathToSignInAction>({
+				type: PATH_TO_SIGNIN,
+				path: "/signin",
 			});
 		},
 	};
