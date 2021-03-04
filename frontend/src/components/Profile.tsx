@@ -45,7 +45,7 @@ class Prfile extends Component<IProfileProps & IProfileDispatch> {
 						<Button onClick={this.props.pathToSignIn}>
 							Sign In
 						</Button>
-						<Button path={"/signup"}>Sign Un</Button>
+						<Button path={"/signup"}>Sign Up</Button>
 					</>
 				)}
 			</PrfileDiv>
