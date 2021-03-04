@@ -9,7 +9,9 @@ namespace Soulnet.Neuron
         static void Main(string[] args)
         {
             ScriptEngine engine = Python.CreateEngine();
-            engine.Execute("print 'hello, world'");
+            ScriptScope scope = engine.CreateScope();
+            //engine.Execute("print 'hello, world'");
+            engine.ExecuteFile("./core/start.py", scope);
         }
     }
 }
