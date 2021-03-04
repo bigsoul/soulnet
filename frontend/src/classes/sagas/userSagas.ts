@@ -22,8 +22,35 @@ import {
 import { ISignInRequest, ISignUpRequest } from "../../interfaces/IRequest";
 import { IAuthDataResponse } from "../../interfaces/IResponse";
 import { history } from "../reducers/routerReducer";
-import store from "./../store";
-import { stat } from "fs";
+
+function setLocalStorage(
+	username: string,
+	rememberMe: boolean,
+	userId: string,
+	jwtToken: string,
+	jwtTokenExpirationTime: number
+) {
+	localStorage.setItem("username", username);
+	localStorage.setItem("rememberMe", rememberMe ? "1" : "0");
+	if (rememberMe) {
+		localStorage.setItem("userId", userId);
+		localStorage.setItem("serviceJwtToken", jwtToken);
+		localStorage.setItem(
+			"serviceJwtTokenExpirationTime",
+			jwtTokenExpirationTime.toString()
+		);
+	} else {
+		localStorage.setItem("userId", "");
+		localStorage.setItem("serviceJwtToken", "");
+		localStorage.setItem("serviceJwtTokenExpirationTime", "");
+	}
+}
+
+function clearLocalStorage() {
+	localStorage.setItem("userId", "");
+	localStorage.setItem("serviceJwtToken", "");
+	localStorage.setItem("serviceJwtTokenExpirationTime", "");
+}
 
 function* workerUserInit() {
 	yield put<IUserLocalStorageLoadAction>({
@@ -55,18 +82,13 @@ function* workerUserSignIn(action: IUserSignInAction) {
 			requestData
 		)).data;
 
-		if (action.rememberMe) {
-			localStorage.setItem("userId", responseData.id);
-			localStorage.setItem("serviceJwtToken", responseData.jwtToken);
-			localStorage.setItem(
-				"serviceJwtTokenExpirationTime",
-				responseData.jwtTokenExpirationTime.toString()
-			);
-		} else {
-			localStorage.setItem("userId", "");
-			localStorage.setItem("serviceJwtToken", "");
-			localStorage.setItem("serviceJwtTokenExpirationTime", "");
-		}
+		setLocalStorage(
+			action.username,
+			action.rememberMe,
+			responseData.id,
+			responseData.jwtToken,
+			responseData.jwtTokenExpirationTime
+		);
 
 		yield put<IUserSignSuccessAction>({
 			type: USER_SIGN_SUCCESS,
@@ -81,9 +103,7 @@ function* workerUserSignIn(action: IUserSignInAction) {
 
 		history.push("/");
 	} catch (err) {
-		localStorage.setItem("userId", "");
-		localStorage.setItem("serviceJwtToken", "");
-		localStorage.setItem("serviceJwtTokenExpirationTime", "");
+		clearLocalStorage();
 
 		yield put<IUserSignFieldAction>({
 			type: USER_SIGN_FIELD,
@@ -108,18 +128,13 @@ function* workerUserSignUp(action: IUserSignUpAction) {
 			requestData
 		)).data;
 
-		if (action.rememberMe) {
-			localStorage.setItem("userId", responseData.id);
-			localStorage.setItem("serviceJwtToken", responseData.jwtToken);
-			localStorage.setItem(
-				"serviceJwtTokenExpirationTime",
-				responseData.jwtTokenExpirationTime.toString()
-			);
-		} else {
-			localStorage.setItem("userId", "");
-			localStorage.setItem("serviceJwtToken", "");
-			localStorage.setItem("serviceJwtTokenExpirationTime", "");
-		}
+		setLocalStorage(
+			action.username,
+			action.rememberMe,
+			responseData.id,
+			responseData.jwtToken,
+			responseData.jwtTokenExpirationTime
+		);
 
 		yield put<IUserSignSuccessAction>({
 			type: USER_SIGN_SUCCESS,
@@ -131,9 +146,7 @@ function* workerUserSignUp(action: IUserSignUpAction) {
 
 		history.push("/");
 	} catch (err) {
-		localStorage.setItem("userId", "");
-		localStorage.setItem("serviceJwtToken", "");
-		localStorage.setItem("serviceJwtTokenExpirationTime", "");
+		clearLocalStorage();
 
 		yield put<IUserSignFieldAction>({
 			type: USER_SIGN_FIELD,
@@ -143,9 +156,7 @@ function* workerUserSignUp(action: IUserSignUpAction) {
 }
 
 function* workerUserSignOut(action: IUserSignOutAction) {
-	localStorage.setItem("userId", "");
-	localStorage.setItem("serviceJwtToken", "");
-	localStorage.setItem("serviceJwtTokenExpirationTime", "");
+	clearLocalStorage();
 
 	yield put<IUserSignSuccessAction>({
 		type: USER_SIGN_SUCCESS,
