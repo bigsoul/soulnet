@@ -1,4 +1,6 @@
 ﻿using System;
+using IronPython.Hosting;
+using Microsoft.Scripting.Hosting;
 
 namespace Soulnet.Neuron
 {
@@ -6,7 +8,8 @@ namespace Soulnet.Neuron
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            ScriptEngine engine = Python.CreateEngine();
+            engine.Execute("print 'hello, world'");
         }
     }
 }
