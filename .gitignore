@@ -12,4 +12,8 @@ backend/Soulnet.Model/.vscode*
 backend/Soulnet.Model/obj*
 backend/Soulnet.Model/bin*
 
+backend/Soulnet.Neuron/.vscode*
+backend/Soulnet.Neuron/obj*
+backend/Soulnet.Neuron/bin*
+
 node_modules*
