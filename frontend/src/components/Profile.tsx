@@ -72,7 +72,6 @@ const mapDispatchToProps = (
 		pathToSignIn: (): void => {
 			dispatch<IPathToSignInAction>({
 				type: PATH_TO_SIGNIN,
-				path: "/signin",
 			});
 		},
 	};
