@@ -12,6 +12,7 @@ import {
 } from "../../classes/actions/IUserAction";
 import IUser from "../../interfaces/IUser";
 import { Dispatch } from "redux";
+import { SubmissionError } from "redux-form";
 
 const ContentBoxDiv = styled.div`
 	width: 100%;
@@ -27,7 +28,8 @@ interface IContentSignInState {
 }
 
 interface IContentSignInDispatch {
-	signInAction: (data: ISignInFormProps) => void;
+	signInAction: (data: ISignInFormProps) => Promise<unknown>;
+	submit: (data: ISignInFormProps) => void;
 }
 
 class ContentSignIn extends Content<
@@ -37,7 +39,11 @@ class ContentSignIn extends Content<
 		return (
 			<Content>
 				<ContentBoxDiv>
-					<SignInForm onSubmit={this.props.signInAction} />
+					{this.props.user.isAuth ? (
+						"The user is authorized."
+					) : (
+						<SignInForm onSubmit={this.props.submit} />
+					)}
 				</ContentBoxDiv>
 			</Content>
 		);
@@ -55,10 +61,29 @@ const mapDispatchToProps = (
 	dispatch: Dispatch<TUserAction>
 ): IContentSignInDispatch => {
 	return {
-		signInAction: (data: ISignInFormProps): void => {
+		signInAction: (data: ISignInFormProps): Promise<unknown> => {
+			return new Promise((resolve, reject) => {
+				dispatch<IUserSignInAction>({
+					type: USER_SIGNIN,
+					username: data.username,
+					password: data.password,
+					rememberMe: data.rememberMe,
+				});
+			})
+				.then(() => {
+					console.log("Sign in success !");
+				})
+				.catch(() => {
+					console.log("Sign in faild !");
+					throw new SubmissionError({
+						_error: "There was an error submitting.",
+					});
+				});
+		},
+		submit: (data: ISignInFormProps) => {
 			dispatch<IUserSignInAction>({
 				type: USER_SIGNIN,
-				login: data.login,
+				username: data.username,
 				password: data.password,
 				rememberMe: data.rememberMe,
 			});

@@ -31,7 +31,7 @@ const CheckboxStyled = styled(CheckboxForm)`
 `;
 
 export interface ISignUpFormProps {
-	login: string;
+	username: string;
 	email: string;
 	password: string;
 	confirmPassword: string;
@@ -41,11 +41,12 @@ export interface ISignUpFormProps {
 class SignUpForm extends Component<InjectedFormProps<ISignUpFormProps>> {
 	render = () => {
 		const { handleSubmit, invalid, pristine, submitting } = this.props;
+		console.log(this.props);
 		return (
 			<Form onSubmit={handleSubmit}>
 				<LogoStyled />
 				<Field
-					name="login"
+					name="username"
 					type="text"
 					placeholder="username"
 					component={EditStyled10}
@@ -93,7 +94,7 @@ class SignUpForm extends Component<InjectedFormProps<ISignUpFormProps>> {
 export default reduxForm<ISignUpFormProps>({
 	form: "signUp",
 	initialValues: {
-		login: "",
+		username: "",
 		email: "",
 		password: "",
 		confirmPassword: "",

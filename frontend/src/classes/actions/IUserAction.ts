@@ -20,7 +20,7 @@ export interface IUserEnviromentLoadAction {
 
 export interface IUserSignInAction {
 	type: typeof USER_SIGNIN;
-	login: string;
+	username: string;
 	password: string;
 	rememberMe: boolean;
 }
@@ -31,7 +31,7 @@ export interface IUserSignOutAction {
 
 export interface IUserSignUpAction {
 	type: typeof USER_SIGNUP;
-	login: string;
+	username: string;
 	email: string;
 	password: string;
 	rememberMe: boolean;
@@ -40,7 +40,7 @@ export interface IUserSignUpAction {
 export interface IUserSignSuccessAction {
 	type: typeof USER_SIGN_SUCCESS;
 	id: string;
-	login: string;
+	username: string;
 	jwtToken: string;
 	jwtTokenExpirationTime: number;
 }

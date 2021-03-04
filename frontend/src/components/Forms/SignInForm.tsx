@@ -31,20 +31,26 @@ const CheckboxStyled = styled(CheckboxForm)`
 `;
 
 export interface ISignInFormProps {
-	login: string;
+	username: string;
 	password: string;
 	rememberMe: boolean;
 }
 
 class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 	render = () => {
-		const { handleSubmit, invalid, pristine, submitting } = this.props;
+		const {
+			handleSubmit,
+			invalid,
+			pristine,
+			submitting,
+			error,
+		} = this.props;
 		console.log(this.props);
 		return (
 			<Form onSubmit={handleSubmit}>
 				<LogoStyled />
 				<Field
-					name="login"
+					name="username"
 					type="text"
 					placeholder="username"
 					component={EditStyled10}
@@ -68,7 +74,7 @@ class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 					type="submit"
 					disabled={invalid || pristine || submitting}
 				>
-					Sign In
+					Sign In {error}
 				</Button>
 			</Form>
 		);
@@ -78,7 +84,7 @@ class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 export default reduxForm<ISignInFormProps>({
 	form: "signIn",
 	initialValues: {
-		login: "",
+		username: "",
 		password: "",
 		rememberMe: false,
 	},

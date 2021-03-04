@@ -3,7 +3,7 @@ interface IUser {
 	serviceJwtToken: string;
 	serviceJwtTokenExpirationTime: number;
 	id: string;
-	login: string;
+	username: string;
 	isAuth: boolean;
 }
 

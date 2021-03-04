@@ -36,7 +36,11 @@ class ContentSignUp extends Content<
 		return (
 			<Content>
 				<ContentBoxDiv>
-					<SignUnForm onSubmit={this.props.signUpAction} />
+					{this.props.user.isAuth ? (
+						"The user is authorized."
+					) : (
+						<SignUnForm onSubmit={this.props.signUpAction} />
+					)}
 				</ContentBoxDiv>
 			</Content>
 		);
@@ -57,7 +61,7 @@ const mapDispatchToProps = (
 		signUpAction: (data: ISignUpFormProps): void => {
 			dispatch<IUserSignUpAction>({
 				type: USER_SIGNUP,
-				login: data.login,
+				username: data.username,
 				email: data.email,
 				password: data.password,
 				rememberMe: data.rememberMe,

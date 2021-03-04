@@ -1,5 +1,6 @@
 import { call, fork, put, takeLatest } from "redux-saga/effects";
 import axiosAsync from "./../utils/http";
+import { startSubmit, stopSubmit } from "redux-form";
 
 import {
 	IUserEnviromentLoadAction,
@@ -39,8 +40,10 @@ function* workerUserInit() {
 
 function* workerUserSignIn(action: IUserSignInAction) {
 	try {
+		yield put(startSubmit("signIn"));
+
 		const requestData: ISignInRequest = {
-			login: action.login,
+			username: action.username,
 			password: action.password,
 		};
 
@@ -66,7 +69,7 @@ function* workerUserSignIn(action: IUserSignInAction) {
 		yield put<IUserSignSuccessAction>({
 			type: USER_SIGN_SUCCESS,
 			id: responseData.id,
-			login: action.login,
+			username: action.username,
 			jwtToken: responseData.jwtToken,
 			jwtTokenExpirationTime: responseData.jwtTokenExpirationTime,
 		});
@@ -81,13 +84,15 @@ function* workerUserSignIn(action: IUserSignInAction) {
 			type: USER_SIGN_FIELD,
 			error: "",
 		});
+
+		yield put(stopSubmit("signIn", { _error: "Signin feild !" }));
 	}
 }
 
 function* workerUserSignUp(action: IUserSignUpAction) {
 	try {
 		const requestData: ISignUpRequest = {
-			login: action.login,
+			username: action.username,
 			email: action.email,
 			password: action.password,
 		};
@@ -114,7 +119,7 @@ function* workerUserSignUp(action: IUserSignUpAction) {
 		yield put<IUserSignSuccessAction>({
 			type: USER_SIGN_SUCCESS,
 			id: responseData.id,
-			login: action.login,
+			username: action.username,
 			jwtToken: responseData.jwtToken,
 			jwtTokenExpirationTime: responseData.jwtTokenExpirationTime,
 		});
@@ -140,7 +145,7 @@ function* workerUserSignOut(action: IUserSignOutAction) {
 	yield put<IUserSignSuccessAction>({
 		type: USER_SIGN_SUCCESS,
 		id: "",
-		login: "",
+		username: "",
 		jwtToken: "",
 		jwtTokenExpirationTime: 0,
 	});

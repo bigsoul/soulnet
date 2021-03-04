@@ -26,10 +26,10 @@ namespace Soulnet.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var user = userRepository.GetSingle(u => u.Email == model.Login);
+            var user = userRepository.GetSingle(u => u.Email == model.Username);
 
             if (user == null) {
-                return BadRequest(new { login = "no user with this login" });
+                return BadRequest(new { username = "no user with this login" });
             }
 
             var passwordValid = authService.VerifyPassword(model.Password, user.Password);
@@ -50,7 +50,7 @@ namespace Soulnet.Api.Controllers
 
             if (!emailUniq) return BadRequest(new { email = "user with this email already exists" });
             
-            var usernameUniq = userRepository.IsUsernameUniq(model.Login);
+            var usernameUniq = userRepository.IsUsernameUniq(model.Username);
             
             if (!usernameUniq) return BadRequest(new { username = "user with this email already exists" });
 
@@ -59,7 +59,7 @@ namespace Soulnet.Api.Controllers
             var user = new User
             {
                 Id = id,
-                Username = model.Login,
+                Username = model.Username,
                 Email = model.Email,
                 Password = authService.HashPassword(model.Password)
             };

@@ -7,7 +7,7 @@ namespace Soulnet.Api.ViewModels
     {
         [Required]
         [StringLength(60, MinimumLength = 2)]
-        public string Login { get; set; }
+        public string Username { get; set; }
         
         [Required]
         [EmailAddress]

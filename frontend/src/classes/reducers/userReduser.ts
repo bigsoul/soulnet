@@ -11,7 +11,7 @@ const preloadedState: IUser = {
 	serviceJwtToken: "",
 	serviceJwtTokenExpirationTime: 0,
 	id: "",
-	login: "",
+	username: "",
 	isAuth: false,
 };
 
@@ -27,6 +27,7 @@ const userReducer = (
 				serviceJwtToken: action.serviceJwtToken,
 				serviceJwtTokenExpirationTime:
 					action.serviceJwtTokenExpirationTime,
+				isAuth: !!action.serviceJwtToken,
 			};
 		}
 		case USER_ENVIROMENT_LOAD: {
@@ -41,7 +42,7 @@ const userReducer = (
 				serviceJwtToken: action.jwtToken,
 				serviceJwtTokenExpirationTime: action.jwtTokenExpirationTime,
 				id: action.id,
-				login: action.login,
+				username: action.username,
 				isAuth: !!action.jwtToken,
 			};
 		}
@@ -51,7 +52,7 @@ const userReducer = (
 				serviceJwtToken: "",
 				serviceJwtTokenExpirationTime: 0,
 				id: "",
-				login: "",
+				username: "",
 				isAuth: false,
 			};
 		}
