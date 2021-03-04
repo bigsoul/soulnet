@@ -4,3 +4,5 @@ const maxLength = (max: number) => (value: string) =>
 		: undefined;
 
 export const maxLength20 = maxLength(20);
+
+export const required = (value: string) => (!value ? "Required" : undefined);

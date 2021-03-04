@@ -1,11 +1,17 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Field, InjectedFormProps, reduxForm } from "redux-form";
+import {
+	Field,
+	InjectedFormProps,
+	reduxForm,
+	WrappedFieldProps,
+} from "redux-form";
 import Logo from "./../Logo";
 import Button from "../Button";
 import EditForm from "../EditForm";
 import CheckboxForm from "./../CheckboxForm";
-import { maxLength20 } from "../../classes/utils/validators";
+import { maxLength20, required } from "../../classes/utils/validators";
+import Edit from "../Edit";
 
 const Form = styled.form`
 	display: flex;
@@ -30,6 +36,20 @@ const CheckboxStyled = styled(CheckboxForm)`
 	margin-bottom: 15px;
 `;
 
+const ButtonField = (props: InjectedFormProps<ISignInFormProps>) => (
+	<Button
+		type="submit"
+		disabled={props.invalid || props.pristine || props.submitting}
+	>
+		Sign In {props.error}
+	</Button>
+);
+
+const buttonValidate = (value: undefined, previousValue: ISignInFormProps) => {
+	if (previousValue.username && previousValue.password) return undefined;
+	else return "error";
+};
+
 export interface ISignInFormProps {
 	username: string;
 	password: string;
@@ -38,13 +58,7 @@ export interface ISignInFormProps {
 
 class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 	render = () => {
-		const {
-			handleSubmit,
-			invalid,
-			pristine,
-			submitting,
-			error,
-		} = this.props;
+		const { handleSubmit } = this.props;
 		console.log(this.props);
 		return (
 			<Form onSubmit={handleSubmit}>
@@ -70,12 +84,12 @@ class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 					label={"Remember me"}
 					component={CheckboxStyled}
 				/>
-				<Button
-					type="submit"
-					disabled={invalid || pristine || submitting}
-				>
-					Sign In {error}
-				</Button>
+				<Field
+					name="button"
+					component={ButtonField}
+					validate={[buttonValidate]}
+					{...this.props}
+				/>
 			</Form>
 		);
 	};
