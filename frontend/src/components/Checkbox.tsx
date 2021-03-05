@@ -71,38 +71,21 @@ const Styled = styled.div`
 
 interface ICheckboxProps {
 	className?: string;
+	id?: string;
 	label?: string;
 	checked: boolean;
 	disabled?: boolean;
+	children?: React.ReactNode;
 	onChange: (checked: boolean) => void;
 }
 
-class Checkbox extends Component<ICheckboxProps> {
-	render = () => {
-		console.log("checkbox-props: ", this.props);
-		const { checked, disabled } = this.props;
-		return (
-			<Styled
-				className={this.props.className}
-				onClick={() =>
-					this.props.onChange(disabled ? checked : !checked)
-				}
-			>
-				<input
-					{...this.props}
-					type="checkbox"
-					checked={this.props.checked}
-					onChange={() =>
-						this.props.onChange(disabled ? checked : !checked)
-					}
-					disabled={this.props.disabled}
-				/>
-				<label>
-					{this.props.label ? this.props.label : this.props.children}
-				</label>
-			</Styled>
-		);
-	};
-}
+const Checkbox = (props: ICheckboxProps) => (
+	<Styled className={props.className}>
+		<input {...props} onChange={(e) => props.onChange(!props.checked)} />
+		<label htmlFor={props.id}>
+			{props.label ? props.label : props.children}
+		</label>
+	</Styled>
+);
 
 export default Checkbox;

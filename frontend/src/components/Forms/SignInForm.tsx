@@ -16,13 +16,8 @@ type FieldProps = InjectedFormProps<ISignInFormProps> & WrappedFieldProps;
 
 const EditField = (props: FieldProps) => <Edit {...props.input} {...props} />;
 
-const CheckboxField = (props: FieldProps) => (
-	<Checkbox
-		{...props.input}
-		{...props}
-		checked={props.input.value ? true : false}
-		onChange={props.input.onChange}
-	/>
+const CheckboxField = (props: FieldProps & { checked: boolean }) => (
+	<Checkbox {...props.input} {...props} onChange={props.input.onChange} />
 );
 
 const SubmitField = (props: FieldProps) => (
@@ -88,11 +83,10 @@ class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
 				/>
 				<Field
 					name="rememberMe"
-					type="checkbox"
-					checked={true}
-					label={"Remember me"}
+					id="SignIn-RememberMe"
 					component={CheckboxStyled}
-					disabled={submitting}
+					label={"Remember me"}
+					type="checkbox"
 				/>
 				<Field
 					name="button"
