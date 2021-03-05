@@ -8,7 +8,6 @@ import {
 } from "redux-form";
 import Logo from "./../Logo";
 import Button from "../Button";
-import CheckboxForm from "./../CheckboxForm";
 import { maxLength20 } from "../../classes/utils/validators";
 import { required, email } from "redux-form-validators";
 import Edit from "../Edit";
@@ -18,15 +17,6 @@ type FieldProps = InjectedFormProps<ISignUpFormProps> & WrappedFieldProps;
 
 const EditField = (props: FieldProps) => <Edit {...props.input} {...props} />;
 
-const SubmitField = (props: FieldProps) => (
-	<Button
-		type="submit"
-		disabled={props.meta.invalid || props.meta.submitting}
-	>
-		Sign Up {props.error}
-	</Button>
-);
-
 const CheckboxField = (props: FieldProps) => (
 	<Checkbox
 		{...props.input}
@@ -34,6 +24,15 @@ const CheckboxField = (props: FieldProps) => (
 		checked={props.input.value ? true : false}
 		onChange={props.input.onChange}
 	/>
+);
+
+const SubmitField = (props: FieldProps) => (
+	<Button
+		type="submit"
+		disabled={props.meta.invalid || props.meta.submitting}
+	>
+		Sign Up {props.error}
+	</Button>
 );
 
 const Form = styled.form`
@@ -102,13 +101,24 @@ class SignUpForm extends Component<InjectedFormProps<ISignUpFormProps>> {
 					component={EditStyled15}
 					validate={[maxLength20]}
 				/>
-				<Field
+				{/*<Field
 					name="rememberMe"
 					type="checkbox"
 					checked={true}
 					label={"Remember me"}
 					component={CheckboxStyled}
-				/>
+				/>*/}
+				<div>
+					<label htmlFor="rememberMe">Has Email?</label>
+					<div>
+						<Field
+							name="rememberMe"
+							id="rememberMe"
+							component="input"
+							type="checkbox"
+						/>
+					</div>
+				</div>
 				<Field
 					name="button"
 					type="button"

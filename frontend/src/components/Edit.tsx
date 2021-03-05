@@ -35,14 +35,11 @@ interface IEditProps {
 	onChange: (value: string) => void;
 }
 
-const Edit = (props: IEditProps) => {
-	console.log("edit-props: ", props);
-	return (
-		<EditInput
-			{...props}
-			onChange={(e) => props.onChange(e.currentTarget.value)}
-		/>
-	);
-};
+const Edit = (props: IEditProps) => (
+	<EditInput
+		{...props}
+		onChange={(e) => props.onChange(e.currentTarget.value)}
+	/>
+);
 
 export default Edit;
