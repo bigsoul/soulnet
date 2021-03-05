@@ -76,11 +76,13 @@ function* workerUserSignIn(action: IUserSignInAction) {
 			password: action.password,
 		};
 
-		const responseData: IAuthDataResponse = (yield call(
+		const responseBody: { data: IAuthDataResponse } = yield call(
 			axiosAsync,
 			"/auth/signin",
 			requestData
-		)).data;
+		);
+
+		const responseData = responseBody.data;
 
 		setLocalStorage(
 			action.username,
@@ -121,11 +123,13 @@ function* workerUserSignUp(action: IUserSignUpAction) {
 			password: action.password,
 		};
 
-		const responseData: IAuthDataResponse = (yield call(
+		const responseBody: { data: IAuthDataResponse } = yield call(
 			axiosAsync,
 			"/auth/signup",
 			requestData
-		)).data;
+		);
+
+		const responseData = responseBody.data;
 
 		setLocalStorage(
 			action.username,
