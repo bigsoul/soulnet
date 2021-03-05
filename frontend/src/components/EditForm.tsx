@@ -4,6 +4,7 @@ import Edit from "./Edit";
 
 class EditForm extends Component<InjectedFormProps & WrappedFieldProps> {
 	render = () => {
+		console.log(this.props);
 		return (
 			<Edit
 				{...this.props}
@@ -13,5 +14,10 @@ class EditForm extends Component<InjectedFormProps & WrappedFieldProps> {
 		);
 	};
 }
+
+/*const EditForm = (props: any) => {
+	console.log("edit: ", props.meta.touched);
+	return <Edit {...props} {...props.input} error={props.meta.error} />;
+};*/
 
 export default EditForm;

@@ -5,14 +5,12 @@ import {
 	InjectedFormProps,
 	reduxForm,
 	WrappedFieldProps,
-	change,
 } from "redux-form";
 import Logo from "./../Logo";
 import Button from "../Button";
 import EditForm from "../EditForm";
 import CheckboxForm from "./../CheckboxForm";
-import { maxLength20, required } from "../../classes/utils/validators";
-import Edit from "../Edit";
+import { maxLength20 } from "../../classes/utils/validators";
 
 const Form = styled.form`
 	display: flex;

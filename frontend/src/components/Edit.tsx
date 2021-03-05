@@ -1,4 +1,3 @@
-import { Component } from "react";
 import styled from "styled-components";
 
 const EditInput = styled.input<{ error?: string }>`
@@ -36,20 +35,14 @@ interface IEditProps {
 	onChange: (value: string) => void;
 }
 
-class Edit extends Component<IEditProps> {
-	render = () => {
-		return (
-			<EditInput
-				className={this.props.className}
-				type={this.props.type}
-				placeholder={this.props.placeholder}
-				value={this.props.value}
-				onChange={(e) => this.props.onChange(e.currentTarget.value)}
-				error={this.props.error}
-				disabled={this.props.disabled}
-			/>
-		);
-	};
-}
+const Edit = (props: IEditProps) => {
+	console.log("edit-props: ", props);
+	return (
+		<EditInput
+			{...props}
+			onChange={(e) => props.onChange(e.currentTarget.value)}
+		/>
+	);
+};
 
 export default Edit;

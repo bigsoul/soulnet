@@ -12,7 +12,6 @@ import {
 } from "../../classes/actions/IUserAction";
 import IUser from "../../interfaces/IUser";
 import { Dispatch } from "redux";
-import { change } from "redux-form";
 
 const ContentBoxDiv = styled.div`
 	width: 100%;

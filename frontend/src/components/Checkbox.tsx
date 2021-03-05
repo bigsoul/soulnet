@@ -79,6 +79,7 @@ interface ICheckboxProps {
 
 class Checkbox extends Component<ICheckboxProps> {
 	render = () => {
+		console.log("checkbox-props: ", this.props);
 		const { checked, disabled } = this.props;
 		return (
 			<Styled
@@ -88,6 +89,7 @@ class Checkbox extends Component<ICheckboxProps> {
 				}
 			>
 				<input
+					{...this.props}
 					type="checkbox"
 					checked={this.props.checked}
 					onChange={() =>

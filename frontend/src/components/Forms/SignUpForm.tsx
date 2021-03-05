@@ -1,11 +1,40 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Field, InjectedFormProps, reduxForm } from "redux-form";
+import {
+	Field,
+	InjectedFormProps,
+	reduxForm,
+	WrappedFieldProps,
+} from "redux-form";
 import Logo from "./../Logo";
 import Button from "../Button";
-import EditForm from "../EditForm";
 import CheckboxForm from "./../CheckboxForm";
 import { maxLength20 } from "../../classes/utils/validators";
+import { required, email } from "redux-form-validators";
+import Edit from "../Edit";
+import Checkbox from "../Checkbox";
+
+type FieldProps = InjectedFormProps<ISignUpFormProps> & WrappedFieldProps;
+
+const EditField = (props: FieldProps) => <Edit {...props.input} {...props} />;
+
+const SubmitField = (props: FieldProps) => (
+	<Button
+		type="submit"
+		disabled={props.meta.invalid || props.meta.submitting}
+	>
+		Sign Up {props.error}
+	</Button>
+);
+
+const CheckboxField = (props: FieldProps) => (
+	<Checkbox
+		{...props.input}
+		{...props}
+		checked={props.input.value ? true : false}
+		onChange={props.input.onChange}
+	/>
+);
 
 const Form = styled.form`
 	display: flex;
@@ -18,15 +47,15 @@ const LogoStyled = styled(Logo)`
 	margin-bottom: 15px;
 `;
 
-const EditStyled10 = styled(EditForm)`
+const EditStyled10 = styled(EditField)`
 	margin-bottom: 10px;
 `;
 
-const EditStyled15 = styled(EditForm)`
+const EditStyled15 = styled(EditField)`
 	margin-bottom: 15px;
 `;
 
-const CheckboxStyled = styled(CheckboxForm)`
+const CheckboxStyled = styled(CheckboxField)`
 	margin-bottom: 15px;
 `;
 
@@ -40,7 +69,7 @@ export interface ISignUpFormProps {
 
 class SignUpForm extends Component<InjectedFormProps<ISignUpFormProps>> {
 	render = () => {
-		const { handleSubmit, invalid, pristine, submitting } = this.props;
+		const { handleSubmit } = this.props;
 		console.log(this.props);
 		return (
 			<Form onSubmit={handleSubmit}>
@@ -57,7 +86,7 @@ class SignUpForm extends Component<InjectedFormProps<ISignUpFormProps>> {
 					type="text"
 					placeholder="e-mail"
 					component={EditStyled10}
-					validate={[maxLength20]}
+					validate={[required(), email()]}
 				/>
 				<Field
 					name="password"
@@ -80,16 +109,25 @@ class SignUpForm extends Component<InjectedFormProps<ISignUpFormProps>> {
 					label={"Remember me"}
 					component={CheckboxStyled}
 				/>
-				<Button
-					type="submit"
-					disabled={invalid || pristine || submitting}
-				>
-					Sign Up
-				</Button>
+				<Field
+					name="button"
+					type="button"
+					component={SubmitField}
+					validate={[submitValidate]}
+					{...this.props}
+				/>
 			</Form>
 		);
 	};
 }
+
+const submitValidate = (value: undefined, previousValue: ISignUpFormProps) =>
+	previousValue.username &&
+	previousValue.email &&
+	previousValue.password &&
+	previousValue.confirmPassword
+		? undefined
+		: "invalid form values";
 
 export default reduxForm<ISignUpFormProps>({
 	form: "signUp",

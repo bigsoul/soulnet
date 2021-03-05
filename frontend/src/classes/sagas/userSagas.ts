@@ -1,27 +1,12 @@
-import { call, fork, put, takeLatest } from "redux-saga/effects";
 import axiosAsync from "./../utils/http";
-import { startSubmit, stopSubmit, change, destroy } from "redux-form";
 
-import {
-	IUserEnviromentLoadAction,
-	IUserLocalStorageLoadAction,
-	IUserSignFieldAction,
-	IUserSignInAction,
-	IUserSignOutAction,
-	IUserSignSuccessAction,
-	IUserSignUpAction,
-	USER_ENVIROMENT_LOAD,
-	USER_LOCAL_STORAGE_LOAD,
-	USER_SIGNIN,
-	USER_SIGNOUT,
-	USER_SIGNUP,
-	USER_SIGN_FIELD,
-	USER_SIGN_SUCCESS,
-} from "../actions/IUserAction";
-
-import { ISignInRequest, ISignUpRequest } from "../../interfaces/IRequest";
-import { IAuthDataResponse } from "../../interfaces/IResponse";
+import { call, fork, put, takeLatest } from "redux-saga/effects";
+import { startSubmit, stopSubmit, destroy } from "redux-form";
 import { history } from "../reducers/routerReducer";
+
+import * as Act from "../actions/IUserAction";
+import * as Req from "../../interfaces/IRequest";
+import * as Res from "../../interfaces/IResponse";
 
 function setLocalStorage(
 	username: string,
@@ -53,30 +38,30 @@ function clearLocalStorage() {
 }
 
 function* workerUserInit() {
-	yield put<IUserLocalStorageLoadAction>({
-		type: USER_LOCAL_STORAGE_LOAD,
+	yield put<Act.IUserLocalStorageLoadAction>({
+		type: Act.USER_LOCAL_STORAGE_LOAD,
 		id: localStorage.getItem("userId") || "",
 		serviceJwtToken: localStorage.getItem("serviceJwtToken") || "",
 		serviceJwtTokenExpirationTime: Number(
 			localStorage.getItem("serviceJwtTokenExpirationTime")
 		),
 	});
-	yield put<IUserEnviromentLoadAction>({
-		type: USER_ENVIROMENT_LOAD,
+	yield put<Act.IUserEnviromentLoadAction>({
+		type: Act.USER_ENVIROMENT_LOAD,
 		serviceUrl: process.env.REACT_APP_SERVICE_URL || "",
 	});
 }
 
-function* workerUserSignIn(action: IUserSignInAction) {
+function* workerUserSignIn(action: Act.IUserSignInAction) {
 	try {
 		yield put(startSubmit("signIn"));
 
-		const requestData: ISignInRequest = {
+		const requestData: Req.ISignInRequest = {
 			username: action.username,
 			password: action.password,
 		};
 
-		const responseBody: { data: IAuthDataResponse } = yield call(
+		const responseBody: { data: Res.IAuthDataResponse } = yield call(
 			axiosAsync,
 			"/auth/signin",
 			requestData
@@ -92,8 +77,8 @@ function* workerUserSignIn(action: IUserSignInAction) {
 			responseData.jwtTokenExpirationTime
 		);
 
-		yield put<IUserSignSuccessAction>({
-			type: USER_SIGN_SUCCESS,
+		yield put<Act.IUserSignSuccessAction>({
+			type: Act.USER_SIGN_SUCCESS,
 			id: responseData.id,
 			username: action.username,
 			jwtToken: responseData.jwtToken,
@@ -106,8 +91,8 @@ function* workerUserSignIn(action: IUserSignInAction) {
 	} catch (err) {
 		clearLocalStorage();
 
-		yield put<IUserSignFieldAction>({
-			type: USER_SIGN_FIELD,
+		yield put<Act.IUserSignFieldAction>({
+			type: Act.USER_SIGN_FIELD,
 			error: "",
 		});
 
@@ -115,15 +100,17 @@ function* workerUserSignIn(action: IUserSignInAction) {
 	}
 }
 
-function* workerUserSignUp(action: IUserSignUpAction) {
+function* workerUserSignUp(action: Act.IUserSignUpAction) {
 	try {
-		const requestData: ISignUpRequest = {
+		yield put(startSubmit("signUp"));
+
+		const requestData: Req.ISignUpRequest = {
 			username: action.username,
 			email: action.email,
 			password: action.password,
 		};
 
-		const responseBody: { data: IAuthDataResponse } = yield call(
+		const responseBody: { data: Res.IAuthDataResponse } = yield call(
 			axiosAsync,
 			"/auth/signup",
 			requestData
@@ -139,30 +126,34 @@ function* workerUserSignUp(action: IUserSignUpAction) {
 			responseData.jwtTokenExpirationTime
 		);
 
-		yield put<IUserSignSuccessAction>({
-			type: USER_SIGN_SUCCESS,
+		yield put<Act.IUserSignSuccessAction>({
+			type: Act.USER_SIGN_SUCCESS,
 			id: responseData.id,
 			username: action.username,
 			jwtToken: responseData.jwtToken,
 			jwtTokenExpirationTime: responseData.jwtTokenExpirationTime,
 		});
 
+		yield put(stopSubmit("signUp"));
+
 		history.push("/");
 	} catch (err) {
 		clearLocalStorage();
 
-		yield put<IUserSignFieldAction>({
-			type: USER_SIGN_FIELD,
+		yield put<Act.IUserSignFieldAction>({
+			type: Act.USER_SIGN_FIELD,
 			error: "",
 		});
+
+		yield put(stopSubmit("signUp", { _error: "Signup feild !" }));
 	}
 }
 
-function* workerUserSignOut(action: IUserSignOutAction) {
+function* workerUserSignOut(action: Act.IUserSignOutAction) {
 	clearLocalStorage();
 
-	yield put<IUserSignSuccessAction>({
-		type: USER_SIGN_SUCCESS,
+	yield put<Act.IUserSignSuccessAction>({
+		type: Act.USER_SIGN_SUCCESS,
 		id: "",
 		username: "",
 		jwtToken: "",
@@ -174,9 +165,9 @@ function* workerUserSignOut(action: IUserSignOutAction) {
 
 function* userSagas() {
 	yield fork(workerUserInit);
-	yield takeLatest(USER_SIGNIN, workerUserSignIn);
-	yield takeLatest(USER_SIGNUP, workerUserSignUp);
-	yield takeLatest(USER_SIGNOUT, workerUserSignOut);
+	yield takeLatest(Act.USER_SIGNIN, workerUserSignIn);
+	yield takeLatest(Act.USER_SIGNUP, workerUserSignUp);
+	yield takeLatest(Act.USER_SIGNOUT, workerUserSignOut);
 }
 
 export default userSagas;

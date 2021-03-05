@@ -9,7 +9,6 @@ class CheckboxForm extends Component<InjectedFormProps & WrappedFieldProps> {
 				{...this.props.input}
 				{...this.props}
 				checked={this.props.input.value ? true : false}
-				onChange={this.props.input.onChange}
 			/>
 		);
 	};
