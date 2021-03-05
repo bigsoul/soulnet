@@ -30,23 +30,19 @@ interface IContentSignInDispatch {
 	signInAction: (data: ISignInFormProps) => void;
 }
 
-class ContentSignIn extends Content<
-	IContentSignInState & IContentSignInDispatch
-> {
-	render = () => {
-		return (
-			<Content>
-				<ContentBoxDiv>
-					{this.props.user.isAuth ? (
-						"The user is authorized."
-					) : (
-						<SignInForm onSubmit={this.props.signInAction} />
-					)}
-				</ContentBoxDiv>
-			</Content>
-		);
-	};
-}
+const ContentSignIn = (props: IContentSignInState & IContentSignInDispatch) => {
+	return (
+		<Content>
+			<ContentBoxDiv>
+				{props.user.isAuth ? (
+					"The user is authorized."
+				) : (
+					<SignInForm onSubmit={props.signInAction} />
+				)}
+			</ContentBoxDiv>
+		</Content>
+	);
+};
 
 const mapStateToProps = (state: IStore): IContentSignInState => {
 	const { user } = state;

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import {
 	Field,
@@ -8,25 +8,19 @@ import {
 } from "redux-form";
 import Logo from "./../Logo";
 import Button from "../Button";
-import { maxLength20 } from "../../classes/utils/validators";
 import Checkbox from "../Checkbox";
 import Edit from "../Edit";
+import { required, length } from "redux-form-validators";
 
 type FieldProps = InjectedFormProps<ISignInFormProps> & WrappedFieldProps;
 
-const EditField = (props: FieldProps) => <Edit {...props.input} {...props} />;
+const EditField = (props: FieldProps) => {
+	const { error, touched } = props.meta;
+	return <Edit {...props.input} {...props} error={touched && error} />;
+};
 
 const CheckboxField = (props: FieldProps & { checked: boolean }) => (
 	<Checkbox {...props.input} {...props} onChange={props.input.onChange} />
-);
-
-const SubmitField = (props: FieldProps) => (
-	<Button
-		type="submit"
-		disabled={props.meta.invalid || props.meta.submitting}
-	>
-		Sign In {props.error}
-	</Button>
 );
 
 const Form = styled.form`
@@ -58,52 +52,41 @@ export interface ISignInFormProps {
 	rememberMe: boolean;
 }
 
-class SignInForm extends Component<InjectedFormProps<ISignInFormProps>> {
-	render = () => {
-		const { handleSubmit, submitting } = this.props;
-		console.log(this.props);
-		return (
-			<Form onSubmit={handleSubmit}>
-				<LogoStyled />
-				<Field
-					name="username"
-					type="text"
-					placeholder="username"
-					component={EditStyled10}
-					validate={[maxLength20]}
-					disabled={submitting}
-				/>
-				<Field
-					name="password"
-					type="password"
-					placeholder="password"
-					component={EditStyled15}
-					validate={[maxLength20]}
-					disabled={submitting}
-				/>
-				<Field
-					name="rememberMe"
-					id="SignIn-RememberMe"
-					component={CheckboxStyled}
-					label={"Remember me"}
-					type="checkbox"
-				/>
-				<Field
-					name="button"
-					type="button"
-					component={SubmitField}
-					validate={[submitValidate]}
-					{...this.props}
-				/>
-			</Form>
-		);
-	};
-}
-
-const submitValidate = (value: undefined, previousValue: ISignInFormProps) =>
-	previousValue.username && previousValue.password
-		? undefined
-		: "invalid form values";
+const SignInForm = (props: InjectedFormProps<ISignInFormProps>) => {
+	const { handleSubmit, submitting } = props;
+	return (
+		<Form onSubmit={handleSubmit}>
+			<LogoStyled />
+			<Field
+				name="username"
+				type="text"
+				placeholder="username"
+				component={EditStyled10}
+				validate={[required()]}
+				disabled={submitting}
+			/>
+			<Field
+				name="password"
+				type="password"
+				placeholder="password"
+				component={EditStyled15}
+				validate={[required(), length({ min: 8 })]}
+				disabled={submitting}
+			/>
+			<Field
+				name="rememberMe"
+				id="SignIn-RememberMe"
+				component={CheckboxStyled}
+				label={"Remember me"}
+				type="checkbox"
+				disabled={submitting}
+			/>
+			<Button type="submit" disabled={props.invalid || props.submitting}>
+				Sign In {props.error}
+			</Button>
+		</Form>
+	);
+};
 
 export default reduxForm<ISignInFormProps>({
 	form: "signIn",
