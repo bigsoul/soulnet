@@ -27,7 +27,7 @@ namespace Soulnet.Api.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var user = userRepository.GetSingle(u => u.Username == model.Username);
-
+            
             if (user == null) {
                 return BadRequest(new { username = "no user with this login" });
             }
