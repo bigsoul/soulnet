@@ -43,9 +43,16 @@ const ButtonStyled = styled(Button)`
 
 interface IHeaderProps {
 	isAuth: boolean;
+	pathname: string;
 }
 
 function Header(props: IHeaderProps) {
+	const { pathname } = props;
+	const dataset = "/dataset";
+	const learning = "/learning";
+	const testing = "/testing";
+	const results = "/results";
+
 	return (
 		<HeaderDiv>
 			<LogoBoxDiv>
@@ -54,10 +61,30 @@ function Header(props: IHeaderProps) {
 			<MenuBoxDiv>
 				{props.isAuth && (
 					<>
-						<ButtonStyled path="/dataset">Dataset</ButtonStyled>
-						<ButtonStyled path="/learning">Learning</ButtonStyled>
-						<ButtonStyled path="/testing">Testing</ButtonStyled>
-						<ButtonStyled path="/results">Results</ButtonStyled>
+						<ButtonStyled
+							path={dataset}
+							selected={pathname === dataset}
+						>
+							Dataset
+						</ButtonStyled>
+						<ButtonStyled
+							path={learning}
+							selected={pathname === learning}
+						>
+							Learning
+						</ButtonStyled>
+						<ButtonStyled
+							path={testing}
+							selected={pathname === testing}
+						>
+							Testing
+						</ButtonStyled>
+						<ButtonStyled
+							path={results}
+							selected={pathname === results}
+						>
+							Results
+						</ButtonStyled>
 					</>
 				)}
 			</MenuBoxDiv>
@@ -72,6 +99,7 @@ const mapStateToProps = (state: IStore): IHeaderProps => {
 	const { user } = state;
 	return {
 		isAuth: user.isAuth,
+		pathname: state.router.location.pathname,
 	};
 };
 
