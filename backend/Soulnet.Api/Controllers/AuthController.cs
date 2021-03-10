@@ -38,7 +38,7 @@ namespace Soulnet.Api.Controllers
                 return BadRequest(new { password = "invalid password" });
             }
 
-            return authService.GetAuthData(user.Username);
+            return Ok(authService.GetAuthData(user.Username));
         }
 
         [HttpPost("signup")]
@@ -67,7 +67,7 @@ namespace Soulnet.Api.Controllers
             userRepository.Add(user);
             userRepository.Commit();
 
-            return authService.GetAuthData(model.Username);
+            return Ok(authService.GetAuthData(model.Username));
         }
     }
 }

@@ -1,14 +1,14 @@
 import { takeLatest } from "redux-saga/effects";
 import { history } from "../reducers/routerReducer";
 
-import * as Act from "../actions/IPathAction";
+import * as ACT from "../actions/IPathAction";
 
 function workerPathToSignIn() {
 	history.push("/signin");
 }
 
 function* pathSagas() {
-	yield takeLatest(Act.PATH_TO_SIGNIN, workerPathToSignIn);
+	yield takeLatest(ACT.PATH_TO_SIGNIN, workerPathToSignIn);
 }
 
 export default pathSagas;
