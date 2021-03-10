@@ -1,5 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
+import IStore from "../interfaces/IStore";
+import Button from "./Button";
 import Logo from "./Logo";
 import Profile from "./Profile";
 
@@ -23,6 +26,10 @@ const LogoBoxDiv = styled.div`
 const MenuBoxDiv = styled.div`
 	width: calc(100% - 124px - 1px - 1px - 142px);
 	border-right: 1px solid #8a8a8a;
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	overflow: hidden;
 `;
 
 const ProfileBoxDiv = styled.div`
@@ -30,13 +37,30 @@ const ProfileBoxDiv = styled.div`
 	height: 30px;
 `;
 
-function Header() {
+const ButtonStyled = styled(Button)`
+	margin-left: 11px;
+`;
+
+interface IHeaderProps {
+	isAuth: boolean;
+}
+
+function Header(props: IHeaderProps) {
 	return (
 		<HeaderDiv>
 			<LogoBoxDiv>
 				<Logo />
 			</LogoBoxDiv>
-			<MenuBoxDiv></MenuBoxDiv>
+			<MenuBoxDiv>
+				{props.isAuth && (
+					<>
+						<ButtonStyled path="/dataset">Dataset</ButtonStyled>
+						<ButtonStyled path="/learning">Learning</ButtonStyled>
+						<ButtonStyled path="/testing">Testing</ButtonStyled>
+						<ButtonStyled path="/results">Results</ButtonStyled>
+					</>
+				)}
+			</MenuBoxDiv>
 			<ProfileBoxDiv>
 				<Profile />
 			</ProfileBoxDiv>
@@ -44,4 +68,11 @@ function Header() {
 	);
 }
 
-export default Header;
+const mapStateToProps = (state: IStore): IHeaderProps => {
+	const { user } = state;
+	return {
+		isAuth: user.isAuth,
+	};
+};
+
+export default connect(mapStateToProps)(Header);

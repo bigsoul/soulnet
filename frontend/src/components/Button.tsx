@@ -34,6 +34,7 @@ const ButtonStyled = styled.button`
 `;
 
 interface IButtonProps {
+	className?: string;
 	name?: ReactNode | string;
 	path?: string;
 	type?: "button" | "submit" | "reset" | undefined;
@@ -49,6 +50,7 @@ class Button extends Component<IButtonProps> {
 	render = () => {
 		return (
 			<ButtonStyled
+				className={this.props.className}
 				type={this.props.type}
 				onClick={this.to}
 				disabled={this.props.disabled}
