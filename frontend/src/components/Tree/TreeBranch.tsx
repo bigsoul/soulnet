@@ -3,7 +3,7 @@ import TreeColumn from "./TreeColumn";
 
 const TreeBranchDiv = styled.div`
 	height: 29px;
-	background-color: #b8be93;
+	background-color: #9f9fbf;
 	border-bottom: 1px solid #8a8a8a;
 	display: flex;
 	align-items: center;
@@ -11,6 +11,7 @@ const TreeBranchDiv = styled.div`
 
 const TreeBranch = () => (
 	<TreeBranchDiv>
+		<TreeColumn />
 		<TreeColumn />
 	</TreeBranchDiv>
 );

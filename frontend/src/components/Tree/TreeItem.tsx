@@ -11,6 +11,7 @@ const TreeItemDiv = styled.div`
 const TreeItem = () => (
 	<TreeItemDiv>
 		<TreeColumn />
+		<TreeColumn />
 	</TreeItemDiv>
 );
 
