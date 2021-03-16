@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import TreeColumn from "./TreeColumn";
 
 const TreeBranchDiv = styled.div`
 	height: 29px;
@@ -9,11 +8,12 @@ const TreeBranchDiv = styled.div`
 	align-items: center;
 `;
 
-const TreeBranch = () => (
-	<TreeBranchDiv>
-		<TreeColumn />
-		<TreeColumn />
-	</TreeBranchDiv>
+interface ITreeBranch {
+	children?: React.ReactNode;
+}
+
+const TreeBranch = (props: ITreeBranch) => (
+	<TreeBranchDiv>{props.children}</TreeBranchDiv>
 );
 
 export default TreeBranch;

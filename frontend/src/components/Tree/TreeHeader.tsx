@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ReactComponent as Svg } from "./../../assets/svg/tree-list.svg";
+import SvgIcon from "../SvgIcon";
 
 const TreeHeaderDiv = styled.div`
 	height: 29px;
@@ -9,19 +9,24 @@ const TreeHeaderDiv = styled.div`
 	align-items: center;
 `;
 
-const SvgStyled = styled(Svg)`
-	width: 18px;
-	height: 18px;
+const SvgIconStyled = styled(SvgIcon)`
 	margin-top: -1px;
 	margin-left: 6px;
 	margin-right: 5px;
 `;
 
-const TreeHeader = () => (
-	<TreeHeaderDiv>
-		<SvgStyled />
-		Dataset
-	</TreeHeaderDiv>
-);
+interface ITreeHeaderProps {
+	children?: React.ReactNode;
+	svgPath: string;
+}
+
+const TreeHeader = (props: ITreeHeaderProps) => {
+	return (
+		<TreeHeaderDiv>
+			<SvgIconStyled path={props.svgPath} />
+			{props.children}
+		</TreeHeaderDiv>
+	);
+};
 
 export default TreeHeader;

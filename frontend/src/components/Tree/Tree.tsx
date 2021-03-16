@@ -1,7 +1,4 @@
 import styled from "styled-components";
-import TreeBranch from "./TreeBranch";
-import TreeHeader from "./TreeHeader";
-import TreeItem from "./TreeItem";
 
 const TreeDiv = styled.div`
 	width: 398px;
@@ -15,61 +12,10 @@ const TreeDiv = styled.div`
 	scrollbar-width: none;
 `;
 
-const Tree = () => (
-	<TreeDiv>
-		<TreeHeader />
-		<TreeBranch />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeBranch />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-		<TreeItem />
-	</TreeDiv>
-);
+interface ITreeProps {
+	children: React.ReactNode;
+}
+
+const Tree = (props: ITreeProps) => <TreeDiv>{props.children}</TreeDiv>;
 
 export default Tree;

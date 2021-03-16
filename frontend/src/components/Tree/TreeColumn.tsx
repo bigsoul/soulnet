@@ -5,6 +5,12 @@ const TreeColumnDiv = styled.div`
 	align-items: center;
 `;
 
-const TreeColumn = () => <TreeColumnDiv>_TREECOLUMN_</TreeColumnDiv>;
+interface ITreeColumn {
+	children?: React.ReactNode;
+}
+
+const TreeColumn = (props: ITreeColumn) => (
+	<TreeColumnDiv>_TREECOLUMN_</TreeColumnDiv>
+);
 
 export default TreeColumn;

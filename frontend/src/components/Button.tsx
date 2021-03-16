@@ -1,11 +1,12 @@
 import React, { Component, ReactNode } from "react";
 import styled from "styled-components";
 import { history } from "./../classes/reducers/routerReducer";
+import SvgIcon from "./SvgIcon";
 
 const ButtonStyled = styled.button<{ selected: boolean }>`
 	padding-left: 5px;
 	padding-right: 5px;
-	height: 18px;
+	height: 20px;
 	background-color: ${(p) => (p.selected ? "#e5e5e5" : "#191919")};
 	border: 1px solid #ffffff;
 	display: inline-flex;
@@ -46,6 +47,11 @@ const ButtonStyled = styled.button<{ selected: boolean }>`
 	}
 `;
 
+const SvgIconStyled = styled(SvgIcon)`
+	margin-top: -1px;
+	margin-right: 5px;
+`;
+
 interface IButtonProps {
 	className?: string;
 	name?: ReactNode | string;
@@ -53,8 +59,10 @@ interface IButtonProps {
 	type?: "button" | "submit" | "reset" | undefined;
 	selected?: boolean;
 	disabled?: boolean;
+	svgPath?: string;
 	onClick?: () => void;
 }
+
 class Button extends Component<IButtonProps> {
 	to = () => {
 		if (this.props.onClick) this.props.onClick();
@@ -70,6 +78,9 @@ class Button extends Component<IButtonProps> {
 				selected={this.props.selected || false}
 				disabled={this.props.disabled}
 			>
+				{this.props.svgPath && (
+					<SvgIconStyled path={this.props.svgPath} />
+				)}
 				{this.props.name ? this.props.name : this.props.children}
 			</ButtonStyled>
 		);
