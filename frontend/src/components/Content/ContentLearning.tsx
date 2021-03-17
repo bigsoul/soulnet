@@ -33,7 +33,10 @@ const ContentLearning = () => (
 			<TreeItem />
 			<TreeItem />
 			<TreeBranch>
-				<TreeColumn />
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={treeExpand} />
+					Storing
+				</TreeColumn>
 				<TreeColumn />
 			</TreeBranch>
 			<TreeItem />
