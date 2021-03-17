@@ -7,11 +7,11 @@ const TreeHeaderDiv = styled.div`
 	border-bottom: 1px solid #8a8a8a;
 	display: flex;
 	align-items: center;
+	padding-left: 6px;
 `;
 
 const SvgIconStyled = styled(SvgIcon)`
 	margin-top: -1px;
-	margin-left: 6px;
 	margin-right: 5px;
 `;
 

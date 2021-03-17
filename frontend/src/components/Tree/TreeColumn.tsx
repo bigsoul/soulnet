@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 const TreeColumnDiv = styled.div`
+	width: 100%;
+	height: 100%;
 	display: flex;
 	align-items: center;
 `;
@@ -10,7 +12,7 @@ interface ITreeColumn {
 }
 
 const TreeColumn = (props: ITreeColumn) => (
-	<TreeColumnDiv>_TREECOLUMN_</TreeColumnDiv>
+	<TreeColumnDiv>{props.children}</TreeColumnDiv>
 );
 
 export default TreeColumn;

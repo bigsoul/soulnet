@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { history } from "./../classes/reducers/routerReducer";
 import SvgIcon from "./SvgIcon";
 
+// button
+
 const ButtonStyled = styled.button<{ selected: boolean }>`
 	padding-left: 5px;
 	padding-right: 5px;
@@ -52,14 +54,34 @@ const SvgIconStyled = styled(SvgIcon)`
 	margin-right: 5px;
 `;
 
+// buttonTree
+
+const ButtonTree = styled.button<{ selected: boolean }>`
+	width: 18px;
+	height: 18px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	background: rgba(0, 0, 0, 0);
+	border: 0px;
+	outline: 0;
+	outline-offset: 0;
+`;
+
+const SvgIconTree = styled(SvgIcon)`
+	margin-top: -1px;
+`;
+
 interface IButtonProps {
 	className?: string;
 	name?: ReactNode | string;
 	path?: string;
+	svgPath?: string;
 	type?: "button" | "submit" | "reset" | undefined;
+	styleType?: "button" | "buttonTree" | undefined;
 	selected?: boolean;
 	disabled?: boolean;
-	svgPath?: string;
 	onClick?: () => void;
 }
 
@@ -70,8 +92,16 @@ class Button extends Component<IButtonProps> {
 	};
 
 	render = () => {
+		let TargetButton = ButtonStyled;
+		let TargetSvgIcon = SvgIconStyled;
+
+		if (this.props.styleType && this.props.styleType === "buttonTree") {
+			TargetButton = ButtonTree;
+			TargetSvgIcon = SvgIconTree;
+		}
+
 		return (
-			<ButtonStyled
+			<TargetButton
 				className={this.props.className}
 				type={this.props.type}
 				onClick={this.to}
@@ -79,10 +109,10 @@ class Button extends Component<IButtonProps> {
 				disabled={this.props.disabled}
 			>
 				{this.props.svgPath && (
-					<SvgIconStyled path={this.props.svgPath} />
+					<TargetSvgIcon path={this.props.svgPath} />
 				)}
 				{this.props.name ? this.props.name : this.props.children}
-			</ButtonStyled>
+			</TargetButton>
 		);
 	};
 }
