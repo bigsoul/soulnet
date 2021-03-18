@@ -11,6 +11,8 @@ import ButtonTree from "../ButtonTree";
 import treeTree from "./../../assets/svg/tree-tree.svg";
 import treeExpand from "./../../assets/svg/tree-expand.svg";
 import entityLearning from "./../../assets/svg/entity-learning.svg";
+import treeRefresh from "./../../assets/svg/tree-refresh.svg";
+import treeAdd from "./../../assets/svg/tree-add.svg";
 
 const ButtonTreeStyled = styled(ButtonTree)`
 	margin-right: 5px;
@@ -19,7 +21,13 @@ const ButtonTreeStyled = styled(ButtonTree)`
 const ContentLearning = () => (
 	<Content>
 		<Tree>
-			<TreeHeader svgPath={treeTree}>Learning</TreeHeader>
+			<TreeHeader svgPath={treeTree}>
+				<TreeColumn>Learning</TreeColumn>
+				<TreeColumn align="right">
+					<ButtonTreeStyled svgPath={treeRefresh} />
+					<ButtonTreeStyled svgPath={treeAdd} />
+				</TreeColumn>
+			</TreeHeader>
 			<TreeBranch>
 				<TreeColumn>
 					<ButtonTreeStyled svgPath={treeExpand} />
