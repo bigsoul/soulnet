@@ -1,3 +1,5 @@
+import styled from "styled-components";
+
 import Content from "../Content";
 import Tree from "../Tree/Tree";
 import TreeBranch from "../Tree/TreeBranch";
@@ -8,7 +10,7 @@ import ButtonTree from "../ButtonTree";
 
 import treeTree from "./../../assets/svg/tree-tree.svg";
 import treeExpand from "./../../assets/svg/tree-expand.svg";
-import styled from "styled-components";
+import entityLearning from "./../../assets/svg/entity-learning.svg";
 
 const ButtonTreeStyled = styled(ButtonTree)`
 	margin-right: 5px;
@@ -25,13 +27,55 @@ const ContentLearning = () => (
 				</TreeColumn>
 				<TreeColumn />
 			</TreeBranch>
-			<TreeItem />
-			<TreeItem />
-			<TreeItem />
-			<TreeItem />
-			<TreeItem />
-			<TreeItem />
-			<TreeItem />
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #203
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #160
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #177
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #21
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #89
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #314
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #152
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
 			<TreeBranch>
 				<TreeColumn>
 					<ButtonTreeStyled svgPath={treeExpand} />
@@ -39,8 +83,20 @@ const ContentLearning = () => (
 				</TreeColumn>
 				<TreeColumn />
 			</TreeBranch>
-			<TreeItem />
-			<TreeItem />
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #99
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
+			<TreeItem level={1}>
+				<TreeColumn>
+					<ButtonTreeStyled svgPath={entityLearning} />
+					Learning #112
+				</TreeColumn>
+				<TreeColumn />
+			</TreeItem>
 			<TreeItem />
 			<TreeItem />
 			<TreeItem />

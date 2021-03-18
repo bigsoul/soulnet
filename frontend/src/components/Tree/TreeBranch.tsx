@@ -1,20 +1,20 @@
 import styled from "styled-components";
 
-const TreeBranchDiv = styled.div<{ level: number }>`
+const TreeBranchDiv = styled.div<ITreeBranchProps>`
 	height: 29px;
 	background-color: #9f9fbf;
 	border-bottom: 1px solid #8a8a8a;
 	display: flex;
 	align-items: center;
-	padding-left: 6px;
+	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
 `;
 
-interface ITreeBranch {
+interface ITreeBranchProps {
 	children?: React.ReactNode;
 	level?: number;
 }
 
-const TreeBranch = (props: ITreeBranch) => (
+const TreeBranch = (props: ITreeBranchProps) => (
 	<TreeBranchDiv level={props.level || 0}>{props.children}</TreeBranchDiv>
 );
 
