@@ -5,11 +5,7 @@ const TreeDiv = styled.div`
 	height: 100%;
 	border-right: 1px solid #8a8a8a;
 	font-size: 14px;
-	overflow-y: scroll;
-	&::-webkit-scrollbar {
-		width: 0px;
-	}
-	scrollbar-width: none;
+	//overflow-y: hidden;
 `;
 
 interface ITreeProps {

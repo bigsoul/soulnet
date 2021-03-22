@@ -1,10 +1,10 @@
 export const USER_LOCAL_STORAGE_LOAD = "USER/LOCAL-STORAGE-LOAD";
 export const USER_ENVIROMENT_LOAD = "USER/ENVIROMENT-LOAD";
-export const USER_SIGNIN = "USER/USER-SIGNIN";
-export const USER_SIGNUP = "USER/USER-SIGNUP";
-export const USER_SIGN_SUCCESS = "USER/USER-SIGN-SUCCESS";
-export const USER_SIGN_FIELD = "USER/USER-SIGN-FIELD";
-export const USER_SIGNOUT = "USER/USER-SIGNOUT";
+export const USER_SIGNIN = "USER/SIGNIN";
+export const USER_SIGNUP = "USER/SIGNUP";
+export const USER_SIGN_SUCCESS = "USER/SIGN-SUCCESS";
+export const USER_SIGN_FIELD = "USER/SIGN-FIELD";
+export const USER_SIGNOUT = "USER/SIGNOUT";
 
 export interface IUserLocalStorageLoadAction {
 	type: typeof USER_LOCAL_STORAGE_LOAD;
