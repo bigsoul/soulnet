@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import Content from "../Content";
@@ -21,6 +22,10 @@ import treeDelete from "./../../assets/svg/tree-delete.svg";
 import IStore from "../../interfaces/IStore";
 
 import ILearning from "../../interfaces/ILearning";
+import TLearningAction, {
+	ILearningBranchOpenStateChangeAction,
+	LEARNING_BRANCH_OPEN_STATE_CHANGE,
+} from "../../classes/actions/ILearningAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -50,10 +55,18 @@ const StoringContainer = styled.div`
 
 interface IContentLearningState {
 	list: ILearning[];
+	runningOpen: boolean;
+	storingOpen: boolean;
 }
 
-const ContentLearning = (props: IContentLearningState) => {
-	const { list } = props;
+interface IContentLearningDispatch {
+	branchOpenStateChange: (branch: "running" | "storing") => void;
+}
+
+const ContentLearning = (
+	props: IContentLearningState & IContentLearningDispatch
+) => {
+	const { list, runningOpen, storingOpen, branchOpenStateChange } = props;
 	return (
 		<Content>
 			<Tree>
@@ -66,66 +79,93 @@ const ContentLearning = (props: IContentLearningState) => {
 				</TreeHeader>
 				<TreeBranch>
 					<TreeColumn>
-						<ButtonStyled template="icon" svgPath={treeExpand} />
+						<ButtonStyled
+							template="icon"
+							svgPath={treeExpand}
+							onClick={() => branchOpenStateChange("running")}
+						/>
 						Running
 					</TreeColumn>
 				</TreeBranch>
-				<RunningContainer>
-					{list.map((item) => {
-						if (!item.isArchive) return false;
-						return (
-							<TreeItem level={1}>
-								<TreeColumn>
-									<SvgIconStyled path={entityLearning} />
-									{item.name}
-								</TreeColumn>
-								<TreeColumn align="right">
-									<Player />
-								</TreeColumn>
-								<ButtonStyled
-									template="icon"
-									svgPath={treeFolder}
-								/>
-							</TreeItem>
-						);
-					})}
-				</RunningContainer>
+				{runningOpen && (
+					<RunningContainer>
+						{list.map((item) => {
+							if (!item.isArchive) return false;
+							return (
+								<TreeItem level={1}>
+									<TreeColumn>
+										<SvgIconStyled path={entityLearning} />
+										{item.name}
+									</TreeColumn>
+									<TreeColumn align="right">
+										<Player />
+									</TreeColumn>
+									<ButtonStyled
+										template="icon"
+										svgPath={treeFolder}
+									/>
+								</TreeItem>
+							);
+						})}
+					</RunningContainer>
+				)}
 				<TreeBranch>
 					<TreeColumn>
-						<ButtonStyled template="icon" svgPath={treeExpand} />
+						<ButtonStyled
+							template="icon"
+							svgPath={treeExpand}
+							onClick={() => branchOpenStateChange("storing")}
+						/>
 						Storing
 					</TreeColumn>
 					<TreeColumn />
 				</TreeBranch>
-				<StoringContainer>
-					{list.map((item) => {
-						if (item.isArchive) return false;
-						return (
-							<TreeItem level={1}>
-								<TreeColumn>
-									<SvgIconStyled path={entityLearning} />
-									{item.name}
-								</TreeColumn>
-								<TreeColumn align="right">
-									<ButtonStyled
-										template="icon"
-										svgPath={treeDelete}
-									/>
-								</TreeColumn>
-							</TreeItem>
-						);
-					})}
-				</StoringContainer>
+				{storingOpen && (
+					<StoringContainer>
+						{list.map((item) => {
+							if (item.isArchive) return false;
+							return (
+								<TreeItem level={1}>
+									<TreeColumn>
+										<SvgIconStyled path={entityLearning} />
+										{item.name}
+									</TreeColumn>
+									<TreeColumn align="right">
+										<ButtonStyled
+											template="icon"
+											svgPath={treeDelete}
+										/>
+									</TreeColumn>
+								</TreeItem>
+							);
+						})}
+					</StoringContainer>
+				)}
 			</Tree>
 		</Content>
 	);
 };
 
 const mapStateToProps = (state: IStore): IContentLearningState => {
-	const { list } = state.learning;
+	const { list, runningOpen, storingOpen } = state.learning;
 	return {
-		list: list,
+		list,
+		runningOpen,
+		storingOpen,
 	};
 };
 
-export default connect(mapStateToProps)(ContentLearning);
+const mapDispatchToProps = (
+	dispatch: Dispatch<TLearningAction>
+): IContentLearningDispatch => {
+	return {
+		branchOpenStateChange: (branch: "running" | "storing"): void => {
+			dispatch<ILearningBranchOpenStateChangeAction>({
+				type: LEARNING_BRANCH_OPEN_STATE_CHANGE,
+				branch: branch,
+			});
+		},
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContentLearning);
