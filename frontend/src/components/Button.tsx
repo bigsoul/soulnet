@@ -73,8 +73,8 @@ const ButtonIcon = styled(ButtonBasis)`
 	background: rgba(0, 0, 0, 0);
 	border: 0px;
 	&:hover {
-		color: ${(p) => (p.selected ? "#000000" : "#ffffff")};
-		background-color: ${(p) => (p.selected ? "#e5e5e5" : "#666666")};
+		color: #ffffff;
+		background-color: #666666;
 	}
 `;
 
@@ -83,6 +83,7 @@ interface IButtonProps {
 	name?: ReactNode | string;
 	path?: string;
 	svgPath?: string;
+	svgPathSelected?: string;
 	type?: "button" | "submit" | "reset" | undefined;
 	template?: "default" | "icon" | undefined;
 	selected?: boolean;
@@ -107,6 +108,11 @@ class Button extends Component<IButtonProps> {
 			TargetSvgIcon = SvgIcon;
 		}
 
+		const svgPath =
+			(this.props.selected
+				? this.props.svgPathSelected
+				: this.props.svgPath) || "";
+
 		return (
 			<TargetButton
 				className={this.props.className}
@@ -115,9 +121,7 @@ class Button extends Component<IButtonProps> {
 				selected={this.props.selected || false}
 				disabled={this.props.disabled}
 			>
-				{this.props.svgPath && (
-					<TargetSvgIcon path={this.props.svgPath} />
-				)}
+				{this.props.svgPath && <TargetSvgIcon path={svgPath} />}
 				{this.props.name ? this.props.name : this.props.children}
 			</TargetButton>
 		);

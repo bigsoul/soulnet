@@ -1,4 +1,3 @@
-import { cursorTo } from "node:readline";
 import ELearningState from "../../enums/ELearningState";
 import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../actions/ILearningAction";
@@ -30,11 +29,11 @@ const preloadedState: ReduserType = {
 	storingOpen: true,
 };
 
-for (let i = 0; i < 40; i++) {
+for (let i = 0; i < 50; i++) {
 	preloadedState.list.push({
 		...example,
 		isArchive: false,
-		id: String(1),
+		id: String(i),
 		name: "Learning #" + String(i),
 	});
 	preloadedState.list.push({

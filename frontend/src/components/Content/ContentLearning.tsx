@@ -15,17 +15,15 @@ import SvgIcon from "../SvgIcon";
 import entityLearning from "./../../assets/svg/entity-learning.svg";
 import treeTree from "./../../assets/svg/tree-tree.svg";
 import treeExpand from "./../../assets/svg/tree-expand.svg";
+import treeCollapse from "./../../assets/svg/tree-collapse.svg";
 import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeAdd from "./../../assets/svg/tree-add.svg";
 import treeFolder from "./../../assets/svg/tree-folder.svg";
 import treeDelete from "./../../assets/svg/tree-delete.svg";
-import IStore from "../../interfaces/IStore";
 
+import IStore from "../../interfaces/IStore";
 import ILearning from "../../interfaces/ILearning";
-import TLearningAction, {
-	ILearningBranchOpenStateChangeAction,
-	LEARNING_BRANCH_OPEN_STATE_CHANGE,
-} from "../../classes/actions/ILearningAction";
+import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -35,8 +33,7 @@ const SvgIconStyled = styled(SvgIcon)`
 	margin-right: 5px;
 `;
 
-const RunningContainer = styled.div`
-	height: calc(35% - 30px - 30px);
+const BasisContainer = styled.div`
 	overflow-y: scroll;
 	&::-webkit-scrollbar {
 		width: 0px;
@@ -44,13 +41,16 @@ const RunningContainer = styled.div`
 	scrollbar-width: none;
 `;
 
-const StoringContainer = styled.div`
-	height: calc(65% - 30px);
-	overflow-y: scroll;
-	&::-webkit-scrollbar {
-		width: 0px;
-	}
-	scrollbar-width: none;
+const RunningContainer = styled(BasisContainer)<{ storingOpen: boolean }>`
+	height: ${(p) =>
+		p.storingOpen
+			? "calc(35% - 30px - 30px)"
+			: "calc(100% - 30px - 30px - 30px)"};
+`;
+
+const StoringContainer = styled(BasisContainer)<{ runningOpen: boolean }>`
+	height: ${(p) =>
+		p.runningOpen ? "calc(65% - 30px)" : "calc(100% - 30px - 30px - 30px)"};
 `;
 
 interface IContentLearningState {
@@ -81,18 +81,20 @@ const ContentLearning = (
 					<TreeColumn>
 						<ButtonStyled
 							template="icon"
-							svgPath={treeExpand}
+							svgPath={treeCollapse}
+							svgPathSelected={treeExpand}
+							selected={runningOpen}
 							onClick={() => branchOpenStateChange("running")}
 						/>
 						Running
 					</TreeColumn>
 				</TreeBranch>
 				{runningOpen && (
-					<RunningContainer>
+					<RunningContainer storingOpen={storingOpen}>
 						{list.map((item) => {
 							if (!item.isArchive) return false;
 							return (
-								<TreeItem level={1}>
+								<TreeItem key={item.id} level={1}>
 									<TreeColumn>
 										<SvgIconStyled path={entityLearning} />
 										{item.name}
@@ -113,7 +115,9 @@ const ContentLearning = (
 					<TreeColumn>
 						<ButtonStyled
 							template="icon"
-							svgPath={treeExpand}
+							svgPath={treeCollapse}
+							svgPathSelected={treeExpand}
+							selected={storingOpen}
 							onClick={() => branchOpenStateChange("storing")}
 						/>
 						Storing
@@ -121,11 +125,11 @@ const ContentLearning = (
 					<TreeColumn />
 				</TreeBranch>
 				{storingOpen && (
-					<StoringContainer>
+					<StoringContainer runningOpen={runningOpen}>
 						{list.map((item) => {
 							if (item.isArchive) return false;
 							return (
-								<TreeItem level={1}>
+								<TreeItem key={item.id} level={1}>
 									<TreeColumn>
 										<SvgIconStyled path={entityLearning} />
 										{item.name}
@@ -160,8 +164,8 @@ const mapDispatchToProps = (
 ): IContentLearningDispatch => {
 	return {
 		branchOpenStateChange: (branch: "running" | "storing"): void => {
-			dispatch<ILearningBranchOpenStateChangeAction>({
-				type: LEARNING_BRANCH_OPEN_STATE_CHANGE,
+			dispatch<ACT.ILearningBranchOpenStateChangeAction>({
+				type: ACT.LEARNING_BRANCH_OPEN_STATE_CHANGE,
 				branch: branch,
 			});
 		},
