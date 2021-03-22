@@ -5,7 +5,11 @@ import SvgIcon from "./SvgIcon";
 
 // button
 
-const ButtonStyled = styled.button<{ selected: boolean }>`
+const ButtonDefault = styled.button<{ selected: boolean }>`
+	font-size: 14px;
+`;
+
+const ButtonStyled = styled(ButtonDefault)`
 	padding-left: 5px;
 	padding-right: 5px;
 	height: 20px;
@@ -14,7 +18,6 @@ const ButtonStyled = styled.button<{ selected: boolean }>`
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 14px;
 	color: ${(p) => (p.selected ? "#000000" : "#ffffff")};
 	outline: 0;
 	outline-offset: 0;
@@ -50,27 +53,33 @@ const ButtonStyled = styled.button<{ selected: boolean }>`
 `;
 
 const SvgIconStyled = styled(SvgIcon)`
-	margin-top: -1px;
 	margin-right: 5px;
+	width: 18px;
+	height: 18px;
 `;
 
 // buttonTree
 
-const ButtonTree = styled.button<{ selected: boolean }>`
-	width: 18px;
-	height: 18px;
-	display: inline-flex;
+const ButtonTree = styled(ButtonDefault)`
+	width: 20px;
+	height: 20px;
+	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 14px;
 	background: rgba(0, 0, 0, 0);
 	border: 0px;
 	outline: 0;
 	outline-offset: 0;
+	&:hover {
+		color: ${(p) => (p.selected ? "#000000" : "#ffffff")};
+		background-color: ${(p) => (p.selected ? "#e5e5e5" : "#666666")};
+		cursor: pointer;
+	}
 `;
 
 const SvgIconTree = styled(SvgIcon)`
-	margin-top: -1px;
+	width: 18px;
+	height: 18px;
 `;
 
 interface IButtonProps {

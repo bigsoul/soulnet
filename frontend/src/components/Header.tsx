@@ -6,8 +6,9 @@ import Button from "./Button";
 import Logo from "./Logo";
 import Profile from "./Profile";
 
-import treeList from "./../assets/svg/tree-list.svg";
-import treeTree from "./../assets/svg/tree-tree.svg";
+import entityDataset from "./../assets/svg/entity-dataset.svg";
+import entityLearning from "./../assets/svg/entity-learning.svg";
+import entityTesting from "./../assets/svg/entity-testing.svg";
 
 const HeaderDiv = styled.div`
 	width: calc(100% - 2px);
@@ -66,20 +67,21 @@ function Header(props: IHeaderProps) {
 					<>
 						<ButtonStyled
 							path={dataset}
-							svgPath={treeList}
+							svgPath={entityDataset}
 							selected={pathname === dataset}
 						>
 							Dataset
 						</ButtonStyled>
 						<ButtonStyled
 							path={learning}
-							svgPath={treeTree}
+							svgPath={entityLearning}
 							selected={pathname === learning}
 						>
 							Learning
 						</ButtonStyled>
 						<ButtonStyled
 							path={testing}
+							svgPath={entityTesting}
 							selected={pathname === testing}
 						>
 							Testing
