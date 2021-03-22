@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ButtonTree from "./ButtonTree";
+import Button from "./Button";
 
 import playerPlay from "../assets/svg/player-play.svg";
 import playerStop from "../assets/svg/player-stop.svg";
@@ -16,8 +16,8 @@ const PlayerDiv = styled.div`
 const Player = () => {
 	return (
 		<PlayerDiv>
-			<ButtonTree svgPath={playerPlay} />
-			<ButtonTree svgPath={playerStop} />
+			<Button template="icon" svgPath={playerPlay} />
+			<Button template="icon" svgPath={playerStop} />
 		</PlayerDiv>
 	);
 };

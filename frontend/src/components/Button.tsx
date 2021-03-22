@@ -3,33 +3,45 @@ import styled from "styled-components";
 import { history } from "./../classes/reducers/routerReducer";
 import SvgIcon from "./SvgIcon";
 
-// button
+// basis
 
-const ButtonDefault = styled.button<{ selected: boolean }>`
-	font-size: 14px;
-`;
-
-const ButtonStyled = styled(ButtonDefault)`
-	padding-left: 5px;
-	padding-right: 5px;
+const ButtonBasis = styled.button<{ selected: boolean }>`
 	height: 20px;
-	background-color: ${(p) => (p.selected ? "#e5e5e5" : "#191919")};
-	border: 1px solid #ffffff;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	color: ${(p) => (p.selected ? "#000000" : "#ffffff")};
+	font-size: 14px;
 	outline: 0;
 	outline-offset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	&:hover {
+		cursor: pointer;
+	}
+	&:focus {
+		cursor: pointer;
+	}
+	&:focus:hover {
+		cursor: pointer;
+	}
+	&:disabled {
+		cursor: auto;
+	}
+`;
+
+// default
+
+const ButtonDefault = styled(ButtonBasis)`
+	padding-left: 5px;
+	padding-right: 5px;
+	background-color: ${(p) => (p.selected ? "#e5e5e5" : "#191919")};
+	border: 1px solid #ffffff;
+	color: ${(p) => (p.selected ? "#000000" : "#ffffff")};
 	&:hover {
 		color: #ffffff;
 		background-color: #666666;
-		cursor: pointer;
 	}
 	&:focus {
 		color: ${(p) => (p.selected ? "#000000" : "#ffffff")};
 		background-color: ${(p) => (p.selected ? "#e5e5e5" : "#191919")};
-		cursor: pointer;
 	}
 	&:active {
 		color: #000000;
@@ -38,7 +50,6 @@ const ButtonStyled = styled(ButtonDefault)`
 	&:focus:hover {
 		color: ${(p) => (p.selected ? "#000000" : "#ffffff")};
 		background-color: ${(p) => (p.selected ? "#e5e5e5" : "#666666")};
-		cursor: pointer;
 	}
 	&:active:focus:hover {
 		color: #000000;
@@ -48,38 +59,23 @@ const ButtonStyled = styled(ButtonDefault)`
 		color: #606060;
 		background-color: #1f1e1e;
 		border: 1px solid #606060;
-		cursor: auto;
 	}
 `;
 
-const SvgIconStyled = styled(SvgIcon)`
+const SvgIconDefault = styled(SvgIcon)`
 	margin-right: 5px;
-	width: 18px;
-	height: 18px;
 `;
 
-// buttonTree
+// icon
 
-const ButtonTree = styled(ButtonDefault)`
+const ButtonIcon = styled(ButtonBasis)`
 	width: 20px;
-	height: 20px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	background: rgba(0, 0, 0, 0);
 	border: 0px;
-	outline: 0;
-	outline-offset: 0;
 	&:hover {
 		color: ${(p) => (p.selected ? "#000000" : "#ffffff")};
 		background-color: ${(p) => (p.selected ? "#e5e5e5" : "#666666")};
-		cursor: pointer;
 	}
-`;
-
-const SvgIconTree = styled(SvgIcon)`
-	width: 18px;
-	height: 18px;
 `;
 
 interface IButtonProps {
@@ -88,7 +84,7 @@ interface IButtonProps {
 	path?: string;
 	svgPath?: string;
 	type?: "button" | "submit" | "reset" | undefined;
-	styleType?: "button" | "buttonTree" | undefined;
+	template?: "default" | "icon" | undefined;
 	selected?: boolean;
 	disabled?: boolean;
 	onClick?: () => void;
@@ -101,12 +97,14 @@ class Button extends Component<IButtonProps> {
 	};
 
 	render = () => {
-		let TargetButton = ButtonStyled;
-		let TargetSvgIcon = SvgIconStyled;
+		let TargetButton = ButtonDefault;
+		let TargetSvgIcon:
+			| typeof SvgIconDefault
+			| typeof SvgIcon = SvgIconDefault;
 
-		if (this.props.styleType && this.props.styleType === "buttonTree") {
-			TargetButton = ButtonTree;
-			TargetSvgIcon = SvgIconTree;
+		if (this.props.template === "icon") {
+			TargetButton = ButtonIcon;
+			TargetSvgIcon = SvgIcon;
 		}
 
 		return (
