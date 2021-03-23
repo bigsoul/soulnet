@@ -10,7 +10,7 @@ import TreeItem from "../Tree/TreeItem";
 import TreeColumn from "../Tree/TreeColumn";
 import Button from "../Button";
 import Player from "../Player";
-import SvgIcon from "../SvgIcon";
+import Icon from "../Icon";
 
 import entityLearning from "./../../assets/svg/entity-learning.svg";
 import treeTree from "./../../assets/svg/tree-tree.svg";
@@ -20,6 +20,8 @@ import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeAdd from "./../../assets/svg/tree-add.svg";
 import treeFolder from "./../../assets/svg/tree-folder.svg";
 import treeDelete from "./../../assets/svg/tree-delete.svg";
+
+import loading from "./../../assets/gif/loading.gif";
 
 import IStore from "../../interfaces/IStore";
 import ILearning from "../../interfaces/ILearning";
@@ -31,7 +33,7 @@ const ButtonStyled = styled(Button)`
 	margin-right: 5px;
 `;
 
-const SvgIconStyled = styled(SvgIcon)`
+const IconStyled = styled(Icon)`
 	margin-right: 5px;
 `;
 
@@ -133,6 +135,9 @@ class ContentLearning extends Component<IContentLearningProps> {
 							/>
 							Running
 						</TreeColumn>
+						<TreeColumn align="right">
+							<IconStyled path={loading} />
+						</TreeColumn>
 					</TreeBranch>
 					{runningOpen && (
 						<RunningContainer
@@ -150,9 +155,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 								return (
 									<TreeItem key={item.id} level={1}>
 										<TreeColumn>
-											<SvgIconStyled
-												path={entityLearning}
-											/>
+											<IconStyled path={entityLearning} />
 											{item.name}
 										</TreeColumn>
 										<TreeColumn align="right">
@@ -178,7 +181,9 @@ class ContentLearning extends Component<IContentLearningProps> {
 							/>
 							Storing
 						</TreeColumn>
-						<TreeColumn />
+						<TreeColumn align="right">
+							<IconStyled path={loading} />
+						</TreeColumn>
 					</TreeBranch>
 					{storingOpen && (
 						<StoringContainer
@@ -196,9 +201,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 								return (
 									<TreeItem key={item.id} level={1}>
 										<TreeColumn>
-											<SvgIconStyled
-												path={entityLearning}
-											/>
+											<IconStyled path={entityLearning} />
 											{item.name}
 										</TreeColumn>
 										<TreeColumn align="right">

@@ -1,7 +1,7 @@
 import React, { Component, ReactNode } from "react";
 import styled from "styled-components";
 import { history } from "./../classes/reducers/routerReducer";
-import SvgIcon from "./SvgIcon";
+import Icon from "./Icon";
 
 // basis
 
@@ -62,7 +62,7 @@ const ButtonDefault = styled(ButtonBasis)`
 	}
 `;
 
-const SvgIconDefault = styled(SvgIcon)`
+const IconDefault = styled(Icon)`
 	margin-right: 5px;
 `;
 
@@ -99,13 +99,11 @@ class Button extends Component<IButtonProps> {
 
 	render = () => {
 		let TargetButton = ButtonDefault;
-		let TargetSvgIcon:
-			| typeof SvgIconDefault
-			| typeof SvgIcon = SvgIconDefault;
+		let TargetIcon: typeof IconDefault | typeof Icon = IconDefault;
 
 		if (this.props.template === "icon") {
 			TargetButton = ButtonIcon;
-			TargetSvgIcon = SvgIcon;
+			TargetIcon = Icon;
 		}
 
 		const svgPath =
@@ -121,7 +119,7 @@ class Button extends Component<IButtonProps> {
 				selected={this.props.selected || false}
 				disabled={this.props.disabled}
 			>
-				{this.props.svgPath && <TargetSvgIcon path={svgPath} />}
+				{this.props.svgPath && <TargetIcon path={svgPath} />}
 				{this.props.name ? this.props.name : this.props.children}
 			</TargetButton>
 		);

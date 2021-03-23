@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import SvgIcon from "../SvgIcon";
+import Icon from "../Icon";
 
 const TreeHeaderDiv = styled.div`
 	height: 29px;
@@ -10,7 +10,7 @@ const TreeHeaderDiv = styled.div`
 	padding-left: 6px;
 `;
 
-const SvgIconStyled = styled(SvgIcon)`
+const IconStyled = styled(Icon)`
 	margin-top: -1px;
 	margin-right: 5px;
 `;
@@ -23,7 +23,7 @@ interface ITreeHeaderProps {
 const TreeHeader = (props: ITreeHeaderProps) => {
 	return (
 		<TreeHeaderDiv>
-			<SvgIconStyled path={props.svgPath} />
+			<IconStyled path={props.svgPath} />
 			{props.children}
 		</TreeHeaderDiv>
 	);
