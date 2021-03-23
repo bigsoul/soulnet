@@ -65,6 +65,10 @@ namespace Soulnet.Api
                 });
 
             services.AddScoped<UserRepository>();
+            services.AddScoped<DatasetRepository>();
+            services.AddScoped<LearningRepository>();
+            services.AddScoped<TestingRepository>();
+
 
             services.AddSingleton<AuthService>(
                             new AuthService(

@@ -12,13 +12,13 @@ namespace Soulnet.Api.Controllers
     [ApiController]
     [Authorize]
     [Route("[controller]")]
-    public class DatasetController : ControllerBase
+    public class LearningsController : ControllerBase
     {
         [HttpGet]
-        public List<DatasetViewModel> Get()
+        public List<LearningViewModel> Get()
         {
-            return new List<DatasetViewModel> {
-                new DatasetViewModel {
+            return new List<LearningViewModel> {
+                new LearningViewModel {
                     Id = "0",
                     Name = "zero"
                 }

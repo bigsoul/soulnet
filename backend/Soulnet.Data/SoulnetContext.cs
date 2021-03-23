@@ -13,6 +13,9 @@ namespace Soulnet.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ConfigureModelBuilderForUser(modelBuilder);
+            ConfigureModelBuilderForDataset(modelBuilder);
+            ConfigureModelBuilderForLearning(modelBuilder);
+            ConfigureModelBuilderForTesting(modelBuilder);
         }
 
         public void ConfigureModelBuilderForUser(ModelBuilder modelBuilder)
@@ -27,6 +30,24 @@ namespace Soulnet.Data
                 .Property(user => user.Email)
                 .HasMaxLength(60)
                 .IsRequired();
+        }
+
+        public void ConfigureModelBuilderForDataset(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Dataset>()
+                .ToTable("Dataset");
+        }
+
+        public void ConfigureModelBuilderForLearning(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Learning>()
+                .ToTable("Learning");
+        }
+
+        public void ConfigureModelBuilderForTesting(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Testing>()
+                .ToTable("Testing");
         }
     }
 }

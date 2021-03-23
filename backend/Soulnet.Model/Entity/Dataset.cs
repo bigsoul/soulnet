@@ -1,6 +1,6 @@
-namespace Soulnet.Api.ViewModels
+namespace Soulnet.Model.Entity
 {
-    public class DatasetViewModel
+    public class Dataset : IEntityBase
     {
         public string Id { get; set; }
         public string Name { get; set; }

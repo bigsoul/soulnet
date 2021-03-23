@@ -1,5 +1,3 @@
-using System;
-
 namespace Soulnet.Model.Entity
 {
     public class User : IEntityBase
