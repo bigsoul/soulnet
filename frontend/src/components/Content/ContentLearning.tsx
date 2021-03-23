@@ -25,6 +25,8 @@ import IStore from "../../interfaces/IStore";
 import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
+import React, { Component } from "react";
+
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
 `;
@@ -57,105 +59,173 @@ interface IContentLearningState {
 	list: ILearning[];
 	runningOpen: boolean;
 	storingOpen: boolean;
+	runningScrollTop: number;
+	storingScrollTop: number;
 }
 
 interface IContentLearningDispatch {
 	branchOpenStateChange: (branch: "running" | "storing") => void;
+	branchScrollTopChange: (
+		branch: "running" | "storing",
+		scrollTop: number
+	) => void;
 }
 
-const ContentLearning = (
-	props: IContentLearningState & IContentLearningDispatch
-) => {
-	const { list, runningOpen, storingOpen, branchOpenStateChange } = props;
-	return (
-		<Content>
-			<Tree>
-				<TreeHeader svgPath={treeTree}>
-					<TreeColumn>Learning</TreeColumn>
-					<TreeColumn align="right">
-						<ButtonStyled template="icon" svgPath={treeRefresh} />
-						<ButtonStyled template="icon" svgPath={treeAdd} />
-					</TreeColumn>
-				</TreeHeader>
-				<TreeBranch>
-					<TreeColumn>
-						<ButtonStyled
-							template="icon"
-							svgPath={treeCollapse}
-							svgPathSelected={treeExpand}
-							selected={runningOpen}
-							onClick={() => branchOpenStateChange("running")}
-						/>
-						Running
-					</TreeColumn>
-				</TreeBranch>
-				{runningOpen && (
-					<RunningContainer storingOpen={storingOpen}>
-						{list.map((item) => {
-							if (!item.isArchive) return false;
-							return (
-								<TreeItem key={item.id} level={1}>
-									<TreeColumn>
-										<SvgIconStyled path={entityLearning} />
-										{item.name}
-									</TreeColumn>
-									<TreeColumn align="right">
-										<Player />
-									</TreeColumn>
-									<ButtonStyled
-										template="icon"
-										svgPath={treeFolder}
-									/>
-								</TreeItem>
-							);
-						})}
-					</RunningContainer>
-				)}
-				<TreeBranch>
-					<TreeColumn>
-						<ButtonStyled
-							template="icon"
-							svgPath={treeCollapse}
-							svgPathSelected={treeExpand}
-							selected={storingOpen}
-							onClick={() => branchOpenStateChange("storing")}
-						/>
-						Storing
-					</TreeColumn>
-					<TreeColumn />
-				</TreeBranch>
-				{storingOpen && (
-					<StoringContainer runningOpen={runningOpen}>
-						{list.map((item) => {
-							if (item.isArchive) return false;
-							return (
-								<TreeItem key={item.id} level={1}>
-									<TreeColumn>
-										<SvgIconStyled path={entityLearning} />
-										{item.name}
-									</TreeColumn>
-									<TreeColumn align="right">
+interface IContentLearningProps
+	extends IContentLearningState,
+		IContentLearningDispatch {}
+
+class ContentLearning extends Component<IContentLearningProps> {
+	constructor(props: IContentLearningProps) {
+		super(props);
+
+		this.runningContainerRef = React.createRef();
+		this.storngContainerRef = React.createRef();
+	}
+
+	runningContainerRef: React.RefObject<HTMLDivElement>;
+	storngContainerRef: React.RefObject<HTMLDivElement>;
+
+	componentDidMount = () => {
+		this.componentDidUpdate();
+	};
+
+	componentDidUpdate = () => {
+		const { runningScrollTop, storingScrollTop } = this.props;
+
+		const runningContainer = this.runningContainerRef.current;
+		const storngContainer = this.storngContainerRef.current;
+
+		if (runningContainer) runningContainer.scrollTop = runningScrollTop;
+		if (storngContainer) storngContainer.scrollTop = storingScrollTop;
+	};
+
+	render = () => {
+		const {
+			list,
+			runningOpen,
+			storingOpen,
+			branchOpenStateChange,
+			branchScrollTopChange,
+		} = this.props;
+
+		return (
+			<Content>
+				<Tree>
+					<TreeHeader svgPath={treeTree}>
+						<TreeColumn>Learning</TreeColumn>
+						<TreeColumn align="right">
+							<ButtonStyled
+								template="icon"
+								svgPath={treeRefresh}
+							/>
+							<ButtonStyled template="icon" svgPath={treeAdd} />
+						</TreeColumn>
+					</TreeHeader>
+					<TreeBranch>
+						<TreeColumn>
+							<ButtonStyled
+								template="icon"
+								svgPath={treeCollapse}
+								svgPathSelected={treeExpand}
+								selected={runningOpen}
+								onClick={() => branchOpenStateChange("running")}
+							/>
+							Running
+						</TreeColumn>
+					</TreeBranch>
+					{runningOpen && (
+						<RunningContainer
+							ref={this.runningContainerRef}
+							storingOpen={storingOpen}
+							onScroll={(e) =>
+								branchScrollTopChange(
+									"running",
+									e.currentTarget.scrollTop
+								)
+							}
+						>
+							{list.map((item) => {
+								if (!item.isArchive) return false;
+								return (
+									<TreeItem key={item.id} level={1}>
+										<TreeColumn>
+											<SvgIconStyled
+												path={entityLearning}
+											/>
+											{item.name}
+										</TreeColumn>
+										<TreeColumn align="right">
+											<Player />
+										</TreeColumn>
 										<ButtonStyled
 											template="icon"
-											svgPath={treeDelete}
+											svgPath={treeFolder}
 										/>
-									</TreeColumn>
-								</TreeItem>
-							);
-						})}
-					</StoringContainer>
-				)}
-			</Tree>
-		</Content>
-	);
-};
+									</TreeItem>
+								);
+							})}
+						</RunningContainer>
+					)}
+					<TreeBranch>
+						<TreeColumn>
+							<ButtonStyled
+								template="icon"
+								svgPath={treeCollapse}
+								svgPathSelected={treeExpand}
+								selected={storingOpen}
+								onClick={() => branchOpenStateChange("storing")}
+							/>
+							Storing
+						</TreeColumn>
+						<TreeColumn />
+					</TreeBranch>
+					{storingOpen && (
+						<StoringContainer
+							ref={this.storngContainerRef}
+							runningOpen={runningOpen}
+							onScroll={(e) =>
+								branchScrollTopChange(
+									"storing",
+									e.currentTarget.scrollTop
+								)
+							}
+						>
+							{list.map((item) => {
+								if (item.isArchive) return false;
+								return (
+									<TreeItem key={item.id} level={1}>
+										<TreeColumn>
+											<SvgIconStyled
+												path={entityLearning}
+											/>
+											{item.name}
+										</TreeColumn>
+										<TreeColumn align="right">
+											<ButtonStyled
+												template="icon"
+												svgPath={treeDelete}
+											/>
+										</TreeColumn>
+									</TreeItem>
+								);
+							})}
+						</StoringContainer>
+					)}
+				</Tree>
+			</Content>
+		);
+	};
+}
 
 const mapStateToProps = (state: IStore): IContentLearningState => {
-	const { list, runningOpen, storingOpen } = state.learning;
+	const { learning } = state;
 	return {
-		list,
-		runningOpen,
-		storingOpen,
+		list: learning.list,
+		runningOpen: learning.runningOpen,
+		storingOpen: learning.storingOpen,
+		runningScrollTop: learning.runningScrollTop,
+		storingScrollTop: learning.storingScrollTop,
 	};
 };
 
@@ -167,6 +237,16 @@ const mapDispatchToProps = (
 			dispatch<ACT.ILearningBranchOpenStateChangeAction>({
 				type: ACT.LEARNING_BRANCH_OPEN_STATE_CHANGE,
 				branch: branch,
+			});
+		},
+		branchScrollTopChange: (
+			branch: "running" | "storing",
+			scrollTop: number
+		): void => {
+			dispatch<ACT.ILearningBranchScrollTopChangeAction>({
+				type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
+				branch: branch,
+				scrollTop: scrollTop,
 			});
 		},
 	};

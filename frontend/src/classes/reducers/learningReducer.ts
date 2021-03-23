@@ -6,6 +6,8 @@ type ReduserType = {
 	list: ILearning[];
 	runningOpen: boolean;
 	storingOpen: boolean;
+	runningScrollTop: number;
+	storingScrollTop: number;
 };
 
 const example = {
@@ -27,6 +29,8 @@ const preloadedState: ReduserType = {
 	list: [],
 	runningOpen: true,
 	storingOpen: true,
+	runningScrollTop: 0,
+	storingScrollTop: 0,
 };
 
 for (let i = 0; i < 50; i++) {
@@ -54,6 +58,19 @@ const userReducer = (
 				return { ...curState, runningOpen: !curState.runningOpen };
 			if (action.branch === "storing")
 				return { ...curState, storingOpen: !curState.storingOpen };
+			return curState;
+		}
+		case ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE: {
+			if (action.branch === "running")
+				return {
+					...curState,
+					runningScrollTop: action.scrollTop,
+				};
+			if (action.branch === "storing")
+				return {
+					...curState,
+					storingScrollTop: action.scrollTop,
+				};
 			return curState;
 		}
 		default:
