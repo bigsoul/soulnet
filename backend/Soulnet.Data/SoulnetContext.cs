@@ -7,6 +7,9 @@ namespace Soulnet.Data
     public class SoulnetContext: DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Dataset> Dataset { get; set; }
+        public DbSet<Learning> Learning { get; set; }
+        public DbSet<Testing> Testing { get; set; }
         
         public SoulnetContext(DbContextOptions<SoulnetContext> options) : base(options) { }
 
@@ -17,20 +20,19 @@ namespace Soulnet.Data
             ConfigureModelBuilderForLearning(modelBuilder);
             ConfigureModelBuilderForTesting(modelBuilder);
 
-            modelBuilder.Entity<Dataset>()
+            /*modelBuilder.Entity<Dataset>()
                 .HasOne(dataset => dataset.Learning)
-                .WithOne(learning => learning.Dataset)
-                .HasForeignKey<Learning>(learning => learning.DatasetId);
+                .WithMany(learning => learning.Dataset);*/
 
-            modelBuilder.Entity<Dataset>()
+            /*modelBuilder.Entity<Dataset>()
                 .HasOne(dataset => dataset.Testing)
                 .WithOne(testing => testing.Dataset)
-                .HasForeignKey<Testing>(testing => testing.DatasetId);
+                .HasForeignKey<Testing>(testing => testing.DatasetId);*/
 
-            modelBuilder.Entity<Learning>()
+            /*modelBuilder.Entity<Learning>()
                 .HasOne(learning => learning.Testing)
                 .WithOne(testing => testing.Learning)
-                .HasForeignKey<Testing>(testing => testing.LearningId);
+                .HasForeignKey<Testing>(testing => testing.LearningId);*/
         }
 
         public void ConfigureModelBuilderForUser(ModelBuilder modelBuilder)

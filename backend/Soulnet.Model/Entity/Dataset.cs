@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Soulnet.Model.Entity
@@ -8,7 +9,7 @@ namespace Soulnet.Model.Entity
         public Guid Id { get; set; }
         public string Name { get; set; }
         public bool IsLoaded { get; set; }
-        public Learning Learning { get; set; }
-        public Testing Testing { get; set; }
+        public List<Learning> Learning { get; set; }
+        public List<Testing> Testing { get; set; }
     }
 }

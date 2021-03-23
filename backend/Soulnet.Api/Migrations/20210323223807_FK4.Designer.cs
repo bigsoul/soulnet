@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Soulnet.Data;
@@ -9,9 +10,10 @@ using Soulnet.Data;
 namespace Soulnet.Api.Migrations
 {
     [DbContext(typeof(SoulnetContext))]
-    partial class SoulnetContextModelSnapshot : ModelSnapshot
+    [Migration("20210323223807_FK4")]
+    partial class FK4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,7 +95,7 @@ namespace Soulnet.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("DatasetId")
+                    b.Property<Guid>("DatasetId")
                         .HasColumnType("uuid");
 
                     b.Property<float>("EndDeposit")
@@ -112,7 +114,7 @@ namespace Soulnet.Api.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
-                    b.Property<Guid?>("LearningId")
+                    b.Property<Guid>("LearningId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -133,9 +135,11 @@ namespace Soulnet.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DatasetId");
+                    b.HasIndex("DatasetId")
+                        .IsUnique();
 
-                    b.HasIndex("LearningId");
+                    b.HasIndex("LearningId")
+                        .IsUnique();
 
                     b.ToTable("Testing");
                 });
@@ -173,13 +177,21 @@ namespace Soulnet.Api.Migrations
 
             modelBuilder.Entity("Soulnet.Model.Entity.Testing", b =>
                 {
-                    b.HasOne("Soulnet.Model.Entity.Dataset", null)
-                        .WithMany("Testing")
-                        .HasForeignKey("DatasetId");
+                    b.HasOne("Soulnet.Model.Entity.Dataset", "Dataset")
+                        .WithOne("Testing")
+                        .HasForeignKey("Soulnet.Model.Entity.Testing", "DatasetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Soulnet.Model.Entity.Learning", null)
-                        .WithMany("Testing")
-                        .HasForeignKey("LearningId");
+                    b.HasOne("Soulnet.Model.Entity.Learning", "Learning")
+                        .WithOne("Testing")
+                        .HasForeignKey("Soulnet.Model.Entity.Testing", "LearningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dataset");
+
+                    b.Navigation("Learning");
                 });
 
             modelBuilder.Entity("Soulnet.Model.Entity.Dataset", b =>

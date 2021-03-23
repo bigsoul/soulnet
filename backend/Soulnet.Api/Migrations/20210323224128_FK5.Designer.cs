@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Soulnet.Data;
@@ -9,9 +10,10 @@ using Soulnet.Data;
 namespace Soulnet.Api.Migrations
 {
     [DbContext(typeof(SoulnetContext))]
-    partial class SoulnetContextModelSnapshot : ModelSnapshot
+    [Migration("20210323224128_FK5")]
+    partial class FK5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,7 +114,7 @@ namespace Soulnet.Api.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
-                    b.Property<Guid?>("LearningId")
+                    b.Property<Guid>("LearningId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -135,7 +137,8 @@ namespace Soulnet.Api.Migrations
 
                     b.HasIndex("DatasetId");
 
-                    b.HasIndex("LearningId");
+                    b.HasIndex("LearningId")
+                        .IsUnique();
 
                     b.ToTable("Testing");
                 });
@@ -177,9 +180,13 @@ namespace Soulnet.Api.Migrations
                         .WithMany("Testing")
                         .HasForeignKey("DatasetId");
 
-                    b.HasOne("Soulnet.Model.Entity.Learning", null)
-                        .WithMany("Testing")
-                        .HasForeignKey("LearningId");
+                    b.HasOne("Soulnet.Model.Entity.Learning", "Learning")
+                        .WithOne("Testing")
+                        .HasForeignKey("Soulnet.Model.Entity.Testing", "LearningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Learning");
                 });
 
             modelBuilder.Entity("Soulnet.Model.Entity.Dataset", b =>
