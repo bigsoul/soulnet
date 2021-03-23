@@ -1,8 +1,10 @@
+using System;
+
 namespace Soulnet.Model.Entity
 {
     public class Testing : IEntityBase
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public int State { get; set; }
         public bool IsArchive { get; set; }
@@ -11,7 +13,9 @@ namespace Soulnet.Model.Entity
         public float StopLossPercent { get; set; }
         public float StartDeposit { get; set; }
         public float EndDeposit { get; set; }
-        public string LearningId { get; set; }
-        public string DatasetId { get; set; }
+        public Guid DatasetId { get; set; }
+        public Dataset Dataset { get; set; }
+        public Guid LearningId { get; set; }
+        public Learning Learning { get; set; }
     }
 }

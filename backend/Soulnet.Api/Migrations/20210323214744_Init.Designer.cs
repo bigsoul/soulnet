@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Soulnet.Data;
@@ -9,9 +10,10 @@ using Soulnet.Data;
 namespace Soulnet.Api.Migrations
 {
     [DbContext(typeof(SoulnetContext))]
-    partial class SoulnetContextModelSnapshot : ModelSnapshot
+    [Migration("20210323214744_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,9 +82,15 @@ namespace Soulnet.Api.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
+                    b.Property<Guid>("TestingId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DatasetId")
+                        .IsUnique();
+
+                    b.HasIndex("TestingId")
                         .IsUnique();
 
                     b.ToTable("Learning");
@@ -137,9 +145,6 @@ namespace Soulnet.Api.Migrations
                     b.HasIndex("DatasetId")
                         .IsUnique();
 
-                    b.HasIndex("LearningId")
-                        .IsUnique();
-
                     b.ToTable("Testing");
                 });
 
@@ -175,7 +180,15 @@ namespace Soulnet.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Soulnet.Model.Entity.Testing", "Testing")
+                        .WithOne("Learning")
+                        .HasForeignKey("Soulnet.Model.Entity.Learning", "TestingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Dataset");
+
+                    b.Navigation("Testing");
                 });
 
             modelBuilder.Entity("Soulnet.Model.Entity.Testing", b =>
@@ -186,15 +199,7 @@ namespace Soulnet.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Soulnet.Model.Entity.Learning", "Learning")
-                        .WithOne("Testing")
-                        .HasForeignKey("Soulnet.Model.Entity.Testing", "LearningId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Dataset");
-
-                    b.Navigation("Learning");
                 });
 
             modelBuilder.Entity("Soulnet.Model.Entity.Dataset", b =>
@@ -204,9 +209,9 @@ namespace Soulnet.Api.Migrations
                     b.Navigation("Testing");
                 });
 
-            modelBuilder.Entity("Soulnet.Model.Entity.Learning", b =>
+            modelBuilder.Entity("Soulnet.Model.Entity.Testing", b =>
                 {
-                    b.Navigation("Testing");
+                    b.Navigation("Learning");
                 });
 #pragma warning restore 612, 618
         }

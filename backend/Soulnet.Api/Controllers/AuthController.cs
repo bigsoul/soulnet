@@ -58,7 +58,7 @@ namespace Soulnet.Api.Controllers
             
             var user = new User
             {
-                Id = id,
+                Id = new Guid(id),
                 Username = model.Username,
                 Email = model.Email,
                 Password = authService.HashPassword(model.Password)

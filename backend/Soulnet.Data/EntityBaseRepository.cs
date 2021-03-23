@@ -21,7 +21,7 @@ namespace Soulnet.Data
 
         public T GetSingle(string id)
         {
-            return _context.Set<T>().FirstOrDefault(x => x.Id == id);
+            return _context.Set<T>().FirstOrDefault(x => x.Id.ToString() == id);
         }
 
         public T GetSingle(Expression<Func<T, bool>> predicate)

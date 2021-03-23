@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Soulnet.Data;
@@ -9,9 +10,10 @@ using Soulnet.Data;
 namespace Soulnet.Api.Migrations
 {
     [DbContext(typeof(SoulnetContext))]
-    partial class SoulnetContextModelSnapshot : ModelSnapshot
+    [Migration("20210323215523_FK1")]
+    partial class FK1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
