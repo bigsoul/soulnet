@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Soulnet.Api.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Soulnet.Data.Repositories;
 
 namespace Soulnet.Api.Controllers
 {
@@ -14,15 +15,19 @@ namespace Soulnet.Api.Controllers
     [Route("[controller]")]
     public class LearningsController : ControllerBase
     {
-        [HttpGet]
-        public List<LearningViewModel> Get()
+        private LearningRepository learningRepository;
+        
+        public LearningsController(LearningRepository learningRepository)
         {
-            return new List<LearningViewModel> {
-                new LearningViewModel {
-                    Id = "0",
-                    Name = "zero"
-                }
-            };
+            this.learningRepository = learningRepository;
+        }
+
+        [HttpGet]
+        public ActionResult<List<LearningViewModel>> Get()
+        {
+            var result = learningRepository.Get();
+
+            return Ok(result);
         }
     } 
 }

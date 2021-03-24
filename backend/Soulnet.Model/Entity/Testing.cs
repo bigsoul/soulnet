@@ -13,11 +13,5 @@ namespace Soulnet.Model.Entity
         public float StopLossPercent { get; set; }
         public float StartDeposit { get; set; }
         public float EndDeposit { get; set; }
-
-        //public Guid DatasetId { get; set; }
-        //public Dataset Dataset { get; set; }
-
-        //public Guid LearningId { get; set; }
-        //public Learning Learning { get; set; }
     }
 }

@@ -18,6 +18,7 @@ using Soulnet.Api.Services;
 using Soulnet.Data;
 using Microsoft.EntityFrameworkCore;
 using Soulnet.Data.Repositories;
+using HibernatingRhinos.Profiler.Appender.EntityFramework;
 
 namespace Soulnet.Api
 {
@@ -27,6 +28,8 @@ namespace Soulnet.Api
         
         public Startup(IConfiguration configuration)
         {
+            EntityFrameworkProfiler.Initialize();
+
             Configuration = configuration;
         }
 

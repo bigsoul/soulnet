@@ -14,10 +14,6 @@ namespace Soulnet.Model.Entity
         public int IterationCurrent { get; set; }
         public int InputNeuronsCount { get; set; }
         public int DeepLayersCount { get; set; }
-
-        //public Guid DatasetId { get; set; }
-        //public List<Dataset> Dataset { get; set; }
-        
         public List<Testing> Testing { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Soulnet.Model.Entity;
 
 namespace Soulnet.Data.Repositories 
@@ -6,5 +7,8 @@ namespace Soulnet.Data.Repositories
     {        
         public LearningRepository (SoulnetContext context) : base (context) { }
 
+        public IEnumerable<Learning> Get() {
+            return this.GetAll();
+        }
     }
 }
