@@ -23,9 +23,9 @@ namespace Soulnet.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<LearningViewModel>> Get()
+        public ActionResult<List<LearningViewModel>> Get(int startFrom, int pageSize)
         {
-            var result = learningRepository.Get();
+            var result = learningRepository.GetSection(startFrom, pageSize);
 
             return Ok(result);
         }

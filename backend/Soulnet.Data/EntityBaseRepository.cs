@@ -7,12 +7,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Soulnet.Data;
+using Soulnet.Model.Entity;
 
 namespace Soulnet.Data
 {
     public class EntityBaseRepository<T> where T : class, IEntityBase, new()
     {
-        private SoulnetContext _context;
+        public SoulnetContext _context;
 
         public EntityBaseRepository(SoulnetContext context)
         {
@@ -99,5 +100,27 @@ namespace Soulnet.Data
         {
             _context.SaveChanges();
         }
+
+        // utils
+
+        public void FillLearningWithTestData()
+        {
+            for (var i = 3; i < 100; i++)
+            {
+                _context.Learning.Add(new Learning {
+                    Id = new Guid(),
+                    Name = $"Learning #{i}",
+                    State = 0,
+                    IsArchive = (i % 2) == 0 ? true : false,
+                    IterationCount = i * 2,
+                    IterationCurrent = i,
+                    InputNeuronsCount = 5,
+                    DeepLayersCount = 2
+                });
+            }
+
+            _context.SaveChanges();
+        }
+
     }
 }
