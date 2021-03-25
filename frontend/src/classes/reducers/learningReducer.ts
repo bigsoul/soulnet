@@ -45,18 +45,14 @@ const userReducer = (
 				return { ...curState, storingOpen: !curState.storingOpen };
 			return curState;
 		}
-		case ACT.LEARNING_BRANCH_SCROLL_TOP: {
-			if (action.branch === "running")
-				return {
-					...curState,
-					runningScrollTop: action.scrollTop,
-				};
-			if (action.branch === "storing")
-				return {
-					...curState,
-					storingScrollTop: action.scrollTop,
-				};
-			return curState;
+		case ACT.LEARNING_SET_DOM_STATE: {
+			return {
+				...curState,
+				runningScrollTop: action.runningScrollTop,
+				runningClientHeight: action.runningClientHeight,
+				storingScrollTop: action.storingScrollTop,
+				storingClientHeight: action.storingClientHeight,
+			};
 		}
 		case ACT.LEARNING_BRANCH_LOADING: {
 			if (action.branch === "running")
@@ -67,6 +63,7 @@ const userReducer = (
 		}
 		case ACT.LEARNING_INITIALIZE: {
 			const newState = { ...curState };
+			newState.list = [];
 			for (let i = 0; i < action.learnings.length; i++) {
 				newState.list.push(action.learnings[i]);
 			}

@@ -28,6 +28,7 @@ import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
 import React, { Component } from "react";
+import { timeStamp } from "node:console";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -65,18 +66,18 @@ interface IContentLearningState {
 	storingScrollTop: number;
 	runningLoading: boolean;
 	storingLoading: boolean;
+	runningClientHeight: number;
+	storingClientHeight: number;
 }
 
 interface IContentLearningDispatch {
 	branchOpenChange: (branch: "running" | "storing") => void;
-	branchScrollTopChange: (
-		branch: "running" | "storing",
-		scrollTop: number
-	) => void;
-	componentDidMount: () => void;
-	componentDidUpdate: (
+	didMount: () => void;
+	didUpdate: (
 		runningClientHeight: number,
-		storingClientHeight: number
+		storingClientHeight: number,
+		runningScrollTop: number,
+		storingScrollTop: number
 	) => void;
 }
 
@@ -95,32 +96,63 @@ class ContentLearning extends Component<IContentLearningProps> {
 	runningContainerRef: React.RefObject<HTMLDivElement>;
 	storngContainerRef: React.RefObject<HTMLDivElement>;
 
+	runningIsScrolling: any;
+
+	runningScrollStop = () => {
+		clearTimeout(this.runningIsScrolling);
+
+		let componentDidUpdate = this.componentDidUpdate;
+
+		this.runningIsScrolling = setTimeout(function () {
+			componentDidUpdate();
+		}, 50);
+	};
+
 	componentDidMount = () => {
-		console.log("componentDidMount");
+		const { runningScrollTop, storingScrollTop } = this.props;
+
+		const runningContainer = this.runningContainerRef.current;
+		const storngContainer = this.storngContainerRef.current;
+
+		if (runningContainer) runningContainer.scrollTop = runningScrollTop;
+		if (storngContainer) storngContainer.scrollTop = storingScrollTop;
+
 		this.componentDidUpdate();
-		//this.props.componentDidMount();
 	};
 
 	componentDidUpdate = () => {
-		console.log("componentDidUpdate");
-		const { runningScrollTop, storingScrollTop } = this.props;
-
 		let runningClientHeight = 0;
 		let storingClientHeight = 0;
+
+		let runningScrollTop = 0;
+		let storingScrollTop = 0;
 
 		const runningContainer = this.runningContainerRef.current;
 		const storngContainer = this.storngContainerRef.current;
 
 		if (runningContainer) {
 			runningClientHeight = runningContainer.clientHeight;
-			runningContainer.scrollTop = runningScrollTop;
+			runningScrollTop = runningContainer.scrollTop;
 		}
 		if (storngContainer) {
 			storingClientHeight = storngContainer.clientHeight;
-			storngContainer.scrollTop = storingScrollTop;
+			storingScrollTop = storngContainer.scrollTop;
 		}
 
-		this.props.componentDidUpdate(runningClientHeight, storingClientHeight);
+		if (
+			runningScrollTop === this.props.runningScrollTop &&
+			storingScrollTop === this.props.storingScrollTop &&
+			runningClientHeight === this.props.runningClientHeight &&
+			storingClientHeight === this.props.storingClientHeight
+		)
+			return;
+
+		this.props.didUpdate(
+			runningClientHeight,
+			storingClientHeight,
+			runningScrollTop,
+			storingScrollTop
+		);
 	};
 
 	render = () => {
@@ -129,7 +161,6 @@ class ContentLearning extends Component<IContentLearningProps> {
 			runningOpen,
 			storingOpen,
 			branchOpenChange,
-			branchScrollTopChange,
 			runningLoading,
 			storingLoading,
 		} = this.props;
@@ -166,12 +197,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 						<RunningContainer
 							ref={this.runningContainerRef}
 							storingOpen={storingOpen}
-							onScroll={(e) =>
-								branchScrollTopChange(
-									"running",
-									e.currentTarget.scrollTop
-								)
-							}
+							onScroll={this.runningScrollStop}
 						>
 							{list.map((item) => {
 								if (!item.isArchive) return false;
@@ -212,12 +238,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 						<StoringContainer
 							ref={this.storngContainerRef}
 							runningOpen={runningOpen}
-							onScroll={(e) =>
-								branchScrollTopChange(
-									"storing",
-									e.currentTarget.scrollTop
-								)
-							}
+							onScroll={this.runningScrollStop}
 						>
 							{list.map((item) => {
 								if (item.isArchive) return false;
@@ -254,6 +275,8 @@ const mapStateToProps = (state: IStore): IContentLearningState => {
 		storingScrollTop: learning.storingScrollTop,
 		runningLoading: learning.runningLoading,
 		storingLoading: learning.storingLoading,
+		runningClientHeight: learning.runningClientHeight,
+		storingClientHeight: learning.storingClientHeight,
 	};
 };
 
@@ -267,27 +290,21 @@ const mapDispatchToProps = (
 				branch: branch,
 			});
 		},
-		branchScrollTopChange: (
-			branch: "running" | "storing",
-			scrollTop: number
-		): void => {
-			dispatch<ACT.ILearningBranchScrollTopChangeAction>({
-				type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
-				branch: branch,
-				scrollTop: scrollTop,
+		didMount: (): void => {
+			dispatch<ACT.ILearningDidMountAction>({
+				type: ACT.LEARNING_DID_MOUNT,
 			});
 		},
-		componentDidMount: (): void => {
-			dispatch<ACT.ILearningComponentDidMountAction>({
-				type: ACT.LEARNING_COMPONENT_DID_MOUNT,
-			});
-		},
-		componentDidUpdate: (
+		didUpdate: (
 			runningClientHeight,
-			storingClientHeight
+			storingClientHeight,
+			runningScrollTop,
+			storingScrollTop
 		): void => {
-			dispatch<ACT.ILearningComponentDidUpdateAction>({
-				type: ACT.LEARNING_COMPONENT_DID_UPDATE,
+			dispatch<ACT.ILearningDidUpdateAction>({
+				type: ACT.LEARNING_DID_UPDATE,
+				runningScrollTop,
+				storingScrollTop,
 				runningClientHeight,
 				storingClientHeight,
 			});

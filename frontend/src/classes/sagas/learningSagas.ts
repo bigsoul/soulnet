@@ -8,40 +8,44 @@ import * as RES from "../../interfaces/IResponse";
 
 import store from "../store";
 
-function* workerLearningBranchScrollTopChange(
-	action: ACT.ILearningBranchScrollTopChangeAction
-) {
+function* workerLearningDidUpdate(action: ACT.ILearningDidUpdateAction) {
 	const state = store.getState();
 
 	const {
+		list,
 		runningLoading,
 		storingLoading,
 		runningStartFrom,
 		runningPageSize,
 		storingStartFrom,
 		storingPageSize,
+		runningScrollTop,
+		runningClientHeight,
+		storingScrollTop,
+		storingClientHeight,
 	} = state.learning;
 
-	yield put<ACT.ILearningBranchScrollTopAction>({
-		type: ACT.LEARNING_BRANCH_SCROLL_TOP,
-		branch: action.branch,
-		scrollTop: action.scrollTop,
+	yield put<ACT.ILearningSetDOMStateAction>({
+		type: ACT.LEARNING_SET_DOM_STATE,
+		runningScrollTop: action.runningScrollTop,
+		runningClientHeight: action.runningClientHeight,
+		storingScrollTop: action.storingScrollTop,
+		storingClientHeight: action.storingClientHeight,
 	});
 
-	if (runningLoading && action.branch === "running") return;
-	if (storingLoading && action.branch === "storing") return;
+	const isArchive = true;
+
+	if (runningLoading && isArchive) return;
+	if (storingLoading && !isArchive) return;
 
 	yield put<ACT.ILearningBranchLoadingAction>({
 		type: ACT.LEARNING_BRANCH_LOADING,
-		branch: action.branch,
+		branch: "running",
 		loading: true,
 	});
 
-	const isRunning = action.branch === "running";
-
-	const startFrom = isRunning ? runningStartFrom : storingStartFrom;
-	const pageSize = isRunning ? runningPageSize : storingPageSize;
-	const isArchive = isRunning ? false : true;
+	const startFrom = isArchive ? runningStartFrom : storingStartFrom;
+	const pageSize = isArchive ? runningPageSize : storingPageSize;
 
 	const requestData: REQ.ILearningRequest = {
 		startFrom,
@@ -62,58 +66,13 @@ function* workerLearningBranchScrollTopChange(
 
 	yield put<ACT.ILearningBranchLoadingAction>({
 		type: ACT.LEARNING_BRANCH_LOADING,
-		branch: action.branch,
+		branch: "running",
 		loading: false,
 	});
 }
 
-function* workerLearningComponentDidMount() {
-	const state = store.getState();
-
-	if (!state.learning.list.length) {
-		yield put<ACT.ILearningBranchScrollTopChangeAction>({
-			type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
-			branch: "running",
-			scrollTop: 0,
-		});
-		yield put<ACT.ILearningBranchScrollTopChangeAction>({
-			type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
-			branch: "storing",
-			scrollTop: 0,
-		});
-	}
-}
-
-function* workerLearningComponentDidUpdate() {
-	const state = store.getState();
-
-	if (!state.learning.list.length) {
-		yield put<ACT.ILearningBranchScrollTopChangeAction>({
-			type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
-			branch: "running",
-			scrollTop: 0,
-		});
-		yield put<ACT.ILearningBranchScrollTopChangeAction>({
-			type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
-			branch: "storing",
-			scrollTop: 0,
-		});
-	}
-}
-
 function* learningSagas() {
-	yield takeEvery(
-		ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
-		workerLearningBranchScrollTopChange
-	);
-	/*yield takeLatest(
-		ACT.LEARNING_COMPONENT_DID_MOUNT,
-		workerLearningComponentDidMount
-	);*/
-	yield takeLatest(
-		ACT.LEARNING_COMPONENT_DID_UPDATE,
-		workerLearningComponentDidUpdate
-	);
+	yield takeEvery(ACT.LEARNING_DID_UPDATE, workerLearningDidUpdate);
 }
 
 export default learningSagas;
