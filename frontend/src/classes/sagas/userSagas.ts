@@ -1,4 +1,4 @@
-import axiosAsync from "./../utils/http";
+import service from "../utils/service";
 
 import { call, fork, put, takeLatest } from "redux-saga/effects";
 import { startSubmit, stopSubmit, destroy } from "redux-form";
@@ -62,7 +62,7 @@ function* workerUserSignIn(action: ACT.IUserSignInAction) {
 		};
 
 		const responseBody: { data: RES.IAuthDataResponse } = yield call(
-			axiosAsync,
+			service.post,
 			"/auth/signin",
 			requestData
 		);
@@ -111,7 +111,7 @@ function* workerUserSignUp(action: ACT.IUserSignUpAction) {
 		};
 
 		const responseBody: { data: RES.IAuthDataResponse } = yield call(
-			axiosAsync,
+			service.post,
 			"/auth/signup",
 			requestData
 		);

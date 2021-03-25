@@ -1,3 +1,4 @@
+import ILearning from "./ILearning";
 import { TRequest } from "./IRequest";
 
 export interface IAuthDataResponse {
@@ -5,6 +6,8 @@ export interface IAuthDataResponse {
 	jwtTokenExpirationTime: number;
 	id: string;
 }
+
+export interface ILearningResponse extends Array<ILearning> {}
 
 // standart response
 

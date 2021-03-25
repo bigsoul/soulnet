@@ -2,13 +2,19 @@ import ELearningState from "../../enums/ELearningState";
 import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../actions/ILearningAction";
 
-type ReduserType = {
+export interface ILearningReducer {
 	list: ILearning[];
 	runningOpen: boolean;
-	storingOpen: boolean;
 	runningScrollTop: number;
+	runningLoading: boolean;
+	runningPageSize: number;
+	runningStartFrom: number;
+	storingOpen: boolean;
 	storingScrollTop: number;
-};
+	storingLoading: boolean;
+	storingPageSize: number;
+	storingStartFrom: number;
+}
 
 const example = {
 	id: "0",
@@ -19,21 +25,27 @@ const example = {
 	iterationCurrent: 200,
 	inputNeuronsCount: 50,
 	deepLayersCount: 20,
-	datasetLearning: {
+	dataset: {
 		id: "1",
 		name: "Dataset #1",
 	},
 };
 
-const preloadedState: ReduserType = {
+const preloadedState: ILearningReducer = {
 	list: [],
 	runningOpen: true,
 	storingOpen: true,
 	runningScrollTop: 0,
 	storingScrollTop: 0,
+	runningLoading: false,
+	storingLoading: false,
+	runningPageSize: 50,
+	runningStartFrom: 0,
+	storingPageSize: 50,
+	storingStartFrom: 0,
 };
 
-for (let i = 0; i < 50; i++) {
+/*for (let i = 0; i < 50; i++) {
 	preloadedState.list.push({
 		...example,
 		isArchive: false,
@@ -46,21 +58,21 @@ for (let i = 0; i < 50; i++) {
 		id: String(i + 100),
 		name: "Learning #" + String(i + 100),
 	});
-}
+}*/
 
 const userReducer = (
-	curState: ReduserType = preloadedState,
+	curState: ILearningReducer = preloadedState,
 	action: TLearningAction
-): ReduserType => {
+): ILearningReducer => {
 	switch (action.type) {
-		case ACT.LEARNING_BRANCH_OPEN_STATE_CHANGE: {
+		case ACT.LEARNING_BRANCH_OPEN_CHANGE: {
 			if (action.branch === "running")
 				return { ...curState, runningOpen: !curState.runningOpen };
 			if (action.branch === "storing")
 				return { ...curState, storingOpen: !curState.storingOpen };
 			return curState;
 		}
-		case ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE: {
+		case ACT.LEARNING_BRANCH_SCROLL_TOP: {
 			if (action.branch === "running")
 				return {
 					...curState,
@@ -72,6 +84,20 @@ const userReducer = (
 					storingScrollTop: action.scrollTop,
 				};
 			return curState;
+		}
+		case ACT.LEARNING_BRANCH_LOADING: {
+			if (action.branch === "running")
+				return { ...curState, runningLoading: action.loading };
+			if (action.branch === "storing")
+				return { ...curState, storingLoading: action.loading };
+			return curState;
+		}
+		case ACT.LEARNING_INITIALIZE: {
+			const newState = { ...curState };
+			for (let i = 0; i < action.learnings.length; i++) {
+				newState.list.push(action.learnings[i]);
+			}
+			return newState;
 		}
 		default:
 			return curState;

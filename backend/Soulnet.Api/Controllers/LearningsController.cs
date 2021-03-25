@@ -23,9 +23,34 @@ namespace Soulnet.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<LearningViewModel>> Get(int startFrom, int pageSize)
+        public ActionResult<List<LearningViewModel>> Get(int startFrom, int pageSize, bool? isArchive)
         {
-            var result = learningRepository.GetSection(startFrom, pageSize);
+            var learnings = learningRepository.GetSection(startFrom, pageSize, isArchive);
+
+            var result = new List<LearningViewModel>();
+
+            foreach(var item in learnings) {
+                var datasetId = "";
+
+                if (item.DatasetId != Guid.Empty) {
+                    datasetId = item.DatasetId.ToString();
+                }
+
+                result.Add(new LearningViewModel {
+                    Id = item.Id.ToString(),
+                    Name = item.Name,
+                    State = item.State,
+                    IsArchive = item.IsArchive,
+                    IterationCount = item.IterationCount,
+                    IterationCurrent = item.IterationCurrent,
+                    InputNeuronsCount = item.InputNeuronsCount,
+                    DeepLayersCount = item.DeepLayersCount,
+                    Dataset = new DatasetRefViewModel {
+                        Id = datasetId,
+                        Name = $"Name for id: {datasetId}"
+                    }
+                });
+            }
 
             return Ok(result);
         }

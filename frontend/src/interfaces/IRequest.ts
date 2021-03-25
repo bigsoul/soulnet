@@ -9,4 +9,10 @@ export interface ISignUpRequest {
 	password: string;
 }
 
-export type TRequest = ISignInRequest | ISignUpRequest;
+export interface ILearningRequest {
+	startFrom: number;
+	pageSize: number;
+	isArchive: boolean;
+}
+
+export type TRequest = ISignInRequest | ISignUpRequest | ILearningRequest;

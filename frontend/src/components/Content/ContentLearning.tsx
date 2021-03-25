@@ -63,6 +63,8 @@ interface IContentLearningState {
 	storingOpen: boolean;
 	runningScrollTop: number;
 	storingScrollTop: number;
+	runningLoading: boolean;
+	storingLoading: boolean;
 }
 
 interface IContentLearningDispatch {
@@ -71,6 +73,7 @@ interface IContentLearningDispatch {
 		branch: "running" | "storing",
 		scrollTop: number
 	) => void;
+	componentDidMount: () => void;
 }
 
 interface IContentLearningProps
@@ -90,6 +93,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 
 	componentDidMount = () => {
 		this.componentDidUpdate();
+		this.props.componentDidMount();
 	};
 
 	componentDidUpdate = () => {
@@ -109,6 +113,8 @@ class ContentLearning extends Component<IContentLearningProps> {
 			storingOpen,
 			branchOpenStateChange,
 			branchScrollTopChange,
+			runningLoading,
+			storingLoading,
 		} = this.props;
 
 		return (
@@ -136,7 +142,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 							Running
 						</TreeColumn>
 						<TreeColumn align="right">
-							<IconStyled path={loading} />
+							{runningLoading && <IconStyled path={loading} />}
 						</TreeColumn>
 					</TreeBranch>
 					{runningOpen && (
@@ -182,7 +188,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 							Storing
 						</TreeColumn>
 						<TreeColumn align="right">
-							<IconStyled path={loading} />
+							{storingLoading && <IconStyled path={loading} />}
 						</TreeColumn>
 					</TreeBranch>
 					{storingOpen && (
@@ -229,6 +235,8 @@ const mapStateToProps = (state: IStore): IContentLearningState => {
 		storingOpen: learning.storingOpen,
 		runningScrollTop: learning.runningScrollTop,
 		storingScrollTop: learning.storingScrollTop,
+		runningLoading: learning.runningLoading,
+		storingLoading: learning.storingLoading,
 	};
 };
 
@@ -237,8 +245,8 @@ const mapDispatchToProps = (
 ): IContentLearningDispatch => {
 	return {
 		branchOpenStateChange: (branch: "running" | "storing"): void => {
-			dispatch<ACT.ILearningBranchOpenStateChangeAction>({
-				type: ACT.LEARNING_BRANCH_OPEN_STATE_CHANGE,
+			dispatch<ACT.ILearningBranchOpenChangeAction>({
+				type: ACT.LEARNING_BRANCH_OPEN_CHANGE,
 				branch: branch,
 			});
 		},
@@ -250,6 +258,11 @@ const mapDispatchToProps = (
 				type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
 				branch: branch,
 				scrollTop: scrollTop,
+			});
+		},
+		componentDidMount: (): void => {
+			dispatch<ACT.ILearningComponentDidMountAction>({
+				type: ACT.LEARNING_COMPONENT_DID_MOUNT,
 			});
 		},
 	};

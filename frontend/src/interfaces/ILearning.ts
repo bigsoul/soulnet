@@ -10,7 +10,7 @@ interface ILearning {
 	iterationCurrent: number;
 	inputNeuronsCount: number;
 	deepLayersCount: number;
-	datasetLearning: IDatasetRef;
+	dataset: IDatasetRef;
 }
 
 export default ILearning;

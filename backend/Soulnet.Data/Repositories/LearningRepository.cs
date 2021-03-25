@@ -9,13 +9,18 @@ namespace Soulnet.Data.Repositories
     {        
         public LearningRepository (SoulnetContext context) : base (context) { }
 
-        public IEnumerable<Learning> GetSection(int startFrom, int pageSize) {
+        public IEnumerable<Learning> GetSection(int startFrom, int pageSize, bool? isArchive) {
             
-            var result = _context.Learning
-                            .AsNoTracking()
-                            .OrderBy(e => e.Id)
-                            .Skip(startFrom)
-                            .Take(pageSize);
+            var request = _context.Learning
+                            .AsNoTracking();
+
+            if (isArchive != null)
+                request = request
+                            .Where(e => e.IsArchive == isArchive);
+                            
+            var result = request.OrderBy(e => e.Id)
+                                .Skip(startFrom)
+                                .Take(pageSize);
             
             return result;
         }
