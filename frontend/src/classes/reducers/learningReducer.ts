@@ -1,4 +1,3 @@
-import ELearningState from "../../enums/ELearningState";
 import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../actions/ILearningAction";
 
@@ -9,56 +8,30 @@ export interface ILearningReducer {
 	runningLoading: boolean;
 	runningPageSize: number;
 	runningStartFrom: number;
+	runningClientHeight: number;
 	storingOpen: boolean;
 	storingScrollTop: number;
 	storingLoading: boolean;
 	storingPageSize: number;
 	storingStartFrom: number;
+	storingClientHeight: number;
 }
-
-const example = {
-	id: "0",
-	name: "Learning #0",
-	state: ELearningState.config,
-	isArchive: false,
-	iterationCount: 1000,
-	iterationCurrent: 200,
-	inputNeuronsCount: 50,
-	deepLayersCount: 20,
-	dataset: {
-		id: "1",
-		name: "Dataset #1",
-	},
-};
 
 const preloadedState: ILearningReducer = {
 	list: [],
 	runningOpen: true,
-	storingOpen: true,
 	runningScrollTop: 0,
-	storingScrollTop: 0,
 	runningLoading: false,
-	storingLoading: false,
 	runningPageSize: 50,
 	runningStartFrom: 0,
+	runningClientHeight: 0,
+	storingOpen: true,
+	storingScrollTop: 0,
+	storingLoading: false,
 	storingPageSize: 50,
 	storingStartFrom: 0,
+	storingClientHeight: 0,
 };
-
-/*for (let i = 0; i < 50; i++) {
-	preloadedState.list.push({
-		...example,
-		isArchive: false,
-		id: String(i),
-		name: "Learning #" + String(i),
-	});
-	preloadedState.list.push({
-		...example,
-		isArchive: true,
-		id: String(i + 100),
-		name: "Learning #" + String(i + 100),
-	});
-}*/
 
 const userReducer = (
 	curState: ILearningReducer = preloadedState,

@@ -13,12 +13,6 @@ function* workerLearningBranchScrollTopChange(
 ) {
 	const state = store.getState();
 
-	yield put<ACT.ILearningBranchScrollTopAction>({
-		type: ACT.LEARNING_BRANCH_SCROLL_TOP,
-		branch: action.branch,
-		scrollTop: action.scrollTop,
-	});
-
 	const {
 		runningLoading,
 		storingLoading,
@@ -27,6 +21,12 @@ function* workerLearningBranchScrollTopChange(
 		storingStartFrom,
 		storingPageSize,
 	} = state.learning;
+
+	yield put<ACT.ILearningBranchScrollTopAction>({
+		type: ACT.LEARNING_BRANCH_SCROLL_TOP,
+		branch: action.branch,
+		scrollTop: action.scrollTop,
+	});
 
 	if (runningLoading && action.branch === "running") return;
 	if (storingLoading && action.branch === "storing") return;
@@ -37,12 +37,16 @@ function* workerLearningBranchScrollTopChange(
 		loading: true,
 	});
 
+	const isRunning = action.branch === "running";
+
+	const startFrom = isRunning ? runningStartFrom : storingStartFrom;
+	const pageSize = isRunning ? runningPageSize : storingPageSize;
+	const isArchive = isRunning ? false : true;
+
 	const requestData: REQ.ILearningRequest = {
-		startFrom:
-			action.branch === "running" ? runningStartFrom : storingStartFrom,
-		pageSize:
-			action.branch === "running" ? runningPageSize : storingPageSize,
-		isArchive: action.branch === "running" ? false : true,
+		startFrom,
+		pageSize,
+		isArchive,
 	};
 
 	const responseBody: { data: RES.ILearningResponse } = yield call(
@@ -80,14 +84,35 @@ function* workerLearningComponentDidMount() {
 	}
 }
 
+function* workerLearningComponentDidUpdate() {
+	const state = store.getState();
+
+	if (!state.learning.list.length) {
+		yield put<ACT.ILearningBranchScrollTopChangeAction>({
+			type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
+			branch: "running",
+			scrollTop: 0,
+		});
+		yield put<ACT.ILearningBranchScrollTopChangeAction>({
+			type: ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
+			branch: "storing",
+			scrollTop: 0,
+		});
+	}
+}
+
 function* learningSagas() {
 	yield takeEvery(
 		ACT.LEARNING_BRANCH_SCROLL_TOP_CHANGE,
 		workerLearningBranchScrollTopChange
 	);
-	yield takeLatest(
+	/*yield takeLatest(
 		ACT.LEARNING_COMPONENT_DID_MOUNT,
 		workerLearningComponentDidMount
+	);*/
+	yield takeLatest(
+		ACT.LEARNING_COMPONENT_DID_UPDATE,
+		workerLearningComponentDidUpdate
 	);
 }
 

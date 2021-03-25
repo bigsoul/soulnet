@@ -6,6 +6,7 @@ export const LEARNING_BRANCH_SCROLL_TOP_CHANGE =
 export const LEARNING_BRANCH_SCROLL_TOP = "LEARNING/BRANCH-SCROLL-TOP";
 export const LEARNING_BRANCH_LOADING = "LEARNING/BRANCH-LOADING";
 export const LEARNING_COMPONENT_DID_MOUNT = "LEARNING/COMPONENT-DID-MOUNT";
+export const LEARNING_COMPONENT_DID_UPDATE = "LEARNING/COMPONENT-DID-UPDATE";
 export const LEARNING_INITIALIZE = "LEARNING/INITIALIZE";
 
 export interface ILearningBranchOpenChangeAction {
@@ -35,6 +36,12 @@ export interface ILearningComponentDidMountAction {
 	type: typeof LEARNING_COMPONENT_DID_MOUNT;
 }
 
+export interface ILearningComponentDidUpdateAction {
+	type: typeof LEARNING_COMPONENT_DID_UPDATE;
+	runningClientHeight: number;
+	storingClientHeight: number;
+}
+
 export interface ILearningInitializeAction {
 	type: typeof LEARNING_INITIALIZE;
 	learnings: ILearning[];
@@ -46,6 +53,7 @@ export type TLearningAction =
 	| ILearningBranchScrollTopAction
 	| ILearningBranchLoadingAction
 	| ILearningComponentDidMountAction
+	| ILearningComponentDidUpdateAction
 	| ILearningInitializeAction;
 
 export default TLearningAction;
