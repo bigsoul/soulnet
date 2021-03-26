@@ -8,7 +8,10 @@ import * as RES from "../../interfaces/IResponse";
 
 import store from "../store";
 
-function* workerLearningDidMount(action: ACT.ILearningDOMStateAction) {
+function* workerLearningDidMountEvent(action: ACT.ILearningDOMStateAction) {
+	yield put<ACT.ILearningMountingAction>({
+		type: ACT.LEARNING_DID_MOUNT,
+	});
 	yield put<ACT.ILearningDOMStateAction>({
 		type: ACT.LEARNING_CHECK_LOAD,
 		runningScrollTop: action.runningScrollTop,
@@ -18,7 +21,13 @@ function* workerLearningDidMount(action: ACT.ILearningDOMStateAction) {
 	});
 }
 
-function* workerLearningDidUpdate(action: ACT.ILearningDOMStateAction) {
+function* workerLearningDidUnmountEvent(action: ACT.ILearningMountingAction) {
+	yield put<ACT.ILearningMountingAction>({
+		type: ACT.LEARNING_DID_UNMOUNT,
+	});
+}
+
+function* workerLearningDidUpdateEvent(action: ACT.ILearningDOMStateAction) {
 	const { learning } = store.getState();
 
 	if (
@@ -116,8 +125,8 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 		requestData
 	);
 
-	yield put<ACT.ILearningInitializeAction>({
-		type: ACT.LEARNING_INITIALIZE,
+	yield put<ACT.ILearningLoadAction>({
+		type: ACT.LEARNING_LOAD,
 		learnings: responseBody.data,
 	});
 
@@ -129,9 +138,16 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 }
 
 function* learningSagas() {
-	yield takeEvery(ACT.LEARNING_DID_MOUNT, workerLearningDidMount);
-	yield takeEvery(ACT.LEARNING_DID_UPDATE, workerLearningDidUpdate);
+	yield takeEvery(ACT.LEARNING_DID_MOUNT_EVENT, workerLearningDidMountEvent);
 	yield takeEvery(ACT.LEARNING_CHECK_LOAD, workerLearningCheckLoad);
+	yield takeEvery(
+		ACT.LEARNING_DID_UNMOUNT_EVENT,
+		workerLearningDidUnmountEvent
+	);
+	yield takeEvery(
+		ACT.LEARNING_DID_UPDATE_EVENT,
+		workerLearningDidUpdateEvent
+	);
 	yield takeEvery(
 		ACT.LEARNING_BRANCH_SCROLL_EVENT,
 		workerLearningScrollEvent

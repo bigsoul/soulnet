@@ -3,6 +3,7 @@ import TLearningAction, * as ACT from "../actions/ILearningAction";
 
 export interface ILearningReducer {
 	list: ILearning[];
+	isInitialized: boolean;
 	runningOpen: boolean;
 	runningScrollTop: number;
 	runningLoading: boolean;
@@ -19,6 +20,7 @@ export interface ILearningReducer {
 
 const preloadedState: ILearningReducer = {
 	list: [],
+	isInitialized: false,
 	runningOpen: true,
 	runningScrollTop: 0,
 	runningLoading: false,
@@ -61,13 +63,19 @@ const userReducer = (
 				return { ...curState, storingLoading: action.loading };
 			return curState;
 		}
-		case ACT.LEARNING_INITIALIZE: {
+		case ACT.LEARNING_LOAD: {
 			const newState = { ...curState };
 			newState.list = [];
 			for (let i = 0; i < action.learnings.length; i++) {
 				newState.list.push(action.learnings[i]);
 			}
 			return newState;
+		}
+		case ACT.LEARNING_DID_MOUNT: {
+			return { ...curState, isInitialized: true };
+		}
+		case ACT.LEARNING_DID_UNMOUNT: {
+			return { ...curState, isInitialized: false };
 		}
 		default:
 			return curState;

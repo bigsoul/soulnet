@@ -61,8 +61,8 @@ interface IContentLearningState {
 	list: ILearning[];
 	runningOpen: boolean;
 	storingOpen: boolean;
-	runningScrollTop: number;
-	storingScrollTop: number;
+	runningScrollTop?: number;
+	storingScrollTop?: number;
 	runningLoading: boolean;
 	storingLoading: boolean;
 	runningClientHeight: number;
@@ -77,18 +77,19 @@ interface IContentLearningDispatch {
 		runningScrollTop: number,
 		storingScrollTop: number
 	) => void;
-	didMount: (
+	didMountEvent: (
 		runningClientHeight: number,
 		storingClientHeight: number,
 		runningScrollTop: number,
 		storingScrollTop: number
 	) => void;
-	didUpdate: (
+	didUpdateEvent: (
 		runningClientHeight: number,
 		storingClientHeight: number,
 		runningScrollTop: number,
 		storingScrollTop: number
 	) => void;
+	didUnmountEvent: () => void;
 }
 
 interface IContentLearningProps
@@ -162,12 +163,14 @@ class ContentLearning extends Component<IContentLearningProps> {
 		const runningContainer = this.runningContainerRef.current;
 		const storngContainer = this.storngContainerRef.current;
 
-		if (runningContainer) runningContainer.scrollTop = runningScrollTop;
-		if (storngContainer) storngContainer.scrollTop = storingScrollTop;
+		if (runningContainer && runningScrollTop)
+			runningContainer.scrollTop = runningScrollTop;
+		if (storngContainer && storingScrollTop)
+			storngContainer.scrollTop = storingScrollTop;
 
 		const domState = this.getDOMState();
 
-		this.props.didMount(
+		this.props.didMountEvent(
 			domState.runningClientHeight,
 			domState.storingClientHeight,
 			domState.runningScrollTop,
@@ -178,12 +181,16 @@ class ContentLearning extends Component<IContentLearningProps> {
 	componentDidUpdate = () => {
 		const domState = this.getDOMState();
 
-		this.props.didUpdate(
+		this.props.didUpdateEvent(
 			domState.runningClientHeight,
 			domState.storingClientHeight,
 			domState.runningScrollTop,
 			domState.storingScrollTop
 		);
+	};
+
+	componentWillUnmount = () => {
+		this.props.didUnmountEvent();
 	};
 
 	render = () => {
@@ -298,17 +305,23 @@ class ContentLearning extends Component<IContentLearningProps> {
 
 const mapStateToProps = (state: IStore): IContentLearningState => {
 	const { learning } = state;
-	return {
+
+	const props: IContentLearningState = {
 		list: learning.list,
 		runningOpen: learning.runningOpen,
 		storingOpen: learning.storingOpen,
-		runningScrollTop: learning.runningScrollTop,
-		storingScrollTop: learning.storingScrollTop,
 		runningLoading: learning.runningLoading,
 		storingLoading: learning.storingLoading,
 		runningClientHeight: learning.runningClientHeight,
 		storingClientHeight: learning.storingClientHeight,
 	};
+
+	if (!learning.isInitialized) {
+		props.runningScrollTop = learning.runningScrollTop;
+		props.storingScrollTop = learning.storingScrollTop;
+	}
+
+	return props;
 };
 
 const mapDispatchToProps = (
@@ -335,32 +348,37 @@ const mapDispatchToProps = (
 				storingClientHeight,
 			});
 		},
-		didMount: (
+		didMountEvent: (
 			runningClientHeight: number,
 			storingClientHeight: number,
 			runningScrollTop: number,
 			storingScrollTop: number
 		): void => {
 			dispatch<ACT.ILearningDOMStateAction>({
-				type: ACT.LEARNING_DID_MOUNT,
+				type: ACT.LEARNING_DID_MOUNT_EVENT,
 				runningScrollTop,
 				storingScrollTop,
 				runningClientHeight,
 				storingClientHeight,
 			});
 		},
-		didUpdate: (
+		didUpdateEvent: (
 			runningClientHeight: number,
 			storingClientHeight: number,
 			runningScrollTop: number,
 			storingScrollTop: number
 		): void => {
 			dispatch<ACT.ILearningDOMStateAction>({
-				type: ACT.LEARNING_DID_UPDATE,
+				type: ACT.LEARNING_DID_UPDATE_EVENT,
 				runningScrollTop,
 				storingScrollTop,
 				runningClientHeight,
 				storingClientHeight,
+			});
+		},
+		didUnmountEvent: (): void => {
+			dispatch<ACT.ILearningMountingAction>({
+				type: ACT.LEARNING_DID_UNMOUNT,
 			});
 		},
 	};
