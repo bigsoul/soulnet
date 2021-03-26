@@ -74,7 +74,7 @@ const userReducer = (
 		case ACT.LEARNING_DID_MOUNT: {
 			return { ...curState, isInitialized: true };
 		}
-		case ACT.LEARNING_DID_UNMOUNT: {
+		case ACT.LEARNING_WILL_UNMOUNT: {
 			return { ...curState, isInitialized: false };
 		}
 		default:

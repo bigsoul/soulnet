@@ -89,7 +89,7 @@ interface IContentLearningDispatch {
 		runningScrollTop: number,
 		storingScrollTop: number
 	) => void;
-	didUnmountEvent: () => void;
+	willUnmountEvent: () => void;
 }
 
 interface IContentLearningProps
@@ -190,7 +190,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 	};
 
 	componentWillUnmount = () => {
-		this.props.didUnmountEvent();
+		this.props.willUnmountEvent();
 	};
 
 	render = () => {
@@ -376,9 +376,9 @@ const mapDispatchToProps = (
 				storingClientHeight,
 			});
 		},
-		didUnmountEvent: (): void => {
+		willUnmountEvent: (): void => {
 			dispatch<ACT.ILearningMountingAction>({
-				type: ACT.LEARNING_DID_UNMOUNT,
+				type: ACT.LEARNING_WILL_UNMOUNT,
 			});
 		},
 	};

@@ -21,9 +21,9 @@ function* workerLearningDidMountEvent(action: ACT.ILearningDOMStateAction) {
 	});
 }
 
-function* workerLearningDidUnmountEvent(action: ACT.ILearningMountingAction) {
+function* workerLearningWillUnmountEvent(action: ACT.ILearningMountingAction) {
 	yield put<ACT.ILearningMountingAction>({
-		type: ACT.LEARNING_DID_UNMOUNT,
+		type: ACT.LEARNING_WILL_UNMOUNT,
 	});
 }
 
@@ -141,8 +141,8 @@ function* learningSagas() {
 	yield takeEvery(ACT.LEARNING_DID_MOUNT_EVENT, workerLearningDidMountEvent);
 	yield takeEvery(ACT.LEARNING_CHECK_LOAD, workerLearningCheckLoad);
 	yield takeEvery(
-		ACT.LEARNING_DID_UNMOUNT_EVENT,
-		workerLearningDidUnmountEvent
+		ACT.LEARNING_WILL_UNMOUNT_EVENT,
+		workerLearningWillUnmountEvent
 	);
 	yield takeEvery(
 		ACT.LEARNING_DID_UPDATE_EVENT,
