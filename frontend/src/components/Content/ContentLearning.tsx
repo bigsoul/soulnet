@@ -28,7 +28,6 @@ import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
 import React, { Component } from "react";
-import { timeStamp } from "node:console";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -71,8 +70,19 @@ interface IContentLearningState {
 }
 
 interface IContentLearningDispatch {
-	branchOpenChange: (branch: "running" | "storing") => void;
-	didMount: () => void;
+	branchOpenEvent: (branch: "running" | "storing") => void;
+	branchScrollEvent: (
+		runningClientHeight: number,
+		storingClientHeight: number,
+		runningScrollTop: number,
+		storingScrollTop: number
+	) => void;
+	didMount: (
+		runningClientHeight: number,
+		storingClientHeight: number,
+		runningScrollTop: number,
+		storingScrollTop: number
+	) => void;
 	didUpdate: (
 		runningClientHeight: number,
 		storingClientHeight: number,
@@ -101,26 +111,14 @@ class ContentLearning extends Component<IContentLearningProps> {
 	runningScrollStop = () => {
 		clearTimeout(this.runningIsScrolling);
 
-		let componentDidUpdate = this.componentDidUpdate;
+		let branchScrollEvent = this.branchScrollEvent;
 
 		this.runningIsScrolling = setTimeout(function () {
-			componentDidUpdate();
+			branchScrollEvent();
 		}, 50);
 	};
 
-	componentDidMount = () => {
-		const { runningScrollTop, storingScrollTop } = this.props;
-
-		const runningContainer = this.runningContainerRef.current;
-		const storngContainer = this.storngContainerRef.current;
-
-		if (runningContainer) runningContainer.scrollTop = runningScrollTop;
-		if (storngContainer) storngContainer.scrollTop = storingScrollTop;
-
-		this.componentDidUpdate();
-	};
-
-	componentDidUpdate = () => {
+	getDOMState = () => {
 		let runningClientHeight = 0;
 		let storingClientHeight = 0;
 
@@ -139,19 +137,52 @@ class ContentLearning extends Component<IContentLearningProps> {
 			storingScrollTop = storngContainer.scrollTop;
 		}
 
-		if (
-			runningScrollTop === this.props.runningScrollTop &&
-			storingScrollTop === this.props.storingScrollTop &&
-			runningClientHeight === this.props.runningClientHeight &&
-			storingClientHeight === this.props.storingClientHeight
-		)
-			return;
+		return {
+			runningScrollTop,
+			runningClientHeight,
+			storingScrollTop,
+			storingClientHeight,
+		};
+	};
+
+	branchScrollEvent = () => {
+		const domState = this.getDOMState();
+
+		this.props.branchScrollEvent(
+			domState.runningClientHeight,
+			domState.storingClientHeight,
+			domState.runningScrollTop,
+			domState.storingScrollTop
+		);
+	};
+
+	componentDidMount = () => {
+		const { runningScrollTop, storingScrollTop } = this.props;
+
+		const runningContainer = this.runningContainerRef.current;
+		const storngContainer = this.storngContainerRef.current;
+
+		if (runningContainer) runningContainer.scrollTop = runningScrollTop;
+		if (storngContainer) storngContainer.scrollTop = storingScrollTop;
+
+		const domState = this.getDOMState();
+
+		this.props.didMount(
+			domState.runningClientHeight,
+			domState.storingClientHeight,
+			domState.runningScrollTop,
+			domState.storingScrollTop
+		);
+	};
+
+	componentDidUpdate = () => {
+		const domState = this.getDOMState();
 
 		this.props.didUpdate(
-			runningClientHeight,
-			storingClientHeight,
-			runningScrollTop,
-			storingScrollTop
+			domState.runningClientHeight,
+			domState.storingClientHeight,
+			domState.runningScrollTop,
+			domState.storingScrollTop
 		);
 	};
 
@@ -160,7 +191,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 			list,
 			runningOpen,
 			storingOpen,
-			branchOpenChange,
+			branchOpenEvent,
 			runningLoading,
 			storingLoading,
 		} = this.props;
@@ -185,7 +216,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 								svgPath={treeCollapse}
 								svgPathSelected={treeExpand}
 								selected={runningOpen}
-								onClick={() => branchOpenChange("running")}
+								onClick={() => branchOpenEvent("running")}
 							/>
 							Running
 						</TreeColumn>
@@ -226,7 +257,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 								svgPath={treeCollapse}
 								svgPathSelected={treeExpand}
 								selected={storingOpen}
-								onClick={() => branchOpenChange("storing")}
+								onClick={() => branchOpenEvent("storing")}
 							/>
 							Storing
 						</TreeColumn>
@@ -284,24 +315,47 @@ const mapDispatchToProps = (
 	dispatch: Dispatch<TLearningAction>
 ): IContentLearningDispatch => {
 	return {
-		branchOpenChange: (branch: "running" | "storing"): void => {
-			dispatch<ACT.ILearningBranchOpenChangeAction>({
-				type: ACT.LEARNING_BRANCH_OPEN_CHANGE,
+		branchOpenEvent: (branch: "running" | "storing"): void => {
+			dispatch<ACT.ILearningBranchOpenEventAction>({
+				type: ACT.LEARNING_BRANCH_OPEN_EVENT,
 				branch: branch,
 			});
 		},
-		didMount: (): void => {
-			dispatch<ACT.ILearningDidMountAction>({
+		branchScrollEvent: (
+			runningClientHeight: number,
+			storingClientHeight: number,
+			runningScrollTop: number,
+			storingScrollTop: number
+		): void => {
+			dispatch<ACT.ILearningDOMStateAction>({
+				type: ACT.LEARNING_BRANCH_SCROLL_EVENT,
+				runningScrollTop,
+				storingScrollTop,
+				runningClientHeight,
+				storingClientHeight,
+			});
+		},
+		didMount: (
+			runningClientHeight: number,
+			storingClientHeight: number,
+			runningScrollTop: number,
+			storingScrollTop: number
+		): void => {
+			dispatch<ACT.ILearningDOMStateAction>({
 				type: ACT.LEARNING_DID_MOUNT,
+				runningScrollTop,
+				storingScrollTop,
+				runningClientHeight,
+				storingClientHeight,
 			});
 		},
 		didUpdate: (
-			runningClientHeight,
-			storingClientHeight,
-			runningScrollTop,
-			storingScrollTop
+			runningClientHeight: number,
+			storingClientHeight: number,
+			runningScrollTop: number,
+			storingScrollTop: number
 		): void => {
-			dispatch<ACT.ILearningDidUpdateAction>({
+			dispatch<ACT.ILearningDOMStateAction>({
 				type: ACT.LEARNING_DID_UPDATE,
 				runningScrollTop,
 				storingScrollTop,

@@ -38,7 +38,7 @@ const userReducer = (
 	action: TLearningAction
 ): ILearningReducer => {
 	switch (action.type) {
-		case ACT.LEARNING_BRANCH_OPEN_CHANGE: {
+		case ACT.LEARNING_BRANCH_OPEN_EVENT: {
 			if (action.branch === "running")
 				return { ...curState, runningOpen: !curState.runningOpen };
 			if (action.branch === "storing")
