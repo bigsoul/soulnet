@@ -1,6 +1,6 @@
 import service from "../utils/service";
 
-import { call, put, takeEvery } from "redux-saga/effects";
+import { call, put, takeLatest } from "redux-saga/effects";
 
 import * as ACT from "../actions/ILearningAction";
 import * as REQ from "../../interfaces/IRequest";
@@ -71,6 +71,7 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 	const state = store.getState();
 
 	const {
+		list,
 		runningLoading,
 		storingLoading,
 		runningStartFrom,
@@ -88,8 +89,9 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 		storingScrollTop === action.storingScrollTop &&
 		runningClientHeight === action.runningClientHeight &&
 		storingClientHeight === action.storingClientHeight
-	)
+	) {
 		return;
+	}
 
 	yield put<ACT.ILearningDOMStateAction>({
 		type: ACT.LEARNING_SET_DOM_STATE,
@@ -101,8 +103,26 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 
 	const isArchive = true;
 
-	if (runningLoading && isArchive) return;
-	if (storingLoading && !isArchive) return;
+	//if (runningLoading && isArchive) return;
+	//if (storingLoading && !isArchive) return;
+
+	const rowSize = 30;
+	const rowCount = list.length;
+
+	const rowMinStock = 5;
+
+	const pxScrollHeight = rowCount * rowSize;
+	const pxHiddenTop = action.runningScrollTop;
+	const pxHiddenButtom =
+		pxScrollHeight -
+		action.runningScrollTop -
+		(pxScrollHeight && action.runningClientHeight);
+
+	const rowHiddenTop = Math.trunc(pxHiddenTop / rowSize);
+	const rowHiddenButtom = Math.trunc(pxHiddenButtom / rowSize);
+
+	console.log("top: ", rowHiddenTop);
+	console.log("rowHiddenButtom: ", rowHiddenButtom);
 
 	yield put<ACT.ILearningBranchLoadingAction>({
 		type: ACT.LEARNING_BRANCH_LOADING,
@@ -138,17 +158,17 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 }
 
 function* learningSagas() {
-	yield takeEvery(ACT.LEARNING_DID_MOUNT_EVENT, workerLearningDidMountEvent);
-	yield takeEvery(ACT.LEARNING_CHECK_LOAD, workerLearningCheckLoad);
-	yield takeEvery(
+	yield takeLatest(ACT.LEARNING_DID_MOUNT_EVENT, workerLearningDidMountEvent);
+	yield takeLatest(ACT.LEARNING_CHECK_LOAD, workerLearningCheckLoad);
+	yield takeLatest(
 		ACT.LEARNING_WILL_UNMOUNT_EVENT,
 		workerLearningWillUnmountEvent
 	);
-	yield takeEvery(
+	yield takeLatest(
 		ACT.LEARNING_DID_UPDATE_EVENT,
 		workerLearningDidUpdateEvent
 	);
-	yield takeEvery(
+	yield takeLatest(
 		ACT.LEARNING_BRANCH_SCROLL_EVENT,
 		workerLearningScrollEvent
 	);

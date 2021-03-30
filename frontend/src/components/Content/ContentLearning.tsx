@@ -116,7 +116,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 
 		this.runningIsScrolling = setTimeout(function () {
 			branchScrollEvent();
-		}, 50);
+		}, 64);
 	};
 
 	getDOMState = () => {
@@ -165,6 +165,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 
 		if (runningContainer && runningScrollTop)
 			runningContainer.scrollTop = runningScrollTop;
+
 		if (storngContainer && storingScrollTop)
 			storngContainer.scrollTop = storingScrollTop;
 
@@ -203,7 +204,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 			storingLoading,
 		} = this.props;
 
-		return (
+		const result = (
 			<Content>
 				<Tree>
 					<TreeHeader svgPath={treeTree}>
@@ -300,6 +301,8 @@ class ContentLearning extends Component<IContentLearningProps> {
 				</Tree>
 			</Content>
 		);
+
+		return result;
 	};
 }
 
