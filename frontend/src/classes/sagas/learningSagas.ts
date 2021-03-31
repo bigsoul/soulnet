@@ -7,6 +7,35 @@ import * as REQ from "../../interfaces/IRequest";
 import * as RES from "../../interfaces/IResponse";
 
 import store from "../store";
+import { BranchDOMState } from "../reducers/learningReducer";
+
+function branchesEqual(
+	runningDOMState: BranchDOMState,
+	storingDOMState: BranchDOMState,
+	branches: BranchDOMState[]
+): boolean {
+	const result: BranchDOMState[] = [];
+
+	for (let i = 0; i < branches.length; i++) {
+		const item = branches[i];
+		if (
+			item.branchId === "running" &&
+			(runningDOMState.scrollTop !== item.scrollTop ||
+				runningDOMState.clientHeight !== item.clientHeight)
+		) {
+			result.push(item);
+		}
+		if (
+			item.branchId === "storing" &&
+			(storingDOMState.scrollTop !== item.scrollTop ||
+				storingDOMState.clientHeight !== item.clientHeight)
+		) {
+			result.push(item);
+		}
+	}
+
+	return !result.length;
+}
 
 function* workerLearningDidMountEvent(action: ACT.ILearningDOMStateAction) {
 	yield put<ACT.ILearningMountingAction>({
@@ -14,10 +43,7 @@ function* workerLearningDidMountEvent(action: ACT.ILearningDOMStateAction) {
 	});
 	yield put<ACT.ILearningDOMStateAction>({
 		type: ACT.LEARNING_CHECK_LOAD,
-		runningScrollTop: action.runningScrollTop,
-		runningClientHeight: action.runningClientHeight,
-		storingScrollTop: action.storingScrollTop,
-		storingClientHeight: action.storingClientHeight,
+		branches: action.branches,
 	});
 }
 
@@ -28,42 +54,26 @@ function* workerLearningWillUnmountEvent(action: ACT.ILearningMountingAction) {
 }
 
 function* workerLearningDidUpdateEvent(action: ACT.ILearningDOMStateAction) {
-	const { learning } = store.getState();
+	const { runningDOMState, storingDOMState } = store.getState().learning;
 
-	if (
-		learning.runningScrollTop === action.runningScrollTop &&
-		learning.storingScrollTop === action.storingScrollTop &&
-		learning.runningClientHeight === action.runningClientHeight &&
-		learning.storingClientHeight === action.storingClientHeight
-	)
+	if (branchesEqual(runningDOMState, storingDOMState, action.branches))
 		return;
 
 	yield put<ACT.ILearningDOMStateAction>({
 		type: ACT.LEARNING_CHECK_LOAD,
-		runningScrollTop: action.runningScrollTop,
-		runningClientHeight: action.runningClientHeight,
-		storingScrollTop: action.storingScrollTop,
-		storingClientHeight: action.storingClientHeight,
+		branches: action.branches,
 	});
 }
 
 function* workerLearningScrollEvent(action: ACT.ILearningDOMStateAction) {
-	const { learning } = store.getState();
+	const { runningDOMState, storingDOMState } = store.getState().learning;
 
-	if (
-		learning.runningScrollTop === action.runningScrollTop &&
-		learning.storingScrollTop === action.storingScrollTop &&
-		learning.runningClientHeight === action.runningClientHeight &&
-		learning.storingClientHeight === action.storingClientHeight
-	)
+	if (branchesEqual(runningDOMState, storingDOMState, action.branches))
 		return;
 
 	yield put<ACT.ILearningDOMStateAction>({
 		type: ACT.LEARNING_CHECK_LOAD,
-		runningScrollTop: action.runningScrollTop,
-		runningClientHeight: action.runningClientHeight,
-		storingScrollTop: action.storingScrollTop,
-		storingClientHeight: action.storingClientHeight,
+		branches: action.branches,
 	});
 }
 
@@ -72,57 +82,90 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 
 	const {
 		list,
-		runningLoading,
-		storingLoading,
 		runningStartFrom,
 		runningPageSize,
 		storingStartFrom,
 		storingPageSize,
-		runningScrollTop,
-		runningClientHeight,
-		storingScrollTop,
-		storingClientHeight,
+		runningDOMState,
+		storingDOMState,
+		runningOpen,
 	} = state.learning;
 
-	if (
-		runningScrollTop === action.runningScrollTop &&
-		storingScrollTop === action.storingScrollTop &&
-		runningClientHeight === action.runningClientHeight &&
-		storingClientHeight === action.storingClientHeight
-	) {
+	if (branchesEqual(runningDOMState, storingDOMState, action.branches))
 		return;
-	}
 
 	yield put<ACT.ILearningDOMStateAction>({
 		type: ACT.LEARNING_SET_DOM_STATE,
-		runningScrollTop: action.runningScrollTop,
-		runningClientHeight: action.runningClientHeight,
-		storingScrollTop: action.storingScrollTop,
-		storingClientHeight: action.storingClientHeight,
+		branches: action.branches,
 	});
 
 	const isArchive = true;
 
-	//if (runningLoading && isArchive) return;
-	//if (storingLoading && !isArchive) return;
+	if (!runningOpen) return;
+
+	/*let scrollTop = 0;
+	let clientHeight = 0;
+
+	for (let i = 0; i < action.branches.length; i++) {
+		const item = action.branches[i];
+		if (item.branchId === "running") {
+			scrollTop = item.scrollTop;
+			clientHeight = item.clientHeight;
+		}
+	}
+
+	const toDown = runningDOMState.scrollTop < scrollTop;
 
 	const rowSize = 30;
 	const rowCount = list.length;
-
 	const rowMinStock = 5;
 
 	const pxScrollHeight = rowCount * rowSize;
-	const pxHiddenTop = action.runningScrollTop;
+	const pxHiddenTop = scrollTop;
 	const pxHiddenButtom =
-		pxScrollHeight -
-		action.runningScrollTop -
-		(pxScrollHeight && action.runningClientHeight);
+		pxScrollHeight - scrollTop - (pxScrollHeight && clientHeight);
 
 	const rowHiddenTop = Math.trunc(pxHiddenTop / rowSize);
 	const rowHiddenButtom = Math.trunc(pxHiddenButtom / rowSize);
 
 	console.log("top: ", rowHiddenTop);
 	console.log("rowHiddenButtom: ", rowHiddenButtom);
+	console.log("rowCount: ", rowCount);
+
+	const startFrom = isArchive ? runningStartFrom : storingStartFrom;
+	const pageSize = isArchive ? runningPageSize : storingPageSize;
+
+	let newStartFrom = startFrom;
+	let newPageSize = pageSize;
+
+	if (toDown) {
+		if (rowHiddenButtom <= rowMinStock) {
+			if (rowHiddenTop < rowMinStock) {
+				newStartFrom = startFrom + 10;
+			} else {
+				newStartFrom = startFrom + rowHiddenTop;
+			}
+		} else {
+			return;
+		}
+	} else {
+		if (rowHiddenTop <= rowMinStock) {
+			newStartFrom = startFrom - 10;
+		} else {
+			return;
+		}
+	}
+
+	if (newStartFrom < 0) newStartFrom = 0;*/
+
+	if (list.length) return;
+
+	yield put<ACT.ILearningSetSectionAction>({
+		type: ACT.LEARNING_SET_SECTION,
+		branch: "running",
+		startFrom: runningStartFrom,
+		pageSize: runningPageSize,
+	});
 
 	yield put<ACT.ILearningBranchLoadingAction>({
 		type: ACT.LEARNING_BRANCH_LOADING,
@@ -130,12 +173,9 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 		loading: true,
 	});
 
-	const startFrom = isArchive ? runningStartFrom : storingStartFrom;
-	const pageSize = isArchive ? runningPageSize : storingPageSize;
-
 	const requestData: REQ.ILearningRequest = {
-		startFrom,
-		pageSize,
+		startFrom: runningStartFrom,
+		pageSize: runningPageSize,
 		isArchive,
 	};
 

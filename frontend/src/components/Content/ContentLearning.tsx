@@ -28,6 +28,7 @@ import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
 import React, { Component } from "react";
+import { BranchDOMState } from "../../classes/reducers/learningReducer";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -35,6 +36,23 @@ const ButtonStyled = styled(Button)`
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;
+`;
+
+const WadTop = styled.div<{ height: number }>`
+	height: ${(p) => `${p.height}px`};
+	box-sizing: border-box;
+	border-bottom: 1px solid #8a8a8a;
+	background-color: #be8b8b;
+`;
+
+const Emptiness = styled.div<{ height: number }>`
+	height: ${(p) => `${p.height}px`};
+	background-color: #a1c0a0;
+`;
+
+const WadBottom = styled.div<{ height: number }>`
+	height: ${(p) => `${p.height}px`};
+	background-color: #686fcf;
 `;
 
 const BasisContainer = styled.div`
@@ -45,11 +63,16 @@ const BasisContainer = styled.div`
 	scrollbar-width: none;
 `;
 
-const RunningContainer = styled(BasisContainer)<{ storingOpen: boolean }>`
-	height: ${(p) =>
-		p.storingOpen
+const RunningContainer = styled(BasisContainer)<{
+	storingOpen: boolean;
+	runningOpen: boolean;
+}>`
+	height: ${(p) => {
+		if (!p.runningOpen) return "0px";
+		return p.storingOpen
 			? "calc(35% - 30px - 30px)"
-			: "calc(100% - 30px - 30px - 30px)"};
+			: "calc(100% - 30px - 30px - 30px)";
+	}};
 `;
 
 const StoringContainer = styled(BasisContainer)<{ runningOpen: boolean }>`
@@ -60,35 +83,24 @@ const StoringContainer = styled(BasisContainer)<{ runningOpen: boolean }>`
 interface IContentLearningState {
 	list: ILearning[];
 	runningOpen: boolean;
-	storingOpen: boolean;
-	runningScrollTop?: number;
-	storingScrollTop?: number;
 	runningLoading: boolean;
+	runningWadTop: number;
+	runningWadBottom: number;
+	runningEmptiness: number;
+	runningDOMState: BranchDOMState;
+	storingOpen: boolean;
 	storingLoading: boolean;
-	runningClientHeight: number;
-	storingClientHeight: number;
+	storingWadTop: number;
+	storingWadBottom: number;
+	storingEmptiness: number;
+	storingDOMState: BranchDOMState;
 }
 
 interface IContentLearningDispatch {
 	branchOpenEvent: (branch: "running" | "storing") => void;
-	branchScrollEvent: (
-		runningClientHeight: number,
-		storingClientHeight: number,
-		runningScrollTop: number,
-		storingScrollTop: number
-	) => void;
-	didMountEvent: (
-		runningClientHeight: number,
-		storingClientHeight: number,
-		runningScrollTop: number,
-		storingScrollTop: number
-	) => void;
-	didUpdateEvent: (
-		runningClientHeight: number,
-		storingClientHeight: number,
-		runningScrollTop: number,
-		storingScrollTop: number
-	) => void;
+	branchScrollEvent: (branches: BranchDOMState[]) => void;
+	didMountEvent: (branches: BranchDOMState[]) => void;
+	didUpdateEvent: (branches: BranchDOMState[]) => void;
 	willUnmountEvent: () => void;
 }
 
@@ -107,10 +119,10 @@ class ContentLearning extends Component<IContentLearningProps> {
 	runningContainerRef: React.RefObject<HTMLDivElement>;
 	storngContainerRef: React.RefObject<HTMLDivElement>;
 
-	runningIsScrolling: any;
+	runningIsScrolling: NodeJS.Timeout | undefined;
 
 	runningScrollStop = () => {
-		clearTimeout(this.runningIsScrolling);
+		if (this.runningIsScrolling) clearTimeout(this.runningIsScrolling);
 
 		let branchScrollEvent = this.branchScrollEvent;
 
@@ -126,68 +138,99 @@ class ContentLearning extends Component<IContentLearningProps> {
 		let runningScrollTop = 0;
 		let storingScrollTop = 0;
 
+		let runningScrollHeight = 0;
+		let storingScrollHeight = 0;
+
 		const runningContainer = this.runningContainerRef.current;
 		const storngContainer = this.storngContainerRef.current;
 
 		if (runningContainer) {
 			runningClientHeight = runningContainer.clientHeight;
 			runningScrollTop = runningContainer.scrollTop;
+			runningScrollHeight = runningContainer.scrollHeight;
 		}
 		if (storngContainer) {
 			storingClientHeight = storngContainer.clientHeight;
 			storingScrollTop = storngContainer.scrollTop;
+			storingScrollHeight = storngContainer.scrollHeight;
 		}
 
 		return {
 			runningScrollTop,
 			runningClientHeight,
+			runningScrollHeight,
 			storingScrollTop,
 			storingClientHeight,
+			storingScrollHeight,
 		};
 	};
 
 	branchScrollEvent = () => {
 		const domState = this.getDOMState();
 
-		this.props.branchScrollEvent(
-			domState.runningClientHeight,
-			domState.storingClientHeight,
-			domState.runningScrollTop,
-			domState.storingScrollTop
-		);
+		this.props.branchScrollEvent([
+			new BranchDOMState(
+				"running",
+				domState.runningScrollTop,
+				domState.runningClientHeight,
+				domState.runningScrollHeight
+			),
+			new BranchDOMState(
+				"storing",
+				domState.storingScrollTop,
+				domState.storingClientHeight,
+				domState.storingScrollHeight
+			),
+		]);
 	};
 
 	componentDidMount = () => {
-		const { runningScrollTop, storingScrollTop } = this.props;
+		const { runningDOMState, storingDOMState } = this.props;
 
 		const runningContainer = this.runningContainerRef.current;
 		const storngContainer = this.storngContainerRef.current;
 
-		if (runningContainer && runningScrollTop)
-			runningContainer.scrollTop = runningScrollTop;
+		if (runningContainer && runningDOMState.scrollTop)
+			runningContainer.scrollTop = runningDOMState.scrollTop;
 
-		if (storngContainer && storingScrollTop)
-			storngContainer.scrollTop = storingScrollTop;
+		if (storngContainer && storingDOMState.scrollTop)
+			storngContainer.scrollTop = storingDOMState.scrollTop;
 
 		const domState = this.getDOMState();
 
-		this.props.didMountEvent(
-			domState.runningClientHeight,
-			domState.storingClientHeight,
-			domState.runningScrollTop,
-			domState.storingScrollTop
-		);
+		this.props.didMountEvent([
+			new BranchDOMState(
+				"running",
+				domState.runningScrollTop,
+				domState.runningClientHeight,
+				domState.runningScrollHeight
+			),
+			new BranchDOMState(
+				"storing",
+				domState.storingScrollTop,
+				domState.storingClientHeight,
+				domState.storingScrollHeight
+			),
+		]);
 	};
 
 	componentDidUpdate = () => {
 		const domState = this.getDOMState();
 
-		this.props.didUpdateEvent(
-			domState.runningClientHeight,
-			domState.storingClientHeight,
-			domState.runningScrollTop,
-			domState.storingScrollTop
-		);
+		this.props.didUpdateEvent([
+			new BranchDOMState(
+				"running",
+				domState.runningScrollTop,
+				domState.runningClientHeight,
+				domState.runningScrollHeight
+			),
+			new BranchDOMState(
+				"storing",
+				domState.storingScrollTop,
+				domState.storingClientHeight,
+				domState.storingScrollHeight
+			),
+		]);
 	};
 
 	componentWillUnmount = () => {
@@ -198,10 +241,13 @@ class ContentLearning extends Component<IContentLearningProps> {
 		const {
 			list,
 			runningOpen,
-			storingOpen,
-			branchOpenEvent,
 			runningLoading,
+			runningWadTop,
+			runningWadBottom,
+			runningEmptiness,
+			storingOpen,
 			storingLoading,
+			branchOpenEvent,
 		} = this.props;
 
 		const result = (
@@ -232,32 +278,34 @@ class ContentLearning extends Component<IContentLearningProps> {
 							{runningLoading && <IconStyled path={loading} />}
 						</TreeColumn>
 					</TreeBranch>
-					{runningOpen && (
-						<RunningContainer
-							ref={this.runningContainerRef}
-							storingOpen={storingOpen}
-							onScroll={this.runningScrollStop}
-						>
-							{list.map((item) => {
-								if (!item.isArchive) return false;
-								return (
-									<TreeItem key={item.id} level={1}>
-										<TreeColumn>
-											<IconStyled path={entityLearning} />
-											{item.name}
-										</TreeColumn>
-										<TreeColumn align="right">
-											<Player />
-										</TreeColumn>
-										<ButtonStyled
-											template="icon"
-											svgPath={treeFolder}
-										/>
-									</TreeItem>
-								);
-							})}
-						</RunningContainer>
-					)}
+					<RunningContainer
+						ref={this.runningContainerRef}
+						runningOpen={runningOpen}
+						storingOpen={storingOpen}
+						onScroll={this.runningScrollStop}
+					>
+						<WadTop height={runningWadTop} />
+						{list.map((item) => {
+							if (!item.isArchive) return false;
+							return (
+								<TreeItem key={item.id} level={1}>
+									<TreeColumn>
+										<IconStyled path={entityLearning} />
+										{item.name}
+									</TreeColumn>
+									<TreeColumn align="right">
+										<Player />
+									</TreeColumn>
+									<ButtonStyled
+										template="icon"
+										svgPath={treeFolder}
+									/>
+								</TreeItem>
+							);
+						})}
+						<Emptiness height={runningEmptiness} />
+						<WadBottom height={runningWadBottom} />
+					</RunningContainer>
 					<TreeBranch>
 						<TreeColumn>
 							<ButtonStyled
@@ -312,17 +360,18 @@ const mapStateToProps = (state: IStore): IContentLearningState => {
 	const props: IContentLearningState = {
 		list: learning.list,
 		runningOpen: learning.runningOpen,
-		storingOpen: learning.storingOpen,
 		runningLoading: learning.runningLoading,
+		runningWadTop: learning.runningWadTop,
+		runningWadBottom: learning.runningWadBottom,
+		runningEmptiness: learning.runningEmptiness,
+		runningDOMState: learning.runningDOMState,
+		storingOpen: learning.storingOpen,
 		storingLoading: learning.storingLoading,
-		runningClientHeight: learning.runningClientHeight,
-		storingClientHeight: learning.storingClientHeight,
+		storingWadTop: learning.storingWadTop,
+		storingWadBottom: learning.storingWadBottom,
+		storingEmptiness: learning.storingEmptiness,
+		storingDOMState: learning.storingDOMState,
 	};
-
-	if (!learning.isInitialized) {
-		props.runningScrollTop = learning.runningScrollTop;
-		props.storingScrollTop = learning.storingScrollTop;
-	}
 
 	return props;
 };
@@ -337,46 +386,22 @@ const mapDispatchToProps = (
 				branch: branch,
 			});
 		},
-		branchScrollEvent: (
-			runningClientHeight: number,
-			storingClientHeight: number,
-			runningScrollTop: number,
-			storingScrollTop: number
-		): void => {
+		branchScrollEvent: (branches: BranchDOMState[]): void => {
 			dispatch<ACT.ILearningDOMStateAction>({
 				type: ACT.LEARNING_BRANCH_SCROLL_EVENT,
-				runningScrollTop,
-				storingScrollTop,
-				runningClientHeight,
-				storingClientHeight,
+				branches: branches,
 			});
 		},
-		didMountEvent: (
-			runningClientHeight: number,
-			storingClientHeight: number,
-			runningScrollTop: number,
-			storingScrollTop: number
-		): void => {
+		didMountEvent: (branches: BranchDOMState[]): void => {
 			dispatch<ACT.ILearningDOMStateAction>({
 				type: ACT.LEARNING_DID_MOUNT_EVENT,
-				runningScrollTop,
-				storingScrollTop,
-				runningClientHeight,
-				storingClientHeight,
+				branches: branches,
 			});
 		},
-		didUpdateEvent: (
-			runningClientHeight: number,
-			storingClientHeight: number,
-			runningScrollTop: number,
-			storingScrollTop: number
-		): void => {
+		didUpdateEvent: (branches: BranchDOMState[]): void => {
 			dispatch<ACT.ILearningDOMStateAction>({
 				type: ACT.LEARNING_DID_UPDATE_EVENT,
-				runningScrollTop,
-				storingScrollTop,
-				runningClientHeight,
-				storingClientHeight,
+				branches: branches,
 			});
 		},
 		willUnmountEvent: (): void => {

@@ -1,38 +1,65 @@
 import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../actions/ILearningAction";
 
+export class BranchDOMState {
+	constructor(
+		branchId: "running" | "storing",
+		scrollTop?: number,
+		clientHeight?: number,
+		scrollHeight?: number
+	) {
+		this.branchId = branchId;
+		this.scrollTop = scrollTop || 0;
+		this.clientHeight = clientHeight || 0;
+		this.scrollHeight = scrollHeight || 0;
+	}
+
+	public branchId: "running" | "storing";
+	public scrollTop: number;
+	public clientHeight: number;
+	public scrollHeight: number;
+}
+
 export interface ILearningReducer {
 	list: ILearning[];
 	isInitialized: boolean;
 	runningOpen: boolean;
-	runningScrollTop: number;
 	runningLoading: boolean;
-	runningPageSize: number;
 	runningStartFrom: number;
-	runningClientHeight: number;
+	runningPageSize: number;
+	runningWadTop: number;
+	runningWadBottom: number;
+	runningEmptiness: number;
+	runningDOMState: BranchDOMState;
 	storingOpen: boolean;
-	storingScrollTop: number;
 	storingLoading: boolean;
-	storingPageSize: number;
 	storingStartFrom: number;
-	storingClientHeight: number;
+	storingPageSize: number;
+	storingWadTop: number;
+	storingWadBottom: number;
+	storingEmptiness: number;
+	storingDOMState: BranchDOMState;
 }
 
 const preloadedState: ILearningReducer = {
 	list: [],
 	isInitialized: false,
 	runningOpen: true,
-	runningScrollTop: 0,
 	runningLoading: false,
-	runningPageSize: 50,
 	runningStartFrom: 0,
-	runningClientHeight: 0,
+	runningPageSize: 50,
+	runningWadTop: 50,
+	runningWadBottom: 50,
+	runningEmptiness: 50,
+	runningDOMState: new BranchDOMState("running", 50),
 	storingOpen: true,
-	storingScrollTop: 0,
 	storingLoading: false,
-	storingPageSize: 50,
 	storingStartFrom: 0,
-	storingClientHeight: 0,
+	storingPageSize: 25,
+	storingWadTop: 50,
+	storingWadBottom: 50,
+	storingEmptiness: 0,
+	storingDOMState: new BranchDOMState("storing"),
 };
 
 const userReducer = (
@@ -48,13 +75,37 @@ const userReducer = (
 			return curState;
 		}
 		case ACT.LEARNING_SET_DOM_STATE: {
-			return {
-				...curState,
-				runningScrollTop: action.runningScrollTop,
-				runningClientHeight: action.runningClientHeight,
-				storingScrollTop: action.storingScrollTop,
-				storingClientHeight: action.storingClientHeight,
-			};
+			const newState = { ...curState };
+
+			for (let i = 0; i < action.branches.length; i++) {
+				const item = action.branches[i];
+				const newDOMState = new BranchDOMState(
+					item.branchId,
+					item.scrollTop,
+					item.clientHeight,
+					item.scrollHeight
+				);
+				if (item.branchId === "running") {
+					newState.runningDOMState = newDOMState;
+				}
+				if (item.branchId === "storing") {
+					newState.storingDOMState = newDOMState;
+				}
+			}
+
+			return newState;
+		}
+		case ACT.LEARNING_SET_SECTION: {
+			const newState = { ...curState };
+			if (action.branch === "running") {
+				newState.runningStartFrom = action.startFrom;
+				newState.runningPageSize = action.pageSize;
+			}
+			if (action.branch === "storing") {
+				newState.storingStartFrom = action.startFrom;
+				newState.storingPageSize = action.pageSize;
+			}
+			return newState;
 		}
 		case ACT.LEARNING_BRANCH_LOADING: {
 			if (action.branch === "running")

@@ -1,4 +1,5 @@
 import ILearning from "../../interfaces/ILearning";
+import { BranchDOMState } from "../reducers/learningReducer";
 
 // UI
 
@@ -13,6 +14,7 @@ export const LEARNING_DID_MOUNT_EVENT = "LEARNING/DID-MOUNT-EVENT";
 export const LEARNING_BRANCH_LOADING = "LEARNING/BRANCH-LOADING";
 export const LEARNING_SET_DOM_STATE = "LEARNING/SET-DOM-STATE";
 export const LEARNING_WILL_UNMOUNT = "LEARNING/WILL-UNMOUNT";
+export const LEARNING_SET_SECTION = "LEARNING/SET-SECTION";
 export const LEARNING_CHECK_LOAD = "LEARNING/CHECK-LOAD";
 export const LEARNING_DID_MOUNT = "LEARNING/DID-MOUNT";
 export const LEARNING_LOAD = "LEARNING/LOAD";
@@ -32,6 +34,13 @@ export interface ILearningMountingAction {
 	type: typeof LEARNING_DID_MOUNT | typeof LEARNING_WILL_UNMOUNT;
 }
 
+export interface ILearningSetSectionAction {
+	type: typeof LEARNING_SET_SECTION;
+	branch: "running" | "storing";
+	startFrom: number;
+	pageSize: number;
+}
+
 export interface ILearningDOMStateAction {
 	type:
 		| typeof LEARNING_BRANCH_SCROLL_EVENT
@@ -39,10 +48,7 @@ export interface ILearningDOMStateAction {
 		| typeof LEARNING_DID_UPDATE_EVENT
 		| typeof LEARNING_SET_DOM_STATE
 		| typeof LEARNING_CHECK_LOAD;
-	runningScrollTop: number;
-	storingScrollTop: number;
-	runningClientHeight: number;
-	storingClientHeight: number;
+	branches: BranchDOMState[];
 }
 
 export interface ILearningLoadAction {
@@ -53,6 +59,7 @@ export interface ILearningLoadAction {
 export type TLearningAction =
 	| ILearningBranchOpenEventAction
 	| ILearningBranchLoadingAction
+	| ILearningSetSectionAction
 	| ILearningMountingAction
 	| ILearningDOMStateAction
 	| ILearningLoadAction;

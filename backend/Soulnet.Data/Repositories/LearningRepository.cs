@@ -18,7 +18,7 @@ namespace Soulnet.Data.Repositories
                 request = request
                             .Where(e => e.IsArchive == isArchive);
                             
-            var result = request.OrderBy(e => e.Id)
+            var result = request.OrderBy(e => e.Name)
                                 .Skip(startFrom)
                                 .Take(pageSize);
             
