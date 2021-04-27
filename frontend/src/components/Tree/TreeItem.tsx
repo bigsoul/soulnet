@@ -1,20 +1,30 @@
 import styled from "styled-components";
 
-interface ITreeItemProps {
+const Item = styled.div`
+	height: 30px;
+	box-sizing: border-box;
+	border: 1px solid #46bd50;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
+export interface IDataItem {
+	id: number;
+}
+
+export interface ITreeItemProps {
+	index: number;
+	dataItem: IDataItem;
+}
+
+interface ITreeItemPrivateProps {
 	children?: React.ReactNode;
 	level?: number;
 }
 
-const TreeItemDiv = styled.div<ITreeItemProps>`
-	height: 29px;
-	border-bottom: 1px solid #8a8a8a;
-	display: flex;
-	align-items: center;
-	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
-`;
-
-const TreeItem = (props: ITreeItemProps) => (
-	<TreeItemDiv level={props.level || 0}>{props.children}</TreeItemDiv>
-);
+const TreeItem = (props: ITreeItemPrivateProps) => {
+	return <Item id="tree-item">{props.children}</Item>;
+};
 
 export default TreeItem;
