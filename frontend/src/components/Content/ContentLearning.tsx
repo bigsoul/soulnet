@@ -6,7 +6,11 @@ import Content from "../Content";
 import Tree from "../Tree/Tree";
 import TreeBranch from "../Tree/TreeBranch";
 import TreeHeader from "../Tree/TreeHeader";
-import TreeItem from "../Tree/TreeItem";
+import TreeItem, {
+	DataItem,
+	IDataItem,
+	ITreeItemProps,
+} from "../Tree/TreeItem";
 import TreeColumn from "../Tree/TreeColumn";
 import Button from "../Button";
 import Player from "../Player";
@@ -29,6 +33,7 @@ import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
 import React, { Component } from "react";
 import { BranchDOMState } from "../../classes/reducers/learningReducer";
+import treeListCreator from "../Tree/TreeList";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -36,23 +41,6 @@ const ButtonStyled = styled(Button)`
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;
-`;
-
-const WadTop = styled.div<{ height: number }>`
-	height: ${(p) => `${p.height}px`};
-	box-sizing: border-box;
-	border-bottom: 1px solid #8a8a8a;
-	background-color: #be8b8b;
-`;
-
-const Emptiness = styled.div<{ height: number }>`
-	height: ${(p) => `${p.height}px`};
-	background-color: #a1c0a0;
-`;
-
-const WadBottom = styled.div<{ height: number }>`
-	height: ${(p) => `${p.height}px`};
-	background-color: #686fcf;
 `;
 
 const BasisContainer = styled.div`
@@ -73,12 +61,21 @@ const RunningContainer = styled(BasisContainer)<{
 			? "calc(35% - 30px - 30px)"
 			: "calc(100% - 30px - 30px - 30px)";
 	}};
+	overflow: hidden;
+	position: relative;
 `;
 
 const StoringContainer = styled(BasisContainer)<{ runningOpen: boolean }>`
 	height: ${(p) =>
 		p.runningOpen ? "calc(65% - 30px)" : "calc(100% - 30px - 30px - 30px)"};
+	position: relative;
 `;
+
+interface ILearningDataItem {
+	name: string;
+}
+
+const TreeList = treeListCreator<ILearningDataItem>();
 
 interface IContentLearningState {
 	list: ILearning[];
@@ -239,12 +236,8 @@ class ContentLearning extends Component<IContentLearningProps> {
 
 	render = () => {
 		const {
-			list,
 			runningOpen,
 			runningLoading,
-			runningWadTop,
-			runningWadBottom,
-			runningEmptiness,
 			storingOpen,
 			storingLoading,
 			branchOpenEvent,
@@ -279,19 +272,26 @@ class ContentLearning extends Component<IContentLearningProps> {
 						</TreeColumn>
 					</TreeBranch>
 					<RunningContainer
-						ref={this.runningContainerRef}
 						runningOpen={runningOpen}
 						storingOpen={storingOpen}
-						onScroll={this.runningScrollStop}
 					>
-						<WadTop height={runningWadTop} />
-						{list.map((item) => {
-							if (!item.isArchive) return false;
-							return (
-								<TreeItem key={item.id} level={1}>
+						<TreeList
+							dataList={[{ id: "1", name: "Learning #1" }]}
+							dataOffset={0}
+							dataLimit={50}
+							scrollOffset={0}
+							dataItemHeight={30}
+							preLoaderUpMaxHeight={150}
+							preLoaderDownMaxHeight={150}
+							onLoadUp={(dataOffset, dataLimit) => {}}
+							onLoadDown={(dataOffset, dataLimit) => {}}
+							onScroll={(scrollOffset) => {}}
+						>
+							{(props: ITreeItemProps<ILearningDataItem>) => (
+								<TreeItem level={1}>
 									<TreeColumn>
 										<IconStyled path={entityLearning} />
-										{item.name}
+										{props.dataItem.name}
 									</TreeColumn>
 									<TreeColumn align="right">
 										<Player />
@@ -301,10 +301,8 @@ class ContentLearning extends Component<IContentLearningProps> {
 										svgPath={treeFolder}
 									/>
 								</TreeItem>
-							);
-						})}
-						<Emptiness height={runningEmptiness} />
-						<WadBottom height={runningWadBottom} />
+							)}
+						</TreeList>
 					</RunningContainer>
 					<TreeBranch>
 						<TreeColumn>
@@ -322,28 +320,36 @@ class ContentLearning extends Component<IContentLearningProps> {
 						</TreeColumn>
 					</TreeBranch>
 					{storingOpen && (
-						<StoringContainer
-							ref={this.storngContainerRef}
-							runningOpen={runningOpen}
-							onScroll={this.runningScrollStop}
-						>
-							{list.map((item) => {
-								if (item.isArchive) return false;
-								return (
-									<TreeItem key={item.id} level={1}>
+						<StoringContainer runningOpen={runningOpen}>
+							{" "}
+							<TreeList
+								dataList={[{ id: "2", name: "Learning #2" }]}
+								dataOffset={0}
+								dataLimit={50}
+								scrollOffset={0}
+								dataItemHeight={30}
+								preLoaderUpMaxHeight={150}
+								preLoaderDownMaxHeight={150}
+								onLoadUp={(dataOffset, dataLimit) => {}}
+								onLoadDown={(dataOffset, dataLimit) => {}}
+								onScroll={(scrollOffset) => {}}
+							>
+								{(props: ITreeItemProps<ILearningDataItem>) => (
+									<TreeItem level={1}>
 										<TreeColumn>
 											<IconStyled path={entityLearning} />
-											{item.name}
+											{props.dataItem.name}
 										</TreeColumn>
 										<TreeColumn align="right">
-											<ButtonStyled
-												template="icon"
-												svgPath={treeDelete}
-											/>
+											<Player />
 										</TreeColumn>
+										<ButtonStyled
+											template="icon"
+											svgPath={treeFolder}
+										/>
 									</TreeItem>
-								);
-							})}
+								)}
+							</TreeList>
 						</StoringContainer>
 					)}
 				</Tree>

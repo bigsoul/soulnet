@@ -1,21 +1,24 @@
 import styled from "styled-components";
 
-const Item = styled.div`
-	height: 30px;
-	box-sizing: border-box;
-	border: 1px solid #46bd50;
+const Item = styled.div<ITreeItemPrivateProps>`
+	height: 29px;
+	border-bottom: 1px solid #8a8a8a;
 	display: flex;
-	justify-content: center;
 	align-items: center;
+	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
 `;
 
 export interface IDataItem {
-	id: number;
+	id: string;
 }
 
-export interface ITreeItemProps {
+export type DataItem<T, U = { id: string }> = {
+	[K in keyof (T & U)]: (T & U)[K];
+};
+
+export interface ITreeItemProps<T> {
 	index: number;
-	dataItem: IDataItem;
+	dataItem: DataItem<T>;
 }
 
 interface ITreeItemPrivateProps {
@@ -24,7 +27,11 @@ interface ITreeItemPrivateProps {
 }
 
 const TreeItem = (props: ITreeItemPrivateProps) => {
-	return <Item id="tree-item">{props.children}</Item>;
+	return (
+		<Item id="tree-item" level={props.level || 0}>
+			{props.children}
+		</Item>
+	);
 };
 
 export default TreeItem;
