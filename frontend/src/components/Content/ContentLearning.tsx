@@ -6,11 +6,7 @@ import Content from "../Content";
 import Tree from "../Tree/Tree";
 import TreeBranch from "../Tree/TreeBranch";
 import TreeHeader from "../Tree/TreeHeader";
-import TreeItem, {
-	DataItem,
-	IDataItem,
-	ITreeItemProps,
-} from "../Tree/TreeItem";
+import TreeItem, { DataItem, ITreeItemProps } from "../Tree/TreeItem";
 import TreeColumn from "../Tree/TreeColumn";
 import Button from "../Button";
 import Player from "../Player";
@@ -105,6 +101,12 @@ interface IContentLearningProps
 	extends IContentLearningState,
 		IContentLearningDispatch {}
 
+const initDataList = () => {
+	const result: DataItem<ILearningDataItem>[] = [];
+	for (let i = 0; i < 1000; i++)
+		result.push({ id: i.toString(), name: "Name #" + i });
+	return result;
+};
 class ContentLearning extends Component<IContentLearningProps> {
 	constructor(props: IContentLearningProps) {
 		super(props);
@@ -276,7 +278,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 						storingOpen={storingOpen}
 					>
 						<TreeList
-							dataList={[{ id: "1", name: "Learning #1" }]}
+							dataList={initDataList()}
 							dataOffset={0}
 							dataLimit={50}
 							scrollOffset={0}
@@ -321,9 +323,8 @@ class ContentLearning extends Component<IContentLearningProps> {
 					</TreeBranch>
 					{storingOpen && (
 						<StoringContainer runningOpen={runningOpen}>
-							{" "}
 							<TreeList
-								dataList={[{ id: "2", name: "Learning #2" }]}
+								dataList={initDataList()}
 								dataOffset={0}
 								dataLimit={50}
 								scrollOffset={0}

@@ -6,7 +6,7 @@ import {
 	PureComponent,
 } from "react";
 import styled from "styled-components";
-import { DataItem, IDataItem } from "./TreeItem";
+import { DataItem } from "./TreeItem";
 import { ITreeItemProps } from "./TreeItem";
 
 const ListBox = styled.div`
@@ -49,18 +49,8 @@ const calculateNewDataOffset = (
 	return 0;
 };
 
-const mutationState = {
-	dataOffset: 0,
-	dataListHeight: 0,
-	dataListLength: 0,
-	listBoxHeight: 0,
-	scrollOffset: 0,
-	scrollStep: 0,
-	listBoxRef: createRef<HTMLDivElement>(),
-};
-
 const treeListCreator = function <T>() {
-	type ITreeListProps = {
+	type TreeListProps = {
 		children: FunctionComponent<ITreeItemProps<T>>;
 		dataList: DataItem<T>[];
 		dataOffset: number;
@@ -74,21 +64,29 @@ const treeListCreator = function <T>() {
 		onScroll?: (scrollOffset: number) => void;
 	};
 
-	type ITreeListState = {
+	type TreeListState = {
 		dataListHeight: number;
 		preLoaderUpTop: number;
 		preLoaderDownTop: number;
 		preLoaderUpHeight: number;
 		preLoaderDownHeight: number;
+		mutationState: MutationState;
 	};
 
-	return class TreeList extends PureComponent<
-		ITreeListProps,
-		ITreeListState
-	> {
+	type MutationState = {
+		dataOffset: number;
+		dataListHeight: number;
+		dataListLength: number;
+		listBoxHeight: number;
+		scrollOffset: number;
+		scrollStep: number;
+		listBoxRef: React.RefObject<HTMLDivElement>;
+	};
+
+	return class TreeList extends PureComponent<TreeListProps, TreeListState> {
 		resizeObserver: ResizeObserver;
 
-		constructor(props: ITreeListProps) {
+		constructor(props: TreeListProps) {
 			super(props);
 
 			this.state = {
@@ -97,7 +95,19 @@ const treeListCreator = function <T>() {
 				preLoaderDownTop: 0,
 				preLoaderUpHeight: 0,
 				preLoaderDownHeight: 0,
+				mutationState: {
+					dataOffset: props.dataOffset,
+					dataListHeight:
+						props.dataItemHeight * props.dataList.length,
+					dataListLength: props.dataList.length,
+					listBoxHeight: 0,
+					scrollOffset: props.scrollOffset,
+					scrollStep: 0,
+					listBoxRef: createRef<HTMLDivElement>(),
+				},
 			};
+
+			const { mutationState } = this.state;
 
 			this.resizeObserver = new ResizeObserver(
 				(entries: ResizeObserverEntry[]) => {
@@ -107,19 +117,15 @@ const treeListCreator = function <T>() {
 					this.setState({});
 				}
 			);
-
-			mutationState.dataOffset = props.dataOffset;
-			mutationState.dataListLength = props.dataList.length;
-			mutationState.dataListHeight =
-				props.dataItemHeight * props.dataList.length;
-			mutationState.scrollOffset = props.scrollOffset;
 		}
 
 		static getDerivedStateFromProps = (
-			props: ITreeListProps,
-			state: ITreeListState
-		): ITreeListState => {
+			props: TreeListProps,
+			state: TreeListState
+		): TreeListState => {
 			//console.debug('TreeList - getDerivedStateFromProps')
+
+			const { mutationState } = state;
 
 			// basic properties of the calculation algorithm
 
@@ -267,11 +273,14 @@ const treeListCreator = function <T>() {
 				preLoaderDownTop: preLoaderDownTop,
 				preLoaderUpHeight: preLoaderUpHeight,
 				preLoaderDownHeight: preLoaderDownHeight,
+				mutationState: mutationState,
 			};
 		};
 
 		handlerOnScroll = (scrollTop: number) => {
-			//console.debug('TreeList - handlerOnScrollStop')
+			//console.debug("TreeList - handlerOnScrollStop");
+
+			const { mutationState } = this.state;
 
 			let scroll = mutationState.scrollOffset - scrollTop;
 
@@ -284,6 +293,8 @@ const treeListCreator = function <T>() {
 
 		handlerOnWheel = (deltaY: number) => {
 			//console.debug('TreeList - handlerOnWheel: ', deltaY)
+
+			const { mutationState } = this.state;
 
 			const { props, state } = this;
 
@@ -319,6 +330,7 @@ const treeListCreator = function <T>() {
 			//console.debug('TreeList - render')
 
 			const { props } = this;
+			const { mutationState } = this.state;
 
 			const items: ReactNode[] = [];
 
@@ -368,6 +380,7 @@ const treeListCreator = function <T>() {
 
 		componentDidUpdate = () => {
 			const { props } = this;
+			const { mutationState } = this.state;
 
 			const dataListHeight = props.dataItemHeight * props.dataList.length;
 			const diffHeight = dataListHeight - mutationState.dataListHeight;
@@ -380,6 +393,8 @@ const treeListCreator = function <T>() {
 		};
 
 		componentDidMount = () => {
+			const { mutationState } = this.state;
+
 			if (mutationState.listBoxRef.current) {
 				mutationState.listBoxHeight = Math.round(
 					mutationState.listBoxRef.current.clientHeight
@@ -394,6 +409,8 @@ const treeListCreator = function <T>() {
 		};
 
 		componentWillUnmount = () => {
+			const { mutationState } = this.state;
+
 			if (mutationState.listBoxRef.current)
 				this.resizeObserver.unobserve(mutationState.listBoxRef.current);
 
