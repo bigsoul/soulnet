@@ -7,6 +7,7 @@ import userSagas from "./sagas/userSagas";
 import pathSagas from "./sagas/pathSagas";
 import formSagas from "./sagas/formSagas";
 import learningSagas from "./sagas/learningSagas";
+import treeSagas from "./sagas/treeSagas";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -21,6 +22,7 @@ const configureStore = () => {
 	sagaMiddleware.run(pathSagas);
 	sagaMiddleware.run(formSagas);
 	sagaMiddleware.run(learningSagas);
+	sagaMiddleware.run(treeSagas);
 
 	return store;
 };

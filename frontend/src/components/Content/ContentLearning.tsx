@@ -31,7 +31,7 @@ import React, { Component } from "react";
 import { BranchDOMState } from "../../classes/reducers/learningReducer";
 import treeListCreator from "../Tree/TreeList";
 import {
-	ITreeOnLoadAction,
+	ITreeOnLoadEventAction,
 	ITreeOnScrollAction,
 	TREE_ON_LOAD_EVENT,
 	TREE_ON_SCROLL,
@@ -250,6 +250,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 
 	render = () => {
 		const {
+			runningList,
 			runningOpen,
 			runningLoading,
 			storingOpen,
@@ -292,7 +293,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 						storingOpen={storingOpen}
 					>
 						<TreeList
-							dataList={initDataList()}
+							dataList={runningList}
 							dataOffset={0}
 							dataLimit={50}
 							scrollOffset={0}
@@ -418,7 +419,7 @@ const mapStateToProps = (state: IStore): IContentLearningState => {
 
 const mapDispatchToProps = (
 	dispatch: Dispatch<
-		TLearningAction | ITreeOnLoadAction | ITreeOnScrollAction
+		TLearningAction | ITreeOnLoadEventAction | ITreeOnScrollAction
 	>
 ): IContentLearningDispatch => {
 	return {
@@ -452,7 +453,7 @@ const mapDispatchToProps = (
 			});
 		},
 		treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => {
-			dispatch<ITreeOnLoadAction>({
+			dispatch<ITreeOnLoadEventAction>({
 				type: TREE_ON_LOAD_EVENT,
 				listKey: key,
 				dataLimit: limit,
