@@ -13,11 +13,13 @@ import { history } from "./classes/reducers/routerReducer";
 /* <React.StrictMode> */
 
 ReactDOM.render(
-	<Provider store={store}>
-		<ConnectedRouter history={history}>
-			<App />
-		</ConnectedRouter>
-	</Provider>,
+	<React.StrictMode>
+		<Provider store={store}>
+			<ConnectedRouter history={history}>
+				<App />
+			</ConnectedRouter>
+		</Provider>
+	</React.StrictMode>,
 	document.getElementById("root")
 );
 

@@ -30,6 +30,14 @@ import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 import React, { Component } from "react";
 import { BranchDOMState } from "../../classes/reducers/learningReducer";
 import treeListCreator from "../Tree/TreeList";
+import {
+	ITreeOnLoadAction,
+	ITreeOnScrollAction,
+	TREE_ON_LOAD_EVENT,
+	TREE_ON_SCROLL,
+} from "../../classes/actions/ITreeAction";
+import ETreeList from "../../enums/ETreeList";
+import { TreeListEntity } from "../../classes/reducers/treeReducer";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -74,6 +82,8 @@ interface ILearningDataItem {
 const TreeList = treeListCreator<ILearningDataItem>();
 
 interface IContentLearningState {
+	runningList: TreeListEntity[];
+	storingList: TreeListEntity[];
 	list: ILearning[];
 	runningOpen: boolean;
 	runningLoading: boolean;
@@ -95,6 +105,8 @@ interface IContentLearningDispatch {
 	didMountEvent: (branches: BranchDOMState[]) => void;
 	didUpdateEvent: (branches: BranchDOMState[]) => void;
 	willUnmountEvent: () => void;
+	treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => void;
+	treeOnScroll: (key: ETreeList, offset: number) => void;
 }
 
 interface IContentLearningProps
@@ -103,7 +115,7 @@ interface IContentLearningProps
 
 const initDataList = () => {
 	const result: DataItem<ILearningDataItem>[] = [];
-	for (let i = 0; i < 1000; i++)
+	for (let i = 0; i < 50; i++)
 		result.push({ id: i.toString(), name: "Name #" + i });
 	return result;
 };
@@ -243,6 +255,8 @@ class ContentLearning extends Component<IContentLearningProps> {
 			storingOpen,
 			storingLoading,
 			branchOpenEvent,
+			treeOnLoadEvent,
+			treeOnScroll,
 		} = this.props;
 
 		const result = (
@@ -285,9 +299,26 @@ class ContentLearning extends Component<IContentLearningProps> {
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
-							onLoadUp={(dataOffset, dataLimit) => {}}
-							onLoadDown={(dataOffset, dataLimit) => {}}
-							onScroll={(scrollOffset) => {}}
+							onLoadUp={(dataOffset, dataLimit) => {
+								treeOnLoadEvent(
+									ETreeList.LearningRunning,
+									dataLimit,
+									dataOffset
+								);
+							}}
+							onLoadDown={(dataOffset, dataLimit) => {
+								treeOnLoadEvent(
+									ETreeList.LearningRunning,
+									dataLimit,
+									dataOffset
+								);
+							}}
+							onScroll={(scrollOffset) => {
+								treeOnScroll(
+									ETreeList.LearningRunning,
+									scrollOffset
+								);
+							}}
 						>
 							{(props: ITreeItemProps<ILearningDataItem>) => (
 								<TreeItem level={1}>
@@ -362,9 +393,11 @@ class ContentLearning extends Component<IContentLearningProps> {
 }
 
 const mapStateToProps = (state: IStore): IContentLearningState => {
-	const { learning } = state;
+	const { learning, tree } = state;
 
 	const props: IContentLearningState = {
+		runningList: tree[ETreeList.LearningRunning].list,
+		storingList: tree[ETreeList.LearningStoring].list,
 		list: learning.list,
 		runningOpen: learning.runningOpen,
 		runningLoading: learning.runningLoading,
@@ -384,7 +417,9 @@ const mapStateToProps = (state: IStore): IContentLearningState => {
 };
 
 const mapDispatchToProps = (
-	dispatch: Dispatch<TLearningAction>
+	dispatch: Dispatch<
+		TLearningAction | ITreeOnLoadAction | ITreeOnScrollAction
+	>
 ): IContentLearningDispatch => {
 	return {
 		branchOpenEvent: (branch: "running" | "storing"): void => {
@@ -414,6 +449,21 @@ const mapDispatchToProps = (
 		willUnmountEvent: (): void => {
 			dispatch<ACT.ILearningMountingAction>({
 				type: ACT.LEARNING_WILL_UNMOUNT,
+			});
+		},
+		treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => {
+			dispatch<ITreeOnLoadAction>({
+				type: TREE_ON_LOAD_EVENT,
+				listKey: key,
+				dataLimit: limit,
+				dataOffset: offset,
+			});
+		},
+		treeOnScroll: (key: ETreeList, offset: number) => {
+			dispatch<ITreeOnScrollAction>({
+				type: TREE_ON_SCROLL,
+				listKey: key,
+				scrollOffset: offset,
 			});
 		},
 	};

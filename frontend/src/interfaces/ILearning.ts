@@ -1,5 +1,4 @@
 import ELearningState from "../enums/ELearningState";
-import IDatasetRef from "./IDatasetRef";
 
 interface ILearning {
 	id: string;
@@ -10,7 +9,7 @@ interface ILearning {
 	iterationCurrent: number;
 	inputNeuronsCount: number;
 	deepLayersCount: number;
-	dataset: IDatasetRef;
+	datasetId: string;
 }
 
 export default ILearning;
