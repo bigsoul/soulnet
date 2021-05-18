@@ -1,9 +1,10 @@
 import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
-import ILearning from "../../interfaces/ILearning";
+import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 import TTreeAction, * as ACT from "../actions/ITreeAction";
 
 export type TreeListEntity = IDataset | ILearning;
+export type TreeListEntityFilters = ILearningFilter;
 
 export type TreeListReducer = {
 	list: TreeListEntity[];

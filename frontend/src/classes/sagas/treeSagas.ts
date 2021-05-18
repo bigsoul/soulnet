@@ -37,7 +37,7 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadAction) {
 		isArchive: false,
 	};
 
-	const responseBody: { data: RES.ILearningResponse } = yield call(
+	const responseBody: { data: RES.ITreeResultResponse } = yield call(
 		service.get,
 		"/learnings",
 		requestData

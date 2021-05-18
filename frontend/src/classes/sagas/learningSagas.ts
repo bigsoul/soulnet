@@ -179,11 +179,11 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 		isArchive,
 	};
 
-	const responseBody: { data: RES.ILearningResponse } = yield call(
+	/*const responseBody: { data: RES.ILearningResponse } = yield call(
 		service.get,
 		"/learnings",
 		requestData
-	);
+	);*/
 
 	/*yield put<ACT.ILearningLoadAction>({
 		type: ACT.LEARNING_LOAD,

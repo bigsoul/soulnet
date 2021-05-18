@@ -1,6 +1,6 @@
 import ELearningState from "../enums/ELearningState";
 
-interface ILearning {
+export interface ILearning {
 	id: string;
 	name: string;
 	state: ELearningState;
@@ -10,6 +10,10 @@ interface ILearning {
 	inputNeuronsCount: number;
 	deepLayersCount: number;
 	datasetId: string;
+}
+
+export interface ILearningFilter {
+	isArchive?: boolean;
 }
 
 export default ILearning;
