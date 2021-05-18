@@ -7,7 +7,11 @@ export interface IAuthDataResponse {
 	id: string;
 }
 
-export interface ILearningResponse extends Array<ILearning> {}
+export interface ILearningResponse {
+	list: ILearning[];
+	dataOffset: number;
+	dataLimit: number;
+}
 
 // standart response
 

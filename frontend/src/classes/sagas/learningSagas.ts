@@ -185,10 +185,10 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 		requestData
 	);
 
-	yield put<ACT.ILearningLoadAction>({
+	/*yield put<ACT.ILearningLoadAction>({
 		type: ACT.LEARNING_LOAD,
 		learnings: responseBody.data,
-	});
+	});*/
 
 	yield put<ACT.ILearningBranchLoadingAction>({
 		type: ACT.LEARNING_BRANCH_LOADING,

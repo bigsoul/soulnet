@@ -12,7 +12,7 @@ import ILearning from "../../interfaces/ILearning";
 import ELearningState from "../../enums/ELearningState";
 
 function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadAction) {
-	const result: ILearning[] = [];
+	/*const result: ILearning[] = [];
 
 	for (
 		let i = action.dataOffset;
@@ -29,14 +29,26 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadAction) {
 			inputNeuronsCount: 0,
 			deepLayersCount: 0,
 			datasetId: "",
-		});
+		});*/
+
+	const requestData: REQ.ILearningRequest = {
+		startFrom: action.dataOffset,
+		pageSize: action.dataLimit,
+		isArchive: false,
+	};
+
+	const responseBody: { data: RES.ILearningResponse } = yield call(
+		service.get,
+		"/learnings",
+		requestData
+	);
 
 	yield put<ACT.ITreeOnLoadAction>({
 		type: ACT.TREE_ON_LOAD,
-		list: result,
+		list: responseBody.data.list,
 		listKey: action.listKey,
-		dataLimit: action.dataLimit,
-		dataOffset: action.dataOffset,
+		dataLimit: responseBody.data.dataLimit,
+		dataOffset: responseBody.data.dataOffset,
 	});
 }
 

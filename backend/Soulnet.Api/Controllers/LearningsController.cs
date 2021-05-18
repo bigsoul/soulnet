@@ -23,7 +23,7 @@ namespace Soulnet.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<LearningViewModel>> Get(int startFrom, int pageSize, bool? isArchive)
+        public ActionResult<TreeResultViewModel<LearningViewModel>> Get(int startFrom, int pageSize, bool? isArchive)
         {
             var learnings = learningRepository.GetSection(startFrom, pageSize, isArchive);
 
@@ -45,14 +45,15 @@ namespace Soulnet.Api.Controllers
                     IterationCurrent = item.IterationCurrent,
                     InputNeuronsCount = item.InputNeuronsCount,
                     DeepLayersCount = item.DeepLayersCount,
-                    Dataset = new DatasetRefViewModel {
-                        Id = datasetId,
-                        Name = $"Name for id: {datasetId}"
-                    }
+                    DatasetId = datasetId
                 });
             }
 
-            return Ok(result);
+            return Ok(new TreeResultViewModel<LearningViewModel> {
+                DataOffset = startFrom,
+                DataLimit = pageSize,
+                List = result
+            });
         }
     } 
 }

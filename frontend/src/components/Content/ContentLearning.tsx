@@ -27,7 +27,7 @@ import IStore from "../../interfaces/IStore";
 import ILearning from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import { BranchDOMState } from "../../classes/reducers/learningReducer";
 import treeListCreator from "../Tree/TreeList";
 import {
@@ -83,28 +83,18 @@ const TreeList = treeListCreator<ILearningDataItem>();
 
 interface IContentLearningState {
 	runningList: TreeListEntity[];
-	storingList: TreeListEntity[];
-	list: ILearning[];
 	runningOpen: boolean;
 	runningLoading: boolean;
-	runningWadTop: number;
-	runningWadBottom: number;
-	runningEmptiness: number;
-	runningDOMState: BranchDOMState;
+	runningDataOffset: number;
+	runningDataLimit: number;
+	storingList: TreeListEntity[];
 	storingOpen: boolean;
 	storingLoading: boolean;
-	storingWadTop: number;
-	storingWadBottom: number;
-	storingEmptiness: number;
-	storingDOMState: BranchDOMState;
+	storingDataOffset: number;
+	storingDataLimit: number;
 }
 
 interface IContentLearningDispatch {
-	branchOpenEvent: (branch: "running" | "storing") => void;
-	branchScrollEvent: (branches: BranchDOMState[]) => void;
-	didMountEvent: (branches: BranchDOMState[]) => void;
-	didUpdateEvent: (branches: BranchDOMState[]) => void;
-	willUnmountEvent: () => void;
 	treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => void;
 	treeOnScroll: (key: ETreeList, offset: number) => void;
 }
@@ -113,149 +103,19 @@ interface IContentLearningProps
 	extends IContentLearningState,
 		IContentLearningDispatch {}
 
-const initDataList = () => {
-	const result: DataItem<ILearningDataItem>[] = [];
-	for (let i = 0; i < 50; i++)
-		result.push({ id: i.toString(), name: "Name #" + i });
-	return result;
-};
-class ContentLearning extends Component<IContentLearningProps> {
-	constructor(props: IContentLearningProps) {
-		super(props);
-
-		this.runningContainerRef = React.createRef();
-		this.storngContainerRef = React.createRef();
-	}
-
-	runningContainerRef: React.RefObject<HTMLDivElement>;
-	storngContainerRef: React.RefObject<HTMLDivElement>;
-
-	runningIsScrolling: NodeJS.Timeout | undefined;
-
-	runningScrollStop = () => {
-		if (this.runningIsScrolling) clearTimeout(this.runningIsScrolling);
-
-		let branchScrollEvent = this.branchScrollEvent;
-
-		this.runningIsScrolling = setTimeout(function () {
-			branchScrollEvent();
-		}, 64);
-	};
-
-	getDOMState = () => {
-		let runningClientHeight = 0;
-		let storingClientHeight = 0;
-
-		let runningScrollTop = 0;
-		let storingScrollTop = 0;
-
-		let runningScrollHeight = 0;
-		let storingScrollHeight = 0;
-
-		const runningContainer = this.runningContainerRef.current;
-		const storngContainer = this.storngContainerRef.current;
-
-		if (runningContainer) {
-			runningClientHeight = runningContainer.clientHeight;
-			runningScrollTop = runningContainer.scrollTop;
-			runningScrollHeight = runningContainer.scrollHeight;
-		}
-		if (storngContainer) {
-			storingClientHeight = storngContainer.clientHeight;
-			storingScrollTop = storngContainer.scrollTop;
-			storingScrollHeight = storngContainer.scrollHeight;
-		}
-
-		return {
-			runningScrollTop,
-			runningClientHeight,
-			runningScrollHeight,
-			storingScrollTop,
-			storingClientHeight,
-			storingScrollHeight,
-		};
-	};
-
-	branchScrollEvent = () => {
-		const domState = this.getDOMState();
-
-		this.props.branchScrollEvent([
-			new BranchDOMState(
-				"running",
-				domState.runningScrollTop,
-				domState.runningClientHeight,
-				domState.runningScrollHeight
-			),
-			new BranchDOMState(
-				"storing",
-				domState.storingScrollTop,
-				domState.storingClientHeight,
-				domState.storingScrollHeight
-			),
-		]);
-	};
-
-	componentDidMount = () => {
-		const { runningDOMState, storingDOMState } = this.props;
-
-		const runningContainer = this.runningContainerRef.current;
-		const storngContainer = this.storngContainerRef.current;
-
-		if (runningContainer && runningDOMState.scrollTop)
-			runningContainer.scrollTop = runningDOMState.scrollTop;
-
-		if (storngContainer && storingDOMState.scrollTop)
-			storngContainer.scrollTop = storingDOMState.scrollTop;
-
-		const domState = this.getDOMState();
-
-		this.props.didMountEvent([
-			new BranchDOMState(
-				"running",
-				domState.runningScrollTop,
-				domState.runningClientHeight,
-				domState.runningScrollHeight
-			),
-			new BranchDOMState(
-				"storing",
-				domState.storingScrollTop,
-				domState.storingClientHeight,
-				domState.storingScrollHeight
-			),
-		]);
-	};
-
-	componentDidUpdate = () => {
-		const domState = this.getDOMState();
-
-		this.props.didUpdateEvent([
-			new BranchDOMState(
-				"running",
-				domState.runningScrollTop,
-				domState.runningClientHeight,
-				domState.runningScrollHeight
-			),
-			new BranchDOMState(
-				"storing",
-				domState.storingScrollTop,
-				domState.storingClientHeight,
-				domState.storingScrollHeight
-			),
-		]);
-	};
-
-	componentWillUnmount = () => {
-		this.props.willUnmountEvent();
-	};
-
+class ContentLearning extends PureComponent<IContentLearningProps> {
 	render = () => {
 		const {
 			runningList,
 			runningOpen,
 			runningLoading,
+			runningDataOffset,
+			runningDataLimit,
+			storingList,
 			storingOpen,
 			storingLoading,
-			branchOpenEvent,
+			storingDataOffset,
+			storingDataLimit,
 			treeOnLoadEvent,
 			treeOnScroll,
 		} = this.props;
@@ -280,7 +140,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 								svgPath={treeCollapse}
 								svgPathSelected={treeExpand}
 								selected={runningOpen}
-								onClick={() => branchOpenEvent("running")}
+								onClick={() => null}
 							/>
 							Running
 						</TreeColumn>
@@ -294,8 +154,8 @@ class ContentLearning extends Component<IContentLearningProps> {
 					>
 						<TreeList
 							dataList={runningList}
-							dataOffset={0}
-							dataLimit={50}
+							dataOffset={runningDataOffset}
+							dataLimit={runningDataLimit}
 							scrollOffset={0}
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
@@ -345,7 +205,7 @@ class ContentLearning extends Component<IContentLearningProps> {
 								svgPath={treeCollapse}
 								svgPathSelected={treeExpand}
 								selected={storingOpen}
-								onClick={() => branchOpenEvent("storing")}
+								onClick={() => null}
 							/>
 							Storing
 						</TreeColumn>
@@ -356,16 +216,33 @@ class ContentLearning extends Component<IContentLearningProps> {
 					{storingOpen && (
 						<StoringContainer runningOpen={runningOpen}>
 							<TreeList
-								dataList={initDataList()}
-								dataOffset={0}
-								dataLimit={50}
+								dataList={storingList}
+								dataOffset={storingDataOffset}
+								dataLimit={storingDataLimit}
 								scrollOffset={0}
 								dataItemHeight={30}
 								preLoaderUpMaxHeight={150}
 								preLoaderDownMaxHeight={150}
-								onLoadUp={(dataOffset, dataLimit) => {}}
-								onLoadDown={(dataOffset, dataLimit) => {}}
-								onScroll={(scrollOffset) => {}}
+								onLoadUp={(dataOffset, dataLimit) => {
+									treeOnLoadEvent(
+										ETreeList.LearningStoring,
+										dataLimit,
+										dataOffset
+									);
+								}}
+								onLoadDown={(dataOffset, dataLimit) => {
+									treeOnLoadEvent(
+										ETreeList.LearningStoring,
+										dataLimit,
+										dataOffset
+									);
+								}}
+								onScroll={(scrollOffset) => {
+									treeOnScroll(
+										ETreeList.LearningStoring,
+										scrollOffset
+									);
+								}}
 							>
 								{(props: ITreeItemProps<ILearningDataItem>) => (
 									<TreeItem level={1}>
@@ -394,24 +271,20 @@ class ContentLearning extends Component<IContentLearningProps> {
 }
 
 const mapStateToProps = (state: IStore): IContentLearningState => {
-	const { learning, tree } = state;
+	const { tree } = state;
+	const target = tree[ETreeList.LearningRunning];
 
 	const props: IContentLearningState = {
-		runningList: tree[ETreeList.LearningRunning].list,
-		storingList: tree[ETreeList.LearningStoring].list,
-		list: learning.list,
-		runningOpen: learning.runningOpen,
-		runningLoading: learning.runningLoading,
-		runningWadTop: learning.runningWadTop,
-		runningWadBottom: learning.runningWadBottom,
-		runningEmptiness: learning.runningEmptiness,
-		runningDOMState: learning.runningDOMState,
-		storingOpen: learning.storingOpen,
-		storingLoading: learning.storingLoading,
-		storingWadTop: learning.storingWadTop,
-		storingWadBottom: learning.storingWadBottom,
-		storingEmptiness: learning.storingEmptiness,
-		storingDOMState: learning.storingDOMState,
+		runningList: target.list,
+		runningOpen: target.isVisible,
+		runningLoading: target.isLoading,
+		runningDataOffset: target.dataOffset,
+		runningDataLimit: target.dataLimit,
+		storingList: target.list,
+		storingOpen: target.isVisible,
+		storingLoading: target.isLoading,
+		storingDataOffset: target.dataOffset,
+		storingDataLimit: target.dataLimit,
 	};
 
 	return props;
@@ -423,35 +296,6 @@ const mapDispatchToProps = (
 	>
 ): IContentLearningDispatch => {
 	return {
-		branchOpenEvent: (branch: "running" | "storing"): void => {
-			dispatch<ACT.ILearningBranchOpenEventAction>({
-				type: ACT.LEARNING_BRANCH_OPEN_EVENT,
-				branch: branch,
-			});
-		},
-		branchScrollEvent: (branches: BranchDOMState[]): void => {
-			dispatch<ACT.ILearningDOMStateAction>({
-				type: ACT.LEARNING_BRANCH_SCROLL_EVENT,
-				branches: branches,
-			});
-		},
-		didMountEvent: (branches: BranchDOMState[]): void => {
-			dispatch<ACT.ILearningDOMStateAction>({
-				type: ACT.LEARNING_DID_MOUNT_EVENT,
-				branches: branches,
-			});
-		},
-		didUpdateEvent: (branches: BranchDOMState[]): void => {
-			dispatch<ACT.ILearningDOMStateAction>({
-				type: ACT.LEARNING_DID_UPDATE_EVENT,
-				branches: branches,
-			});
-		},
-		willUnmountEvent: (): void => {
-			dispatch<ACT.ILearningMountingAction>({
-				type: ACT.LEARNING_WILL_UNMOUNT,
-			});
-		},
 		treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => {
 			dispatch<ITreeOnLoadEventAction>({
 				type: TREE_ON_LOAD_EVENT,

@@ -7,6 +7,7 @@ export type TreeListEntity = IDataset | ILearning;
 
 export type TreeListReducer = {
 	list: TreeListEntity[];
+	isVisible: boolean;
 	isLoading: boolean;
 	scrollOffset: number;
 	dataLimit: number;
@@ -19,6 +20,7 @@ export type TreeReducer = {
 
 const treeList: TreeListReducer = {
 	list: [],
+	isVisible: true,
 	isLoading: false,
 	scrollOffset: 0,
 	dataOffset: 0,
@@ -40,6 +42,11 @@ const treeReducer = (
 ): TreeReducer => {
 	switch (action.type) {
 		case ACT.TREE_ON_LOAD: {
+			if (
+				curState[action.listKey].dataOffset === action.dataOffset &&
+				curState[action.listKey].dataLimit === action.dataLimit
+			)
+				return curState;
 			const newState = { ...curState };
 			newState[action.listKey].list = action.list;
 			newState[action.listKey].dataOffset = action.dataOffset;

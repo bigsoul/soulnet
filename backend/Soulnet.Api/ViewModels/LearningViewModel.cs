@@ -10,6 +10,6 @@ namespace Soulnet.Api.ViewModels
         public int IterationCurrent { get; set; }
         public int InputNeuronsCount { get; set; }
         public int DeepLayersCount { get; set; }
-        public DatasetRefViewModel Dataset { get; set; }
+        public string DatasetId { get; set; }
     }
 }
