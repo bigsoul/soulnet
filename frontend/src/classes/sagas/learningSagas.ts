@@ -173,11 +173,11 @@ function* workerLearningCheckLoad(action: ACT.ILearningDOMStateAction) {
 		loading: true,
 	});
 
-	const requestData: REQ.ILearningRequest = {
+	/*const requestData: REQ.ILearningRequest = {
 		startFrom: runningStartFrom,
 		pageSize: runningPageSize,
 		isArchive,
-	};
+	};*/
 
 	/*const responseBody: { data: RES.ILearningResponse } = yield call(
 		service.get,

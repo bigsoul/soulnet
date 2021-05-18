@@ -1,3 +1,5 @@
+import { TreeListEntityFilters } from "../classes/reducers/treeReducer";
+
 export interface ISignInRequest {
 	username: string;
 	password: string;
@@ -9,10 +11,10 @@ export interface ISignUpRequest {
 	password: string;
 }
 
-export interface ILearningRequest {
-	startFrom: number;
-	pageSize: number;
-	isArchive: boolean;
+export interface ITreeRequest {
+	dataOffset: number;
+	dataLimit: number;
+	filter: TreeListEntityFilters;
 }
 
-export type TRequest = ISignInRequest | ISignUpRequest | ILearningRequest;
+export type TRequest = ISignInRequest | ISignUpRequest | ITreeRequest;

@@ -24,7 +24,7 @@ import treeDelete from "./../../assets/svg/tree-delete.svg";
 import loading from "./../../assets/gif/loading.gif";
 
 import IStore from "../../interfaces/IStore";
-import ILearning from "../../interfaces/ILearning";
+import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
 import React, { Component, PureComponent } from "react";
@@ -37,7 +37,10 @@ import {
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
 import ETreeList from "../../enums/ETreeList";
-import { TreeListEntity } from "../../classes/reducers/treeReducer";
+import {
+	TreeListEntity,
+	TreeListEntityFilters,
+} from "../../classes/reducers/treeReducer";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -95,7 +98,12 @@ interface IContentLearningState {
 }
 
 interface IContentLearningDispatch {
-	treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => void;
+	treeOnLoadEvent: (
+		key: ETreeList,
+		limit: number,
+		offset: number,
+		filter: ILearningFilter
+	) => void;
 	treeOnScroll: (key: ETreeList, offset: number) => void;
 }
 
@@ -164,14 +172,16 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 								treeOnLoadEvent(
 									ETreeList.LearningRunning,
 									dataLimit,
-									dataOffset
+									dataOffset,
+									{ isArchive: false }
 								);
 							}}
 							onLoadDown={(dataOffset, dataLimit) => {
 								treeOnLoadEvent(
 									ETreeList.LearningRunning,
 									dataLimit,
-									dataOffset
+									dataOffset,
+									{ isArchive: false }
 								);
 							}}
 							onScroll={(scrollOffset) => {
@@ -227,14 +237,16 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 									treeOnLoadEvent(
 										ETreeList.LearningStoring,
 										dataLimit,
-										dataOffset
+										dataOffset,
+										{ isArchive: true }
 									);
 								}}
 								onLoadDown={(dataOffset, dataLimit) => {
 									treeOnLoadEvent(
 										ETreeList.LearningStoring,
 										dataLimit,
-										dataOffset
+										dataOffset,
+										{ isArchive: true }
 									);
 								}}
 								onScroll={(scrollOffset) => {
@@ -268,23 +280,51 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 
 		return result;
 	};
+
+	componentDidMount = () => {
+		const {
+			runningDataOffset,
+			runningDataLimit,
+			storingDataOffset,
+			storingDataLimit,
+			treeOnLoadEvent,
+		} = this.props;
+
+		treeOnLoadEvent(
+			ETreeList.LearningRunning,
+			runningDataLimit,
+			runningDataOffset,
+			{
+				isArchive: false,
+			}
+		);
+		treeOnLoadEvent(
+			ETreeList.LearningStoring,
+			storingDataLimit,
+			storingDataOffset,
+			{
+				isArchive: true,
+			}
+		);
+	};
 }
 
 const mapStateToProps = (state: IStore): IContentLearningState => {
 	const { tree } = state;
-	const target = tree[ETreeList.LearningRunning];
+	const runningList = tree[ETreeList.LearningRunning];
+	const storingList = tree[ETreeList.LearningStoring];
 
 	const props: IContentLearningState = {
-		runningList: target.list,
-		runningOpen: target.isVisible,
-		runningLoading: target.isLoading,
-		runningDataOffset: target.dataOffset,
-		runningDataLimit: target.dataLimit,
-		storingList: target.list,
-		storingOpen: target.isVisible,
-		storingLoading: target.isLoading,
-		storingDataOffset: target.dataOffset,
-		storingDataLimit: target.dataLimit,
+		runningList: runningList.list,
+		runningOpen: runningList.isVisible,
+		runningLoading: runningList.isLoading,
+		runningDataOffset: runningList.dataOffset,
+		runningDataLimit: runningList.dataLimit,
+		storingList: storingList.list,
+		storingOpen: storingList.isVisible,
+		storingLoading: storingList.isLoading,
+		storingDataOffset: storingList.dataOffset,
+		storingDataLimit: storingList.dataLimit,
 	};
 
 	return props;
@@ -296,12 +336,19 @@ const mapDispatchToProps = (
 	>
 ): IContentLearningDispatch => {
 	return {
-		treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => {
+		treeOnLoadEvent: (
+			key: ETreeList,
+			limit: number,
+			offset: number,
+			filter: ILearningFilter
+		) => {
 			dispatch<ITreeOnLoadEventAction>({
 				type: TREE_ON_LOAD_EVENT,
 				listKey: key,
 				dataLimit: limit,
 				dataOffset: offset,
+				controller: "/learnings",
+				filter: filter,
 			});
 		},
 		treeOnScroll: (key: ETreeList, offset: number) => {

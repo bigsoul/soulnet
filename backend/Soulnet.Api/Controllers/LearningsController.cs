@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Soulnet.Api.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Soulnet.Data.Repositories;
+using Newtonsoft.Json;
 
 namespace Soulnet.Api.Controllers
 {
@@ -23,9 +24,11 @@ namespace Soulnet.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<TreeResultViewModel<LearningViewModel>> Get(int startFrom, int pageSize, bool? isArchive)
+        public ActionResult<TreeResultViewModel<LearningViewModel>> Get(int dataOffset, int dataLimit, string filter)
         {
-            var learnings = learningRepository.GetSection(startFrom, pageSize, isArchive);
+            var _filter = JsonConvert.DeserializeObject<LearningFilterViewModel>(filter);
+
+            var learnings = learningRepository.GetSection(dataOffset, dataLimit, _filter.IsArchive);
 
             var result = new List<LearningViewModel>();
 
@@ -50,8 +53,8 @@ namespace Soulnet.Api.Controllers
             }
 
             return Ok(new TreeResultViewModel<LearningViewModel> {
-                DataOffset = startFrom,
-                DataLimit = pageSize,
+                DataOffset = dataOffset,
+                DataLimit = dataLimit,
                 List = result
             });
         }

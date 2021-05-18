@@ -1,5 +1,5 @@
 import ETreeList from "../../enums/ETreeList";
-import { TreeListEntity } from "../reducers/treeReducer";
+import { TreeListEntity, TreeListEntityFilters } from "../reducers/treeReducer";
 
 export const TREE_ON_LOAD = "TREE/ON-LOAD";
 export const TREE_ON_SCROLL = "TREE/ON-SCROLL";
@@ -19,6 +19,8 @@ export interface ITreeOnLoadEventAction {
 	listKey: ETreeList;
 	dataOffset: number;
 	dataLimit: number;
+	filter: TreeListEntityFilters;
+	controller: string;
 }
 
 export interface ITreeOnScrollAction {

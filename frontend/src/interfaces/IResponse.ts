@@ -1,5 +1,4 @@
 import { TreeListEntity } from "../classes/reducers/treeReducer";
-import ILearning from "./ILearning";
 import { TRequest } from "./IRequest";
 
 export interface IAuthDataResponse {
