@@ -27,8 +27,7 @@ import IStore from "../../interfaces/IStore";
 import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
 
-import React, { Component, PureComponent } from "react";
-import { BranchDOMState } from "../../classes/reducers/learningReducer";
+import React, { PureComponent } from "react";
 import treeListCreator from "../Tree/TreeList";
 import {
 	ITreeOnLoadEventAction,
@@ -37,10 +36,7 @@ import {
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
 import ETreeList from "../../enums/ETreeList";
-import {
-	TreeListEntity,
-	TreeListEntityFilters,
-} from "../../classes/reducers/treeReducer";
+import { TreeListEntity } from "../../classes/reducers/treeReducer";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -127,6 +123,8 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 			treeOnLoadEvent,
 			treeOnScroll,
 		} = this.props;
+
+		console.log("runningLoading: ", runningLoading);
 
 		const result = (
 			<Content>

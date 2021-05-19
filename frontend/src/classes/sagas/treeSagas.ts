@@ -1,36 +1,28 @@
 import service from "../utils/service";
 
-import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
+import { call, put, takeEvery, takeLeading } from "redux-saga/effects";
 
 import * as ACT from "../actions/ITreeAction";
 import * as REQ from "../../interfaces/IRequest";
 import * as RES from "../../interfaces/IResponse";
 
 import store from "../store";
-
-import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
-import ELearningState from "../../enums/ELearningState";
-import { TreeListEntityFilters } from "../reducers/treeReducer";
+import IStore from "../../interfaces/IStore";
 
 function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
-	/*const result: ILearning[] = [];
+	const state: IStore = yield call(store.getState);
 
-	for (
-		let i = action.dataOffset;
-		i < action.dataOffset + action.dataLimit;
-		i++
-	)
-		result.push({
-			id: i.toString(),
-			name: "Name #" + i,
-			state: ELearningState.completed,
-			isArchive: false,
-			iterationCount: 0,
-			iterationCurrent: 0,
-			inputNeuronsCount: 0,
-			deepLayersCount: 0,
-			datasetId: "",
-		});*/
+	const { tree } = state;
+
+	console.debug(
+		`workerTreeOnLoadEvent(${action.listKey.toString()}): `,
+		tree[action.listKey].isLoading
+	);
+
+	if (tree[action.listKey].isLoading) {
+		console.log("return");
+		return;
+	}
 
 	const requestData: REQ.ITreeRequest = {
 		dataOffset: action.dataOffset,
@@ -44,12 +36,24 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 		requestData
 	);
 
+	yield put<ACT.ITreeBranchLoadingAction>({
+		type: ACT.TREE_BRANCH_LOADING,
+		listKey: action.listKey,
+		loading: true,
+	});
+
 	yield put<ACT.ITreeOnLoadAction>({
 		type: ACT.TREE_ON_LOAD,
 		list: responseBody.data.list,
 		listKey: action.listKey,
 		dataLimit: responseBody.data.dataLimit,
 		dataOffset: responseBody.data.dataOffset,
+	});
+
+	yield put<ACT.ITreeBranchLoadingAction>({
+		type: ACT.TREE_BRANCH_LOADING,
+		listKey: action.listKey,
+		loading: false,
 	});
 }
 

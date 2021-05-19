@@ -43,15 +43,15 @@ const treeReducer = (
 ): TreeReducer => {
 	switch (action.type) {
 		case ACT.TREE_ON_LOAD: {
-			/*if (
-				curState[action.listKey].dataOffset === action.dataOffset &&
-				curState[action.listKey].dataLimit === action.dataLimit
-			)
-				return curState;*/
 			const newState = { ...curState };
 			newState[action.listKey].list = action.list;
 			newState[action.listKey].dataOffset = action.dataOffset;
 			newState[action.listKey].dataLimit = action.dataLimit;
+			return newState;
+		}
+		case ACT.TREE_BRANCH_LOADING: {
+			const newState = { ...curState };
+			newState[action.listKey].isLoading = action.loading;
 			return newState;
 		}
 		case ACT.TREE_ON_SCROLL: {

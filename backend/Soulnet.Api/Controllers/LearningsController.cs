@@ -26,13 +26,13 @@ namespace Soulnet.Api.Controllers
         [HttpGet]
         public ActionResult<TreeResultViewModel<LearningViewModel>> Get(int dataOffset, int dataLimit, string filter)
         {
-            var _filter = JsonConvert.DeserializeObject<LearningFilterViewModel>(filter);
+            var filters = JsonConvert.DeserializeObject<LearningFilterViewModel>(filter);
 
-            var learnings = learningRepository.GetSection(dataOffset, dataLimit, _filter.IsArchive);
+            var section = learningRepository.GetSection(dataOffset, dataLimit, filters.IsArchive);
 
             var result = new List<LearningViewModel>();
 
-            foreach(var item in learnings) {
+            foreach(var item in section.List) {
                 var datasetId = "";
 
                 if (item.DatasetId != Guid.Empty) {
@@ -52,9 +52,10 @@ namespace Soulnet.Api.Controllers
                 });
             }
 
+  
             return Ok(new TreeResultViewModel<LearningViewModel> {
-                DataOffset = dataOffset,
-                DataLimit = dataLimit,
+                DataOffset = section.DataOffset,
+                DataLimit = section.DataLimit,
                 List = result
             });
         }

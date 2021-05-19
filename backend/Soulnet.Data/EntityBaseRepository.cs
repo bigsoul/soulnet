@@ -105,7 +105,7 @@ namespace Soulnet.Data
 
         public void FillLearningWithTestData()
         {
-            for (var i = 3; i < 100; i++)
+            for (var i = 100; i < 300; i++)
             {
                 _context.Learning.Add(new Learning {
                     Id = new Guid(),
@@ -115,7 +115,8 @@ namespace Soulnet.Data
                     IterationCount = i * 2,
                     IterationCurrent = i,
                     InputNeuronsCount = 5,
-                    DeepLayersCount = 2
+                    DeepLayersCount = 2,
+                    DatasetId = new Guid("8dbfe239-1f04-47b2-bbbe-15f2ea15be2c")
                 });
             }
 

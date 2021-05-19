@@ -9,8 +9,40 @@ namespace Soulnet.Data.Repositories
     {        
         public LearningRepository (SoulnetContext context) : base (context) { }
 
-        public IEnumerable<Learning> GetSection(int dataOffset, int dataLimit, bool? isArchive) {
+        public Section<Learning> GetSection(int dataOffset, int dataLimit, bool? isArchive) {
             
+            var result = Request(dataOffset, dataLimit, isArchive);
+            
+            if (result.Count() == dataLimit) {
+                return new Section<Learning> {
+                    List = result,
+                    DataOffset = dataOffset,
+                    DataLimit = dataLimit
+                };
+            }
+
+            var dataOffsetMax = dataOffset + result.Count();
+
+            if (dataOffsetMax >= dataLimit) {
+                result = this.Request(dataOffsetMax - dataLimit, dataLimit, isArchive);
+
+                return new Section<Learning> {
+                    List = result,
+                    DataOffset = dataOffsetMax - dataLimit,
+                    DataLimit = dataLimit
+                };
+            } 
+
+            result = Request(0, dataLimit, isArchive);
+
+            return new Section<Learning> {
+                List = result,
+                DataOffset = 0,
+                DataLimit = result.Count()
+            };
+        }
+
+        private IEnumerable<Learning> Request(int dataOffset, int dataLimit, bool? isArchive) {
             var request = _context.Learning
                             .AsNoTracking();
 
@@ -21,8 +53,14 @@ namespace Soulnet.Data.Repositories
             var result = request.OrderBy(e => e.Name)
                                 .Skip(dataOffset)
                                 .Take(dataLimit);
-            
+
             return result;
         }
+    }
+
+    public struct Section<T> {
+        public IEnumerable<T> List;
+        public int DataOffset;
+        public int DataLimit;
     }
 }
