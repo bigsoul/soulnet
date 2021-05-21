@@ -1,6 +1,6 @@
 import service from "../utils/service";
 
-import { call, put, takeEvery, takeLeading } from "redux-saga/effects";
+import { call, delay, put, takeEvery, takeLeading } from "redux-saga/effects";
 
 import * as ACT from "../actions/ITreeAction";
 import * as REQ from "../../interfaces/IRequest";
@@ -16,13 +16,8 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 
 	console.debug(
 		`workerTreeOnLoadEvent(${action.listKey.toString()}): `,
-		tree[action.listKey].isLoading
+		tree[action.listKey]
 	);
-
-	if (tree[action.listKey].isLoading) {
-		console.log("return");
-		return;
-	}
 
 	const requestData: REQ.ITreeRequest = {
 		dataOffset: action.dataOffset,

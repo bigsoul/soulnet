@@ -36,7 +36,10 @@ import {
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
 import ETreeList from "../../enums/ETreeList";
-import { TreeListEntity } from "../../classes/reducers/treeReducer";
+import {
+	TreeListEntity,
+	TreeListEntityFilters,
+} from "../../classes/reducers/treeReducer";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -78,7 +81,11 @@ interface ILearningDataItem {
 	name: string;
 }
 
-const TreeList = treeListCreator<ILearningDataItem>();
+const TreeList = treeListCreator<
+	ETreeList,
+	ILearningDataItem,
+	TreeListEntityFilters
+>();
 
 interface IContentLearningState {
 	runningList: TreeListEntity[];
@@ -100,7 +107,7 @@ interface IContentLearningDispatch {
 		offset: number,
 		filter: ILearningFilter
 	) => void;
-	treeOnScroll: (key: ETreeList, offset: number) => void;
+	treeOnScrollEvent: (key: ETreeList, offset: number) => void;
 }
 
 interface IContentLearningProps
@@ -108,6 +115,23 @@ interface IContentLearningProps
 		IContentLearningDispatch {}
 
 class ContentLearning extends PureComponent<IContentLearningProps> {
+	treeOnLoadEventHandler = (
+		listKey: ETreeList,
+		dataOffset: number,
+		dataLimit: number,
+		filter: TreeListEntityFilters
+	) => {
+		const { treeOnLoadEvent } = this.props;
+
+		treeOnLoadEvent(listKey, dataLimit, dataOffset, filter);
+	};
+
+	treeOnScrollEventHandler = (listKey: ETreeList, scrollOffset: number) => {
+		const { treeOnScrollEvent } = this.props;
+
+		treeOnScrollEvent(listKey, scrollOffset);
+	};
+
 	render = () => {
 		const {
 			runningList,
@@ -120,8 +144,6 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 			storingLoading,
 			storingDataOffset,
 			storingDataLimit,
-			treeOnLoadEvent,
-			treeOnScroll,
 		} = this.props;
 
 		console.log("runningLoading: ", runningLoading);
@@ -146,7 +168,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 								svgPath={treeCollapse}
 								svgPathSelected={treeExpand}
 								selected={runningOpen}
-								onClick={() => null}
+								onClick={undefined}
 							/>
 							Running
 						</TreeColumn>
@@ -159,6 +181,8 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						storingOpen={storingOpen}
 					>
 						<TreeList
+							listKey={ETreeList.LearningRunning}
+							filter={{ isArchive: false }}
 							dataList={runningList}
 							dataOffset={runningDataOffset}
 							dataLimit={runningDataLimit}
@@ -166,95 +190,12 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
-							onLoadUp={(dataOffset, dataLimit) => {
-								treeOnLoadEvent(
-									ETreeList.LearningRunning,
-									dataLimit,
-									dataOffset,
-									{ isArchive: false }
-								);
-							}}
-							onLoadDown={(dataOffset, dataLimit) => {
-								treeOnLoadEvent(
-									ETreeList.LearningRunning,
-									dataLimit,
-									dataOffset,
-									{ isArchive: false }
-								);
-							}}
-							onScroll={(scrollOffset) => {
-								treeOnScroll(
-									ETreeList.LearningRunning,
-									scrollOffset
-								);
-							}}
+							onLoadUp={this.treeOnLoadEventHandler}
+							onLoadDown={this.treeOnLoadEventHandler}
+							onScroll={this.treeOnScrollEventHandler}
 						>
-							{(props: ITreeItemProps<ILearningDataItem>) => (
-								<TreeItem level={1}>
-									<TreeColumn>
-										<IconStyled path={entityLearning} />
-										{props.dataItem.name}
-									</TreeColumn>
-									<TreeColumn align="right">
-										<Player />
-									</TreeColumn>
-									<ButtonStyled
-										template="icon"
-										svgPath={treeFolder}
-									/>
-								</TreeItem>
-							)}
-						</TreeList>
-					</RunningContainer>
-					<TreeBranch>
-						<TreeColumn>
-							<ButtonStyled
-								template="icon"
-								svgPath={treeCollapse}
-								svgPathSelected={treeExpand}
-								selected={storingOpen}
-								onClick={() => null}
-							/>
-							Storing
-						</TreeColumn>
-						<TreeColumn align="right">
-							{storingLoading && <IconStyled path={loading} />}
-						</TreeColumn>
-					</TreeBranch>
-					{storingOpen && (
-						<StoringContainer runningOpen={runningOpen}>
-							<TreeList
-								dataList={storingList}
-								dataOffset={storingDataOffset}
-								dataLimit={storingDataLimit}
-								scrollOffset={0}
-								dataItemHeight={30}
-								preLoaderUpMaxHeight={150}
-								preLoaderDownMaxHeight={150}
-								onLoadUp={(dataOffset, dataLimit) => {
-									treeOnLoadEvent(
-										ETreeList.LearningStoring,
-										dataLimit,
-										dataOffset,
-										{ isArchive: true }
-									);
-								}}
-								onLoadDown={(dataOffset, dataLimit) => {
-									treeOnLoadEvent(
-										ETreeList.LearningStoring,
-										dataLimit,
-										dataOffset,
-										{ isArchive: true }
-									);
-								}}
-								onScroll={(scrollOffset) => {
-									treeOnScroll(
-										ETreeList.LearningStoring,
-										scrollOffset
-									);
-								}}
-							>
-								{(props: ITreeItemProps<ILearningDataItem>) => (
+							{(props: ITreeItemProps<ILearningDataItem>) => {
+								return (
 									<TreeItem level={1}>
 										<TreeColumn>
 											<IconStyled path={entityLearning} />
@@ -268,7 +209,60 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 											svgPath={treeFolder}
 										/>
 									</TreeItem>
-								)}
+								);
+							}}
+						</TreeList>
+					</RunningContainer>
+					<TreeBranch>
+						<TreeColumn>
+							<ButtonStyled
+								template="icon"
+								svgPath={treeCollapse}
+								svgPathSelected={treeExpand}
+								selected={storingOpen}
+								onClick={undefined}
+							/>
+							Storing
+						</TreeColumn>
+						<TreeColumn align="right">
+							{storingLoading && <IconStyled path={loading} />}
+						</TreeColumn>
+					</TreeBranch>
+					{storingOpen && (
+						<StoringContainer runningOpen={runningOpen}>
+							<TreeList
+								listKey={ETreeList.LearningStoring}
+								filter={{ isArchive: true }}
+								dataList={storingList}
+								dataOffset={storingDataOffset}
+								dataLimit={storingDataLimit}
+								scrollOffset={0}
+								dataItemHeight={30}
+								preLoaderUpMaxHeight={150}
+								preLoaderDownMaxHeight={150}
+								onLoadUp={this.treeOnLoadEventHandler}
+								onLoadDown={this.treeOnLoadEventHandler}
+								onScroll={this.treeOnScrollEventHandler}
+							>
+								{(props: ITreeItemProps<ILearningDataItem>) => {
+									return (
+										<TreeItem level={1}>
+											<TreeColumn>
+												<IconStyled
+													path={entityLearning}
+												/>
+												{props.dataItem.name}
+											</TreeColumn>
+											<TreeColumn align="right">
+												<Player />
+											</TreeColumn>
+											<ButtonStyled
+												template="icon"
+												svgPath={treeFolder}
+											/>
+										</TreeItem>
+									);
+								}}
 							</TreeList>
 						</StoringContainer>
 					)}
@@ -349,7 +343,7 @@ const mapDispatchToProps = (
 				filter: filter,
 			});
 		},
-		treeOnScroll: (key: ETreeList, offset: number) => {
+		treeOnScrollEvent: (key: ETreeList, offset: number) => {
 			dispatch<ITreeOnScrollAction>({
 				type: TREE_ON_SCROLL,
 				listKey: key,

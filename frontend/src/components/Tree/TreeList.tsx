@@ -4,6 +4,7 @@ import {
 	FunctionComponent,
 	createRef,
 	PureComponent,
+	FunctionComponentElement,
 } from "react";
 import styled from "styled-components";
 import { DataItem } from "./TreeItem";
@@ -35,6 +36,26 @@ const ListBox = styled.div`
 	pointer-events: none;
 `*/
 
+type MutationState<K, T, F> = {
+	listKey: K;
+	filter: F;
+	dataOffset: number;
+	dataLimit: number;
+	dataListHeight: number;
+	dataListLength: number;
+	listBoxHeight: number;
+	scrollOffset: number;
+	scrollStep: number;
+	listBoxRef: React.RefObject<HTMLDivElement>;
+	items: FunctionComponentElement<ITreeItemProps<T>>[];
+	eventTimers: EventTimers;
+};
+
+type EventTimers = {
+	onLoadUpTimer: number;
+	onLoadDownTimer: number;
+};
+
 const calculateNewDataOffset = (
 	dataOffset: number,
 	dataLimit: number,
@@ -49,9 +70,11 @@ const calculateNewDataOffset = (
 	return 0;
 };
 
-const treeListCreator = function <T>() {
+const treeListCreator = function <K, T, F>() {
 	type TreeListProps = {
 		children: FunctionComponent<ITreeItemProps<T>>;
+		listKey: K;
+		filter: F;
 		dataList: DataItem<T>[];
 		dataOffset: number;
 		dataLimit: number;
@@ -59,9 +82,9 @@ const treeListCreator = function <T>() {
 		scrollOffset: number;
 		preLoaderUpMaxHeight: number;
 		preLoaderDownMaxHeight: number;
-		onLoadUp?: (dataOffset: number, dataLimit: number) => void;
-		onLoadDown?: (dataOffset: number, dataLimit: number) => void;
-		onScroll?: (scrollOffset: number) => void;
+		onLoadUp?: OnLoad;
+		onLoadDown?: OnLoad;
+		onScroll?: OnScroll;
 	};
 
 	type TreeListState = {
@@ -70,19 +93,67 @@ const treeListCreator = function <T>() {
 		preLoaderDownTop: number;
 		preLoaderUpHeight: number;
 		preLoaderDownHeight: number;
-		mutationState: MutationState;
+		mutationState: MutationState<K, T, F>;
 	};
 
-	type MutationState = {
-		dataOffset: number;
-		dataListHeight: number;
-		dataListLength: number;
-		listBoxHeight: number;
-		scrollOffset: number;
-		scrollStep: number;
-		listBoxRef: React.RefObject<HTMLDivElement>;
+	type OnLoad = (
+		listKey: K,
+		dataOffset: number,
+		dataLimit: number,
+		filter: F
+	) => void;
+
+	type OnScroll = (listKey: K, scrollOffset: number) => void;
+
+	const eventBlocked = (
+		mutationState: MutationState<K, T, F>,
+		listKey: keyof EventTimers
+	) => {
+		return mutationState.eventTimers[listKey] > Date.now();
 	};
 
+	const eventBlock = (
+		mutationState: MutationState<K, T, F>,
+		listKey: keyof EventTimers
+	) => {
+		mutationState.eventTimers[listKey] = Date.now() + 250;
+	};
+
+	const onLoadUpDoNotRush = (
+		onLoadUp: OnLoad,
+		dataOffset: number,
+		dataLimit: number,
+		mutationState: MutationState<K, T, F>
+	) => {
+		if (eventBlocked(mutationState, "onLoadUpTimer")) {
+			return;
+		}
+		onLoadUp(
+			mutationState.listKey,
+			dataOffset,
+			dataLimit,
+			mutationState.filter
+		);
+		eventBlock(mutationState, "onLoadUpTimer");
+	};
+
+	const onLoadDownDoNotRush = (
+		onLoadDown: OnLoad,
+		dataOffset: number,
+		dataLimit: number,
+		mutationState: MutationState<K, T, F>
+	) => {
+		if (eventBlocked(mutationState, "onLoadDownTimer")) {
+			return;
+		}
+		onLoadDown(
+			mutationState.listKey,
+			dataOffset,
+			dataLimit,
+			mutationState.filter
+		);
+		eventBlock(mutationState, "onLoadDownTimer");
+	};
 	return class TreeList extends PureComponent<TreeListProps, TreeListState> {
 		resizeObserver: ResizeObserver;
 
@@ -96,7 +167,10 @@ const treeListCreator = function <T>() {
 				preLoaderUpHeight: 0,
 				preLoaderDownHeight: 0,
 				mutationState: {
+					listKey: props.listKey,
+					filter: props.filter,
 					dataOffset: props.dataOffset,
+					dataLimit: props.dataLimit,
 					dataListHeight:
 						props.dataItemHeight * props.dataList.length,
 					dataListLength: props.dataList.length,
@@ -104,6 +178,11 @@ const treeListCreator = function <T>() {
 					scrollOffset: props.scrollOffset,
 					scrollStep: 0,
 					listBoxRef: createRef<HTMLDivElement>(),
+					items: [],
+					eventTimers: {
+						onLoadUpTimer: Date.now(),
+						onLoadDownTimer: Date.now(),
+					},
 				},
 			};
 
@@ -223,7 +302,12 @@ const treeListCreator = function <T>() {
 								props.dataLimit,
 								true
 							);
-							props.onLoadUp(newDataOffset, props.dataLimit);
+							onLoadUpDoNotRush(
+								props.onLoadUp,
+								newDataOffset,
+								props.dataLimit,
+								mutationState
+							);
 						}
 					}
 				}
@@ -241,7 +325,12 @@ const treeListCreator = function <T>() {
 								props.dataLimit,
 								false
 							);
-							props.onLoadDown(newDataOffset, props.dataLimit);
+							onLoadDownDoNotRush(
+								props.onLoadDown,
+								newDataOffset,
+								props.dataLimit,
+								mutationState
+							);
 						}
 					}
 			}
@@ -253,7 +342,10 @@ const treeListCreator = function <T>() {
 
 			// fix the state
 
+			mutationState.listKey = props.listKey;
+			mutationState.filter = props.filter;
 			mutationState.dataOffset = props.dataOffset;
+			mutationState.dataLimit = props.dataLimit;
 			mutationState.dataListHeight = dataListHeight;
 			mutationState.dataListLength = props.dataList.length;
 			mutationState.scrollOffset = scrollTop;
@@ -308,7 +400,12 @@ const treeListCreator = function <T>() {
 					props.dataLimit,
 					true
 				);
-				props.onLoadUp(newDataOffset, props.dataLimit);
+				onLoadUpDoNotRush(
+					props.onLoadUp,
+					newDataOffset,
+					props.dataLimit,
+					mutationState
+				);
 			}
 
 			if (
@@ -322,7 +419,12 @@ const treeListCreator = function <T>() {
 					props.dataLimit,
 					false
 				);
-				props.onLoadDown(newDataOffset, props.dataLimit);
+				onLoadDownDoNotRush(
+					props.onLoadDown,
+					newDataOffset,
+					props.dataLimit,
+					mutationState
+				);
 			}
 		};
 
@@ -332,18 +434,28 @@ const treeListCreator = function <T>() {
 			const { props } = this;
 			const { mutationState } = this.state;
 
+			const newItems: FunctionComponentElement<ITreeItemProps<T>>[] = [];
 			const items: ReactNode[] = [];
 
 			for (let i = 0; i < props.dataList.length; i++) {
 				const dataItem = props.dataList[i];
-				items.push(
-					createElement<ITreeItemProps<T>>(props.children, {
+
+				let element = mutationState.items.find(
+					(item) => item.key === dataItem.id
+				);
+
+				if (!element) {
+					element = createElement<ITreeItemProps<T>>(props.children, {
 						key: dataItem.id,
 						index: i,
 						dataItem: dataItem,
-					})
-				);
+					});
+				}
+				items.push(element);
+				newItems.push(element);
 			}
+
+			mutationState.items = newItems;
 
 			/*const { state } = this
 
@@ -415,7 +527,10 @@ const treeListCreator = function <T>() {
 				this.resizeObserver.unobserve(mutationState.listBoxRef.current);
 
 			if (this.props.onScroll)
-				this.props.onScroll(mutationState.scrollOffset);
+				this.props.onScroll(
+					mutationState.listKey,
+					mutationState.scrollOffset
+				);
 		};
 	};
 };
