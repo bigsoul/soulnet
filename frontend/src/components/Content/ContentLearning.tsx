@@ -73,9 +73,17 @@ const RunningContainer = styled(BasisContainer)<{
 	position: relative;
 `;
 
-const StoringContainer = styled(BasisContainer)<{ runningOpen: boolean }>`
-	height: ${(p) =>
-		p.runningOpen ? "calc(65% - 30px)" : "calc(100% - 30px - 30px - 30px)"};
+const StoringContainer = styled(BasisContainer)<{
+	storingOpen: boolean;
+	runningOpen: boolean;
+}>`
+	height: ${(p) => {
+		if (!p.storingOpen) return "0px";
+		return p.runningOpen
+			? "calc(65% - 30px)"
+			: "calc(100% - 30px - 30px - 30px)";
+	}};
+	overflow: hidden;
 	position: relative;
 `;
 
@@ -163,8 +171,6 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 			storingScrollOffset,
 		} = this.props;
 
-		console.debug("runningLoading: ", runningIsLoading);
-
 		const result = (
 			<Content>
 				<Tree>
@@ -246,42 +252,41 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							{storingIsLoading && <IconStyled path={loading} />}
 						</TreeColumn>
 					</TreeBranch>
-					{storingIsVisible && (
-						<StoringContainer runningOpen={runningIsVisible}>
-							<TreeList
-								listKey={ETreeList.LearningStoring}
-								filter={{ isArchive: true }}
-								dataList={storingList}
-								dataOffset={storingDataOffset}
-								dataLimit={storingDataLimit}
-								scrollOffset={storingScrollOffset}
-								dataItemHeight={30}
-								preLoaderUpMaxHeight={150}
-								preLoaderDownMaxHeight={150}
-								onLoadUp={this.handlerTreeOnLoadEvent}
-								onLoadDown={this.handlerTreeOnLoadEvent}
-								onScroll={this.handlerTreeOnScrollEvent}
-							>
-								{(props: ITreeItemProps<ILearningDataItem>) => {
-									return (
-										<TreeItem level={1}>
-											<TreeColumn>
-												<IconStyled
-													path={entityLearning}
-												/>
-												{props.dataItem.name}
-											</TreeColumn>
+					<StoringContainer
+						runningOpen={runningIsVisible}
+						storingOpen={storingIsVisible}
+					>
+						<TreeList
+							listKey={ETreeList.LearningStoring}
+							filter={{ isArchive: true }}
+							dataList={storingList}
+							dataOffset={storingDataOffset}
+							dataLimit={storingDataLimit}
+							scrollOffset={storingScrollOffset}
+							dataItemHeight={30}
+							preLoaderUpMaxHeight={150}
+							preLoaderDownMaxHeight={150}
+							onLoadUp={this.handlerTreeOnLoadEvent}
+							onLoadDown={this.handlerTreeOnLoadEvent}
+							onScroll={this.handlerTreeOnScrollEvent}
+						>
+							{(props: ITreeItemProps<ILearningDataItem>) => {
+								return (
+									<TreeItem level={1}>
+										<TreeColumn>
+											<IconStyled path={entityLearning} />
+											{props.dataItem.name}
+										</TreeColumn>
 
-											<ButtonStyled
-												template="icon"
-												svgPath={treeDelete}
-											/>
-										</TreeItem>
-									);
-								}}
-							</TreeList>
-						</StoringContainer>
-					)}
+										<ButtonStyled
+											template="icon"
+											svgPath={treeDelete}
+										/>
+									</TreeItem>
+								);
+							}}
+						</TreeList>
+					</StoringContainer>
 				</Tree>
 			</Content>
 		);

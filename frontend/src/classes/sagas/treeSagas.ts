@@ -16,11 +16,6 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 
 	if (tree[action.listKey].isLoading) return;
 
-	console.debug(
-		`workerTreeOnLoadEvent(${action.listKey.toString()}): `,
-		tree[action.listKey]
-	);
-
 	const requestData: REQ.ITreeRequest = {
 		dataOffset: action.dataOffset,
 		dataLimit: action.dataLimit,
