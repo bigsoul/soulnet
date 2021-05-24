@@ -49,13 +49,20 @@ const treeReducer = (
 			newState[action.listKey].dataLimit = action.dataLimit;
 			return newState;
 		}
-		case ACT.TREE_BRANCH_LOADING: {
+		case ACT.TREE_IS_LOADING: {
 			const newState = { ...curState };
 			newState[action.listKey].isLoading = action.loading;
 			return newState;
 		}
+		case ACT.TREE_IS_VISIBLE: {
+			const newState = { ...curState };
+			newState[action.listKey].isVisible = action.visible;
+			return newState;
+		}
 		case ACT.TREE_ON_SCROLL: {
-			return curState;
+			const newState = { ...curState };
+			newState[action.listKey].scrollOffset = action.scrollOffset;
+			return newState;
 		}
 		default:
 			return curState;

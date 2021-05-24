@@ -1,6 +1,6 @@
 import service from "../utils/service";
 
-import { call, delay, put, takeEvery, takeLeading } from "redux-saga/effects";
+import { call, put, takeEvery } from "redux-saga/effects";
 
 import * as ACT from "../actions/ITreeAction";
 import * as REQ from "../../interfaces/IRequest";
@@ -14,6 +14,8 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 
 	const { tree } = state;
 
+	if (tree[action.listKey].isLoading) return;
+
 	console.debug(
 		`workerTreeOnLoadEvent(${action.listKey.toString()}): `,
 		tree[action.listKey]
@@ -25,17 +27,17 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 		filter: action.filter,
 	};
 
+	yield put<ACT.ITreeIsLoadingAction>({
+		type: ACT.TREE_IS_LOADING,
+		listKey: action.listKey,
+		loading: true,
+	});
+
 	const responseBody: { data: RES.ITreeResultResponse } = yield call(
 		service.get,
 		action.controller,
 		requestData
 	);
-
-	yield put<ACT.ITreeBranchLoadingAction>({
-		type: ACT.TREE_BRANCH_LOADING,
-		listKey: action.listKey,
-		loading: true,
-	});
 
 	yield put<ACT.ITreeOnLoadAction>({
 		type: ACT.TREE_ON_LOAD,
@@ -45,8 +47,8 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 		dataOffset: responseBody.data.dataOffset,
 	});
 
-	yield put<ACT.ITreeBranchLoadingAction>({
-		type: ACT.TREE_BRANCH_LOADING,
+	yield put<ACT.ITreeIsLoadingAction>({
+		type: ACT.TREE_IS_LOADING,
 		listKey: action.listKey,
 		loading: false,
 	});
