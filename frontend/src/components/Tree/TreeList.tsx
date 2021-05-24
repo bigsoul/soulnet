@@ -52,8 +52,14 @@ type MutationState<K, T, F> = {
 };
 
 type EventTimers = {
-	onLoadUpTimer: number;
-	onLoadDownTimer: number;
+	onLoadUpTimer: EventTimer;
+	onLoadDownTimer: EventTimer;
+};
+
+type EventTimer = {
+	lockTime: number;
+	leftToWaitMs: number;
+	leftToWaitTry: number;
 };
 
 const calculateNewDataOffset = (
@@ -105,18 +111,50 @@ const treeListCreator = function <K, T, F>() {
 
 	type OnScroll = (listKey: K, scrollOffset: number) => void;
 
-	const eventBlocked = (
-		mutationState: MutationState<K, T, F>,
-		listKey: keyof EventTimers
+	const eventIsLocked = (
+		eventKey: keyof EventTimers,
+		mutationState: MutationState<K, T, F>
 	) => {
-		return mutationState.eventTimers[listKey] > Date.now();
+		const timer = mutationState.eventTimers[eventKey];
+		const time = Date.now();
+
+		let isLocked = false;
+
+		if (timer.lockTime + timer.leftToWaitMs >= time) {
+			timer.leftToWaitMs -= timer.lockTime - time;
+			if (timer.leftToWaitMs < 0) timer.leftToWaitMs = 0;
+			isLocked = true;
+		}
+
+		if (timer.leftToWaitTry > 0) {
+			timer.leftToWaitTry -= 1;
+			isLocked = true;
+		}
+
+		return isLocked;
 	};
 
-	const eventBlock = (
-		mutationState: MutationState<K, T, F>,
-		listKey: keyof EventTimers
+	const eventLock = (
+		eventKey: keyof EventTimers,
+		mutationState: MutationState<K, T, F>
 	) => {
-		mutationState.eventTimers[listKey] = Date.now() + 250;
+		const timer = mutationState.eventTimers[eventKey];
+		const time = Date.now();
+
+		timer.lockTime = time;
+		timer.leftToWaitMs = 250;
+		timer.leftToWaitTry = 15;
+	};
+
+	const eventClearLock = (mutationState: MutationState<K, T, F>) => {
+		let key: keyof EventTimers;
+
+		for (key in mutationState.eventTimers) {
+			const timer = mutationState.eventTimers[key];
+			timer.lockTime = 0;
+			timer.leftToWaitMs = 0;
+			timer.leftToWaitTry = 0;
+		}
 	};
 
 	const onLoadUpDoNotRush = (
@@ -125,16 +163,16 @@ const treeListCreator = function <K, T, F>() {
 		dataLimit: number,
 		mutationState: MutationState<K, T, F>
 	) => {
-		if (eventBlocked(mutationState, "onLoadUpTimer")) {
+		if (eventIsLocked("onLoadUpTimer", mutationState)) {
 			return;
 		}
+		eventLock("onLoadUpTimer", mutationState);
 		onLoadUp(
 			mutationState.listKey,
 			dataOffset,
 			dataLimit,
 			mutationState.filter
 		);
-		eventBlock(mutationState, "onLoadUpTimer");
 	};
 
 	const onLoadDownDoNotRush = (
@@ -143,22 +181,28 @@ const treeListCreator = function <K, T, F>() {
 		dataLimit: number,
 		mutationState: MutationState<K, T, F>
 	) => {
-		if (eventBlocked(mutationState, "onLoadDownTimer")) {
+		if (eventIsLocked("onLoadDownTimer", mutationState)) {
 			return;
 		}
+		eventLock("onLoadDownTimer", mutationState);
 		onLoadDown(
 			mutationState.listKey,
 			dataOffset,
 			dataLimit,
 			mutationState.filter
 		);
-		eventBlock(mutationState, "onLoadDownTimer");
 	};
 	return class TreeList extends PureComponent<TreeListProps, TreeListState> {
 		resizeObserver: ResizeObserver;
 
 		constructor(props: TreeListProps) {
 			super(props);
+
+			const eventTimer: EventTimer = {
+				lockTime: 0,
+				leftToWaitMs: 0,
+				leftToWaitTry: 0,
+			};
 
 			this.state = {
 				dataListHeight: 0,
@@ -180,8 +224,8 @@ const treeListCreator = function <K, T, F>() {
 					listBoxRef: createRef<HTMLDivElement>(),
 					items: [],
 					eventTimers: {
-						onLoadUpTimer: Date.now(),
-						onLoadDownTimer: Date.now(),
+						onLoadUpTimer: { ...eventTimer },
+						onLoadDownTimer: { ...eventTimer },
 					},
 				},
 			};
@@ -502,6 +546,8 @@ const treeListCreator = function <K, T, F>() {
 			if (mutationState.listBoxRef.current)
 				mutationState.listBoxRef.current.scrollTop =
 					mutationState.scrollOffset;
+
+			eventClearLock(mutationState);
 		};
 
 		componentDidMount = () => {
