@@ -61,9 +61,7 @@ namespace Soulnet.Data
             return _context.Set<T>().Where(predicate);
         }
 
-        public Section<T> GetSection(int dataOffset, int dataLimit, string filter) {
-            var t = new Section<T>();
-            var l = t.List;
+        public Section<T> GetSection(int dataOffset, int dataLimit, Expression<Func<T, bool>> predicate) {
             return new Section<T>();
         }
 
@@ -76,7 +74,7 @@ namespace Soulnet.Data
             EntityEntry dbEntityEntry = _context.Entry<T>(entity);
             dbEntityEntry.State = EntityState.Modified;
         }
-        
+
         public virtual void Delete(T entity) {
             EntityEntry dbEntityEntry = _context.Entry<T>(entity);
             dbEntityEntry.State = EntityState.Deleted;
