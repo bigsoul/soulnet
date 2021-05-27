@@ -6,7 +6,7 @@ import Content from "../Content";
 import Tree from "../Tree/Tree";
 import TreeBranch from "../Tree/TreeBranch";
 import TreeHeader from "../Tree/TreeHeader";
-import TreeItem, { DataItem, ITreeItemProps } from "../Tree/TreeItem";
+import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
 import TreeColumn from "../Tree/TreeColumn";
 import Button from "../Button";
 import Player from "../Player";
@@ -24,8 +24,7 @@ import treeDelete from "./../../assets/svg/tree-delete.svg";
 import loading from "./../../assets/gif/loading.gif";
 
 import IStore from "../../interfaces/IStore";
-import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
-import TLearningAction, * as ACT from "../../classes/actions/ILearningAction";
+import { ILearningFilter } from "../../interfaces/ILearning";
 
 import React, { PureComponent } from "react";
 import treeListCreator from "../Tree/TreeList";
