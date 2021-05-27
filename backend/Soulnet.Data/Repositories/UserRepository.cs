@@ -12,7 +12,7 @@ namespace Soulnet.Data.Repositories
         public string Username { get; set; }
     }
 
-    public class UserRepository
+    public class UserRepository : EntityBaseRepository<User>
     {     
         private IConfiguration _configuration;
         private string _queryCreate;
@@ -113,10 +113,5 @@ namespace Soulnet.Data.Repositories
             var result = Read(new UserFilter { Username = username });
             return result.Count == 0;
         }
-    }
-
-    public struct QueryParametrs {
-        public string Query;
-        public DynamicParameters DynamicParameters;
     }
 }

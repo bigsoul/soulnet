@@ -2,7 +2,6 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Soulnet.Model.Entity;
 using Dapper;
 using Npgsql;
@@ -14,7 +13,7 @@ namespace Soulnet.Data.Repositories
         public bool IsArchive { get; set; }
     }
 
-    public class LearningRepository
+    public class LearningRepository : EntityBaseRepository<Learning>
     {        
         private IConfiguration _configuration;
 
@@ -76,11 +75,5 @@ namespace Soulnet.Data.Repositories
                 DataLimit = result.Count()
             };
         }
-    }
-
-    public struct Section<T> {
-        public IEnumerable<T> List;
-        public int DataOffset;
-        public int DataLimit;
     }
 }
