@@ -67,6 +67,8 @@ namespace Soulnet.Api
                     };
                 });
 
+            
+
             services.AddScoped<UserRepository>();
             services.AddScoped<DatasetRepository>();
             services.AddScoped<LearningRepository>();

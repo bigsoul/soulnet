@@ -1,60 +1,80 @@
+using System.Configuration;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Soulnet.Model.Entity;
+using Dapper;
+using Npgsql;
+using Microsoft.Extensions.Configuration;
 
 namespace Soulnet.Data.Repositories 
 {
-    public class LearningRepository : EntityBaseRepository<Learning>
-    {        
-        public LearningRepository (SoulnetContext context) : base (context) { }
+    public class LearningFilter {
+        public bool IsArchive { get; set; }
+    }
 
-        public Section<Learning> GetSection(int dataOffset, int dataLimit, bool? isArchive) {
-            
-            var result = Request(dataOffset, dataLimit, isArchive);
-            
-            if (result.Count() == dataLimit) {
-                return new Section<Learning> {
-                    List = result,
-                    DataOffset = dataOffset,
-                    DataLimit = dataLimit
-                };
+    public class LearningRepository
+    {        
+        private IConfiguration _configuration;
+
+        public LearningRepository (IConfiguration configuration) { 
+            _configuration = configuration;
+        }
+
+        public Section<Learning> GetSection(int dataOffset, int dataLimit, LearningFilter filter) {
+
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+
+            IEnumerable<Learning> result;
+
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
+                var query = @"SELECT * FROM public.""Learning"" 
+                              WHERE ""IsArchive"" = @IsArchive 
+                              ORDER BY ""Name"" ASC LIMIT @Limit OFFSET @Offset;"; 
+
+                result = db.Query<Learning>(query, new {
+                    Offset = dataOffset, 
+                    Limit = dataLimit,
+                    IsArchive = filter.IsArchive
+                });
+
+                if (result.Count() == dataLimit) {
+                    return new Section<Learning> {
+                        List = result,
+                        DataOffset = dataOffset,
+                        DataLimit = dataLimit
+                    };
+                }
+
+                var dataOffsetMax = dataOffset + result.Count();
+
+                if (dataOffsetMax >= dataLimit) {
+                    result = db.Query<Learning>(query, new {
+                        Offset = dataOffsetMax - dataLimit, 
+                        Limit = dataLimit,
+                        IsArchive = filter.IsArchive
+                    });
+
+                    return new Section<Learning> {
+                        List = result,
+                        DataOffset = dataOffsetMax - dataLimit,
+                        DataLimit = dataLimit
+                    };
+                }     
+
+                result = db.Query<Learning>(query, new {
+                    Offset = 0, 
+                    Limit = dataLimit,
+                    IsArchive = filter.IsArchive
+                });
             }
 
-            var dataOffsetMax = dataOffset + result.Count();
-
-            if (dataOffsetMax >= dataLimit) {
-                result = this.Request(dataOffsetMax - dataLimit, dataLimit, isArchive);
-
-                return new Section<Learning> {
-                    List = result,
-                    DataOffset = dataOffsetMax - dataLimit,
-                    DataLimit = dataLimit
-                };
-            } 
-
-            result = Request(0, dataLimit, isArchive);
-
-            return new Section<Learning> {
+            return new Section<Learning>() {
                 List = result,
                 DataOffset = 0,
                 DataLimit = result.Count()
             };
-        }
-
-        private IEnumerable<Learning> Request(int dataOffset, int dataLimit, bool? isArchive) {
-            var request = _context.Learning
-                            .AsNoTracking();
-
-            if (isArchive != null)
-                request = request
-                            .Where(e => e.IsArchive == isArchive);
-                            
-            var result = request.OrderBy(e => e.Name)
-                                .Skip(dataOffset)
-                                .Take(dataLimit);
-
-            return result;
         }
     }
 

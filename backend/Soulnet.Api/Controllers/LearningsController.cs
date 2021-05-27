@@ -8,6 +8,7 @@ using Soulnet.Api.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Soulnet.Data.Repositories;
 using Newtonsoft.Json;
+using Soulnet.Model.Entity;
 
 namespace Soulnet.Api.Controllers
 {
@@ -26,20 +27,14 @@ namespace Soulnet.Api.Controllers
         [HttpGet]
         public ActionResult<TreeResultViewModel<LearningViewModel>> Get(int dataOffset, int dataLimit, string filter)
         {
-            var filters = JsonConvert.DeserializeObject<LearningFilterViewModel>(filter);
+            var _filter = JsonConvert.DeserializeObject<LearningFilter>(filter);
 
-            var section = learningRepository.GetSection(dataOffset, dataLimit, filters.IsArchive);
+            var section = learningRepository.GetSection(dataOffset, dataLimit, _filter);
 
             var result = new List<LearningViewModel>();
 
             foreach(var item in section.List) {
-                var datasetId = "";
-
-                if (item.DatasetId != Guid.Empty) {
-                    datasetId = item.DatasetId.ToString();
-                }
-
-                result.Add(new LearningViewModel {
+                result.Add(new LearningViewModel() {
                     Id = item.Id.ToString(),
                     Name = item.Name,
                     State = item.State,
@@ -48,11 +43,10 @@ namespace Soulnet.Api.Controllers
                     IterationCurrent = item.IterationCurrent,
                     InputNeuronsCount = item.InputNeuronsCount,
                     DeepLayersCount = item.DeepLayersCount,
-                    DatasetId = datasetId
-                });
+                    DatasetId = item.DatasetId.ToString()
+                });  
             }
 
-  
             return Ok(new TreeResultViewModel<LearningViewModel> {
                 DataOffset = section.DataOffset,
                 DataLimit = section.DataLimit,
