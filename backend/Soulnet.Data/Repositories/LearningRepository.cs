@@ -22,7 +22,7 @@ namespace Soulnet.Data.Repositories
             _configuration = configuration;
         }
 
-        public Section<Learning> GetSection(int dataOffset, int dataLimit, LearningFilter filter) {
+        public Section<Learning> ReadSection(int dataOffset, int dataLimit, LearningFilter filter) {
 
             var connectionString = _configuration.GetConnectionString("SoulnetContext");
 

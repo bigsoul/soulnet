@@ -29,7 +29,7 @@ namespace Soulnet.Api.Controllers
         {
             var _filter = JsonConvert.DeserializeObject<LearningFilter>(filter);
 
-            var section = learningRepository.GetSection(dataOffset, dataLimit, _filter);
+            var section = learningRepository.ReadSection(dataOffset, dataLimit, _filter);
 
             var result = new List<LearningViewModel>();
 
