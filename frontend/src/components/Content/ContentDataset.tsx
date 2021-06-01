@@ -184,7 +184,7 @@ const mapStateToProps = (state: IStore): IContentDatasetState => {
 		list: list.list,
 		isLoading: list.isLoading,
 		dataOffset: list.dataOffset,
-		dataLimit: list.dataLimit,
+		dataLimit: 50,
 		scrollOffset: list.scrollOffset,
 	};
 

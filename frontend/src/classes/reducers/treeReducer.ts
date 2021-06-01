@@ -26,7 +26,7 @@ const treeList: TreeListReducer = {
 	isLoading: false,
 	scrollOffset: 0,
 	dataOffset: 0,
-	dataLimit: 50,
+	dataLimit: 0,
 };
 
 const preloadedState: TreeReducer = {

@@ -327,13 +327,13 @@ const mapStateToProps = (state: IStore): IContentTestingState => {
 		runningIsVisible: runningList.isVisible,
 		runningIsLoading: runningList.isLoading,
 		runningDataOffset: runningList.dataOffset,
-		runningDataLimit: runningList.dataLimit,
+		runningDataLimit: 50,
 		runningScrollOffset: runningList.scrollOffset,
 		storingList: storingList.list,
 		storingIsVisible: storingList.isVisible,
 		storingIsLoading: storingList.isLoading,
 		storingDataOffset: storingList.dataOffset,
-		storingDataLimit: storingList.dataLimit,
+		storingDataLimit: 50,
 		storingScrollOffset: storingList.scrollOffset,
 	};
 

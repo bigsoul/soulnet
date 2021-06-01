@@ -67,11 +67,12 @@ const calculateNewDataOffset = (
 	dataLimit: number,
 	isUpward: boolean
 ) => {
-	const newDataLimit = dataLimit - 20 > 0 ? dataLimit - 20 : dataLimit;
+	const percent = 60;
+	const offset = dataLimit * (percent / 100);
 
-	if (isUpward && dataOffset - dataLimit < 0) return 0;
-	if (isUpward) return dataOffset - newDataLimit;
-	if (!isUpward) return dataOffset + newDataLimit;
+	if (isUpward && dataOffset - offset < 0) return 0;
+	if (isUpward) return dataOffset - offset;
+	if (!isUpward) return dataOffset + offset;
 
 	return 0;
 };
