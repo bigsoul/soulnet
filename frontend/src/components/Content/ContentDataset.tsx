@@ -1,24 +1,28 @@
-import { PureComponent } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
-import {
-	TreeListEntity,
-	TreeListEntityFilters,
-} from "../../classes/reducers/treeReducer";
-import ETreeList from "../../enums/ETreeList";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
+
 import Content from "../Content";
 import Tree from "../Tree/Tree";
-import TreeHeader from "../Tree/TreeHeader";
-import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
-import treeListCreator from "../Tree/TreeList";
+import Icon from "../Icon";
+import Button from "../Button";
 import TreeColumn from "../Tree/TreeColumn";
+import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
+import TreeHeader from "../Tree/TreeHeader";
+
 import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeAdd from "./../../assets/svg/tree-add.svg";
-
-import Button from "../Button";
-
+import entityDataset from "./../../assets/svg/entity-dataset.svg";
+import treeDelete from "./../../assets/svg/tree-delete.svg";
 import treeList from "./../../assets/svg/tree-list.svg";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import loading from "./../../assets/gif/loading.gif";
+
+import IStore from "../../interfaces/IStore";
+import { IDatasetFilter } from "../../interfaces/IDataset";
+
+import treeListCreator from "../Tree/TreeList";
+import ETreeList from "../../enums/ETreeList";
 import TTreeAction, {
 	ITreeIsVisibleAction,
 	ITreeOnLoadEventAction,
@@ -27,8 +31,15 @@ import TTreeAction, {
 	TREE_ON_LOAD_EVENT,
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
-import { IDatasetFilter } from "../../interfaces/IDataset";
-import IStore from "../../interfaces/IStore";
+
+import {
+	TreeListEntity,
+	TreeListEntityFilters,
+} from "../../classes/reducers/treeReducer";
+
+const IconStyled = styled(Icon)`
+	margin-right: 5px;
+`;
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -43,7 +54,7 @@ const BasisContainer = styled.div`
 `;
 
 const TreeListContainer = styled(BasisContainer)`
-	height: "calc(100% - 30px)";
+	height: calc(100% - 30px);
 	overflow: hidden;
 	position: relative;
 `;
@@ -60,7 +71,6 @@ const TreeList = treeListCreator<
 
 interface IContentDatasetState {
 	list: TreeListEntity[];
-	isVisible: boolean;
 	isLoading: boolean;
 	dataOffset: number;
 	dataLimit: number;
@@ -103,7 +113,6 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 	render = () => {
 		const {
 			list,
-			isVisible,
 			isLoading,
 			dataOffset,
 			dataLimit,
@@ -116,6 +125,7 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 					<TreeHeader svgPath={treeList}>
 						<TreeColumn>Dataset</TreeColumn>
 						<TreeColumn align="right">
+							{isLoading && <IconStyled path={loading} />}
 							<ButtonStyled
 								template="icon"
 								svgPath={treeRefresh}
@@ -126,7 +136,7 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 					<TreeListContainer>
 						<TreeList
 							listKey={ETreeList.Dataset}
-							filter={{ isArchive: false }}
+							filter={{}}
 							dataList={list}
 							dataOffset={dataOffset}
 							dataLimit={dataLimit}
@@ -142,8 +152,13 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 								return (
 									<TreeItem level={1}>
 										<TreeColumn>
+											<IconStyled path={entityDataset} />
 											{props.dataItem.name}
 										</TreeColumn>
+										<ButtonStyled
+											template="icon"
+											svgPath={treeDelete}
+										/>
 									</TreeItem>
 								);
 							}}
@@ -153,6 +168,12 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 			</Content>
 		);
 	};
+
+	componentDidMount = () => {
+		const { dataOffset, dataLimit, treeOnLoadEvent } = this.props;
+
+		treeOnLoadEvent(ETreeList.Dataset, dataLimit, dataOffset, {});
+	};
 }
 
 const mapStateToProps = (state: IStore): IContentDatasetState => {
@@ -161,7 +182,6 @@ const mapStateToProps = (state: IStore): IContentDatasetState => {
 
 	const props: IContentDatasetState = {
 		list: list.list,
-		isVisible: list.isVisible,
 		isLoading: list.isLoading,
 		dataOffset: list.dataOffset,
 		dataLimit: list.dataLimit,
@@ -186,7 +206,7 @@ const mapDispatchToProps = (
 				listKey: key,
 				dataLimit: limit,
 				dataOffset: offset,
-				controller: "/learnings",
+				controller: "/datasets",
 				filter: filter,
 			});
 		},

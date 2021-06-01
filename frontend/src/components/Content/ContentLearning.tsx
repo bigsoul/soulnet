@@ -1,3 +1,4 @@
+import React, { PureComponent } from "react";
 import styled from "styled-components";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
@@ -20,14 +21,13 @@ import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeAdd from "./../../assets/svg/tree-add.svg";
 import treeFolder from "./../../assets/svg/tree-folder.svg";
 import treeDelete from "./../../assets/svg/tree-delete.svg";
-
 import loading from "./../../assets/gif/loading.gif";
 
 import IStore from "../../interfaces/IStore";
 import { ILearningFilter } from "../../interfaces/ILearning";
 
-import React, { PureComponent } from "react";
 import treeListCreator from "../Tree/TreeList";
+import ETreeList from "../../enums/ETreeList";
 import TTreeAction, {
 	ITreeIsVisibleAction,
 	ITreeOnLoadEventAction,
@@ -36,7 +36,7 @@ import TTreeAction, {
 	TREE_ON_LOAD_EVENT,
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
-import ETreeList from "../../enums/ETreeList";
+
 import {
 	TreeListEntity,
 	TreeListEntityFilters,

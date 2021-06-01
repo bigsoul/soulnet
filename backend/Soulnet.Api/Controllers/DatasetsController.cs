@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Soulnet.Api.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Soulnet.Data.Repositories;
+using Newtonsoft.Json;
 
 namespace Soulnet.Api.Controllers
 {
@@ -14,15 +16,35 @@ namespace Soulnet.Api.Controllers
     [Route("[controller]")]
     public class DatasetsController : ControllerBase
     {
-        [HttpGet]
-        public List<DatasetViewModel> Get()
+        private DatasetRepository datasetRepository;
+        
+        public DatasetsController(DatasetRepository datasetRepository)
         {
-            return new List<DatasetViewModel> {
-                new DatasetViewModel {
-                    Id = "0",
-                    Name = "zero"
-                }
-            };
+            this.datasetRepository = datasetRepository;
+        }
+
+        [HttpGet]
+        public ActionResult<TreeResultViewModel<DatasetViewModel>> Get(int dataOffset, int dataLimit, string filter)
+        {
+            var _filter = JsonConvert.DeserializeObject<DatasetFilter>(filter);
+
+            var section = datasetRepository.ReadSection(dataOffset, dataLimit, _filter);
+
+            var result = new List<DatasetViewModel>();
+
+            foreach(var item in section.List) {
+                result.Add(new DatasetViewModel() {
+                    Id = item.Id.ToString(),
+                    Name = item.Name,
+                    IsLoaded = item.IsLoaded
+                });  
+            }
+
+            return Ok(new TreeResultViewModel<DatasetViewModel> {
+                DataOffset = 0,
+                DataLimit = 10,
+                List = result
+            });
         }
     } 
 }
