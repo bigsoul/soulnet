@@ -13,7 +13,7 @@ import Button from "../Button";
 import Player from "../Player";
 import Icon from "../Icon";
 
-import entityLearning from "./../../assets/svg/entity-learning.svg";
+import entityTesting from "./../../assets/svg/entity-testing.svg";
 import treeTree from "./../../assets/svg/tree-tree.svg";
 import treeExpand from "./../../assets/svg/tree-expand.svg";
 import treeCollapse from "./../../assets/svg/tree-collapse.svg";
@@ -24,8 +24,358 @@ import treeDelete from "./../../assets/svg/tree-delete.svg";
 import loading from "./../../assets/gif/loading.gif";
 
 import IStore from "../../interfaces/IStore";
-import { ILearningFilter } from "../../interfaces/ILearning";
+import { ITestingFilter } from "../../interfaces/ITesting";
 
-const ContentTesting = () => <Content>TESTING</Content>;
+import treeListCreator from "../Tree/TreeList";
+import ETreeList from "../../enums/ETreeList";
+import TTreeAction, {
+	ITreeIsVisibleAction,
+	ITreeOnLoadEventAction,
+	ITreeOnScrollAction,
+	TREE_IS_VISIBLE,
+	TREE_ON_LOAD_EVENT,
+	TREE_ON_SCROLL,
+} from "../../classes/actions/ITreeAction";
 
-export default ContentTesting;
+import {
+	TreeListEntity,
+	TreeListEntityFilters,
+} from "../../classes/reducers/treeReducer";
+
+const ButtonStyled = styled(Button)`
+	margin-right: 5px;
+`;
+
+const IconStyled = styled(Icon)`
+	margin-right: 5px;
+`;
+
+const BasisContainer = styled.div`
+	overflow-y: scroll;
+	&::-webkit-scrollbar {
+		width: 0px;
+	}
+	scrollbar-width: none;
+`;
+
+const RunningContainer = styled(BasisContainer)<{
+	storingOpen: boolean;
+	runningOpen: boolean;
+}>`
+	height: ${(p) => {
+		if (!p.runningOpen) return "0px";
+		return p.storingOpen
+			? "calc(35% - 30px - 30px)"
+			: "calc(100% - 30px - 30px - 30px)";
+	}};
+	overflow: hidden;
+	position: relative;
+`;
+
+const StoringContainer = styled(BasisContainer)<{
+	storingOpen: boolean;
+	runningOpen: boolean;
+}>`
+	height: ${(p) => {
+		if (!p.storingOpen) return "0px";
+		return p.runningOpen
+			? "calc(65% - 30px)"
+			: "calc(100% - 30px - 30px - 30px)";
+	}};
+	overflow: hidden;
+	position: relative;
+`;
+
+interface ITestingDataItem {
+	name: string;
+}
+
+const TreeList = treeListCreator<
+	ETreeList,
+	ITestingDataItem,
+	TreeListEntityFilters
+>();
+
+interface IContentTestingState {
+	runningList: TreeListEntity[];
+	runningIsVisible: boolean;
+	runningIsLoading: boolean;
+	runningDataOffset: number;
+	runningDataLimit: number;
+	runningScrollOffset: number;
+	storingList: TreeListEntity[];
+	storingIsVisible: boolean;
+	storingIsLoading: boolean;
+	storingDataOffset: number;
+	storingDataLimit: number;
+	storingScrollOffset: number;
+}
+
+interface IContentTestingDispatch {
+	treeOnLoadEvent: (
+		key: ETreeList,
+		limit: number,
+		offset: number,
+		filter: ITestingFilter
+	) => void;
+	treeOnScrollEvent: (key: ETreeList, offset: number) => void;
+	treeIsVisibleEvent: (key: ETreeList, visible: boolean) => void;
+}
+
+interface IContentTestingProps
+	extends IContentTestingState,
+		IContentTestingDispatch {}
+
+class ContentTesting extends PureComponent<IContentTestingProps> {
+	handlerTreeOnLoadEvent = (
+		listKey: ETreeList,
+		dataOffset: number,
+		dataLimit: number,
+		filter: TreeListEntityFilters
+	) => {
+		const { treeOnLoadEvent } = this.props;
+
+		treeOnLoadEvent(listKey, dataLimit, dataOffset, filter);
+	};
+
+	handlerTreeOnScrollEvent = (listKey: ETreeList, scrollOffset: number) => {
+		const { treeOnScrollEvent } = this.props;
+
+		treeOnScrollEvent(listKey, scrollOffset);
+	};
+
+	hendlerRunningIsVisibleEvent = () => {
+		const { runningIsVisible, treeIsVisibleEvent } = this.props;
+		treeIsVisibleEvent(ETreeList.TestingRunning, !runningIsVisible);
+	};
+
+	hendlerStoringIsVisibleEvent = () => {
+		const { storingIsVisible, treeIsVisibleEvent } = this.props;
+		treeIsVisibleEvent(ETreeList.TestingStoring, !storingIsVisible);
+	};
+
+	render = () => {
+		const {
+			runningList,
+			runningIsVisible,
+			runningIsLoading,
+			runningDataOffset,
+			runningDataLimit,
+			runningScrollOffset,
+			storingList,
+			storingIsVisible,
+			storingIsLoading,
+			storingDataOffset,
+			storingDataLimit,
+			storingScrollOffset,
+		} = this.props;
+
+		return (
+			<Content>
+				<Tree>
+					<TreeHeader svgPath={treeTree}>
+						<TreeColumn>Testing</TreeColumn>
+						<TreeColumn align="right">
+							<ButtonStyled
+								template="icon"
+								svgPath={treeRefresh}
+							/>
+							<ButtonStyled template="icon" svgPath={treeAdd} />
+						</TreeColumn>
+					</TreeHeader>
+					<TreeBranch>
+						<TreeColumn>
+							<ButtonStyled
+								template="icon"
+								svgPath={treeCollapse}
+								svgPathSelected={treeExpand}
+								selected={runningIsVisible}
+								onClick={this.hendlerRunningIsVisibleEvent}
+							/>
+							Running
+						</TreeColumn>
+						<TreeColumn align="right">
+							{runningIsLoading && <IconStyled path={loading} />}
+						</TreeColumn>
+					</TreeBranch>
+					<RunningContainer
+						runningOpen={runningIsVisible}
+						storingOpen={storingIsVisible}
+					>
+						<TreeList
+							listKey={ETreeList.TestingRunning}
+							filter={{ isArchive: false }}
+							dataList={runningList}
+							dataOffset={runningDataOffset}
+							dataLimit={runningDataLimit}
+							scrollOffset={runningScrollOffset}
+							dataItemHeight={30}
+							preLoaderUpMaxHeight={150}
+							preLoaderDownMaxHeight={150}
+							onLoadUp={this.handlerTreeOnLoadEvent}
+							onLoadDown={this.handlerTreeOnLoadEvent}
+							onScroll={this.handlerTreeOnScrollEvent}
+						>
+							{(props: ITreeItemProps<ITestingDataItem>) => {
+								return (
+									<TreeItem level={1}>
+										<TreeColumn>
+											<IconStyled path={entityTesting} />
+											{props.dataItem.name}
+										</TreeColumn>
+										<TreeColumn align="right">
+											<Player />
+										</TreeColumn>
+
+										<ButtonStyled
+											template="icon"
+											svgPath={treeFolder}
+										/>
+									</TreeItem>
+								);
+							}}
+						</TreeList>
+					</RunningContainer>
+					<TreeBranch>
+						<TreeColumn>
+							<ButtonStyled
+								template="icon"
+								svgPath={treeCollapse}
+								svgPathSelected={treeExpand}
+								selected={storingIsVisible}
+								onClick={this.hendlerStoringIsVisibleEvent}
+							/>
+							Storing
+						</TreeColumn>
+						<TreeColumn align="right">
+							{storingIsLoading && <IconStyled path={loading} />}
+						</TreeColumn>
+					</TreeBranch>
+					<StoringContainer
+						runningOpen={runningIsVisible}
+						storingOpen={storingIsVisible}
+					>
+						<TreeList
+							listKey={ETreeList.TestingStoring}
+							filter={{ isArchive: true }}
+							dataList={storingList}
+							dataOffset={storingDataOffset}
+							dataLimit={storingDataLimit}
+							scrollOffset={storingScrollOffset}
+							dataItemHeight={30}
+							preLoaderUpMaxHeight={150}
+							preLoaderDownMaxHeight={150}
+							onLoadUp={this.handlerTreeOnLoadEvent}
+							onLoadDown={this.handlerTreeOnLoadEvent}
+							onScroll={this.handlerTreeOnScrollEvent}
+						>
+							{(props: ITreeItemProps<ITestingDataItem>) => {
+								return (
+									<TreeItem level={1}>
+										<TreeColumn>
+											<IconStyled path={entityTesting} />
+											{props.dataItem.name}
+										</TreeColumn>
+
+										<ButtonStyled
+											template="icon"
+											svgPath={treeDelete}
+										/>
+									</TreeItem>
+								);
+							}}
+						</TreeList>
+					</StoringContainer>
+				</Tree>
+			</Content>
+		);
+	};
+
+	componentDidMount = () => {
+		const {
+			runningDataOffset,
+			runningDataLimit,
+			storingDataOffset,
+			storingDataLimit,
+			treeOnLoadEvent,
+		} = this.props;
+
+		treeOnLoadEvent(
+			ETreeList.TestingRunning,
+			runningDataLimit,
+			runningDataOffset,
+			{
+				isArchive: false,
+			}
+		);
+		treeOnLoadEvent(
+			ETreeList.TestingStoring,
+			storingDataLimit,
+			storingDataOffset,
+			{
+				isArchive: true,
+			}
+		);
+	};
+}
+
+const mapStateToProps = (state: IStore): IContentTestingState => {
+	const { tree } = state;
+	const runningList = tree[ETreeList.TestingRunning];
+	const storingList = tree[ETreeList.TestingStoring];
+
+	const props: IContentTestingState = {
+		runningList: runningList.list,
+		runningIsVisible: runningList.isVisible,
+		runningIsLoading: runningList.isLoading,
+		runningDataOffset: runningList.dataOffset,
+		runningDataLimit: runningList.dataLimit,
+		runningScrollOffset: runningList.scrollOffset,
+		storingList: storingList.list,
+		storingIsVisible: storingList.isVisible,
+		storingIsLoading: storingList.isLoading,
+		storingDataOffset: storingList.dataOffset,
+		storingDataLimit: storingList.dataLimit,
+		storingScrollOffset: storingList.scrollOffset,
+	};
+
+	return props;
+};
+
+const mapDispatchToProps = (
+	dispatch: Dispatch<TTreeAction>
+): IContentTestingDispatch => {
+	return {
+		treeOnLoadEvent: (
+			key: ETreeList,
+			limit: number,
+			offset: number,
+			filter: ITestingFilter
+		) => {
+			dispatch<ITreeOnLoadEventAction>({
+				type: TREE_ON_LOAD_EVENT,
+				listKey: key,
+				dataLimit: limit,
+				dataOffset: offset,
+				controller: "/testings",
+				filter: filter,
+			});
+		},
+		treeOnScrollEvent: (key: ETreeList, offset: number) => {
+			dispatch<ITreeOnScrollAction>({
+				type: TREE_ON_SCROLL,
+				listKey: key,
+				scrollOffset: offset,
+			});
+		},
+		treeIsVisibleEvent: (key: ETreeList, visible: boolean) => {
+			dispatch<ITreeIsVisibleAction>({
+				type: TREE_IS_VISIBLE,
+				listKey: key,
+				visible: visible,
+			});
+		},
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContentTesting);
