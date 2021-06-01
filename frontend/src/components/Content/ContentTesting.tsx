@@ -226,7 +226,6 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 										<TreeColumn align="right">
 											<Player />
 										</TreeColumn>
-
 										<ButtonStyled
 											template="icon"
 											svgPath={treeFolder}
@@ -276,7 +275,6 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 											<IconStyled path={entityTesting} />
 											{props.dataItem.name}
 										</TreeColumn>
-
 										<ButtonStyled
 											template="icon"
 											svgPath={treeDelete}
