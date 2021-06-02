@@ -58,6 +58,10 @@ const BasisContainer = styled.div`
 	scrollbar-width: none;
 `;
 
+const TreeBranchStyled = styled(TreeBranch)`
+	padding-left: 6px;
+`;
+
 const RunningContainer = styled(BasisContainer)<{
 	storingOpen: boolean;
 	runningOpen: boolean;
@@ -183,7 +187,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							<ButtonStyled template="icon" svgPath={treeAdd} />
 						</TreeColumn>
 					</TreeHeader>
-					<TreeBranch>
+					<TreeBranchStyled>
 						<TreeColumn>
 							<ButtonStyled
 								template="icon"
@@ -197,7 +201,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						<TreeColumn align="right">
 							{runningIsLoading && <IconStyled path={loading} />}
 						</TreeColumn>
-					</TreeBranch>
+					</TreeBranchStyled>
 					<RunningContainer
 						runningOpen={runningIsVisible}
 						storingOpen={storingIsVisible}
@@ -236,7 +240,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							}}
 						</TreeList>
 					</RunningContainer>
-					<TreeBranch>
+					<TreeBranchStyled>
 						<TreeColumn>
 							<ButtonStyled
 								template="icon"
@@ -250,7 +254,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						<TreeColumn align="right">
 							{storingIsLoading && <IconStyled path={loading} />}
 						</TreeColumn>
-					</TreeBranch>
+					</TreeBranchStyled>
 					<StoringContainer
 						runningOpen={runningIsVisible}
 						storingOpen={storingIsVisible}

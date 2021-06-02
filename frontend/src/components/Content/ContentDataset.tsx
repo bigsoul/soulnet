@@ -11,9 +11,9 @@ import TreeColumn from "../Tree/TreeColumn";
 import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
 import TreeHeader from "../Tree/TreeHeader";
 
+import entityDataset from "./../../assets/svg/entity-dataset.svg";
 import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeAdd from "./../../assets/svg/tree-add.svg";
-import entityDataset from "./../../assets/svg/entity-dataset.svg";
 import treeDelete from "./../../assets/svg/tree-delete.svg";
 import treeList from "./../../assets/svg/tree-list.svg";
 import loading from "./../../assets/gif/loading.gif";

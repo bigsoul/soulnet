@@ -4,7 +4,6 @@ const TreeDiv = styled.div`
 	width: 398px;
 	height: 100%;
 	border-right: 1px solid #8a8a8a;
-	font-size: 14px;
 	//overflow-y: hidden;
 `;
 

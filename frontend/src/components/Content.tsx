@@ -7,6 +7,7 @@ const ContentDiv = styled.div`
 	border-left: 1px solid #8a8a8a;
 	border-bottom: 1px solid #8a8a8a;
 	border-right: 1px solid #8a8a8a;
+	font-size: 14px;
 `;
 
 class Content<P = {}, S = {}, SS = {}> extends Component<P, S, SS> {

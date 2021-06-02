@@ -10,6 +10,7 @@ const TreeColumnDiv = styled.div<{ align: string }>`
 
 interface ITreeColumnProp {
 	children?: React.ReactNode;
+	className?: string;
 	align?: "left" | "center" | "right";
 }
 
@@ -22,7 +23,11 @@ const TreeColumn = (props: ITreeColumnProp) => {
 		align = "flex-end";
 	}
 
-	return <TreeColumnDiv align={align}>{props.children}</TreeColumnDiv>;
+	return (
+		<TreeColumnDiv className={props.className} align={align}>
+			{props.children}
+		</TreeColumnDiv>
+	);
 };
 
 export default TreeColumn;
