@@ -61,6 +61,7 @@ namespace Soulnet.Api
             services.AddScoped<DatasetRepository>();
             services.AddScoped<LearningRepository>();
             services.AddScoped<TestingRepository>();
+            services.AddScoped<MainResultReportRepository>();
 
 
             services.AddSingleton<AuthService>(

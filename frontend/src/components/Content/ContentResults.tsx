@@ -28,6 +28,9 @@ import TTreeAction, {
 	TREE_ON_LOAD_EVENT,
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
+import treeListCreator from "../Tree/TreeList";
+import { TreeListEntityFilters } from "../../classes/reducers/treeReducer";
+import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -45,6 +48,18 @@ const TreeColumnStyled = styled(TreeColumn)`
 const TreeColumnEnd = styled(TreeColumn)`
 	padding-left: 5px;
 `;
+
+const TreeListContainer = styled.div`
+	height: calc(100% - 60px);
+	overflow: hidden;
+	position: relative;
+`;
+
+const TreeList = treeListCreator<
+	ETreeList,
+	IMainResultReport,
+	TreeListEntityFilters
+>();
 
 interface IContentDatasetState {
 	list: IMainResultReport[];
@@ -65,8 +80,31 @@ interface IContentDatasetProps
 		IContentDatasetDispatch {}
 
 class ContentResults extends PureComponent<IContentDatasetProps> {
+	handlerTreeOnLoadEvent = (
+		listKey: ETreeList,
+		dataOffset: number,
+		dataLimit: number,
+		filter: TreeListEntityFilters
+	) => {
+		const { treeOnLoadEvent } = this.props;
+
+		treeOnLoadEvent(listKey, dataLimit, dataOffset);
+	};
+
+	handlerTreeOnScrollEvent = (listKey: ETreeList, scrollOffset: number) => {
+		const { treeOnScrollEvent } = this.props;
+
+		treeOnScrollEvent(listKey, scrollOffset);
+	};
+
 	render = () => {
-		const isLoading = true;
+		const {
+			list,
+			isLoading,
+			dataOffset,
+			dataLimit,
+			scrollOffset,
+		} = this.props;
 
 		return (
 			<Content>
@@ -94,14 +132,40 @@ class ContentResults extends PureComponent<IContentDatasetProps> {
 					<TreeColumnStyled>End Deposit</TreeColumnStyled>
 					<TreeColumnEnd>Margin, %</TreeColumnEnd>
 				</TreeBranch>
+				<TreeListContainer>
+					<TreeList
+						listKey={ETreeList.MainResultReport}
+						filter={{}}
+						dataList={list}
+						dataOffset={dataOffset}
+						dataLimit={dataLimit}
+						scrollOffset={scrollOffset}
+						dataItemHeight={30}
+						preLoaderUpMaxHeight={150}
+						preLoaderDownMaxHeight={150}
+						onLoadUp={this.handlerTreeOnLoadEvent}
+						onLoadDown={this.handlerTreeOnLoadEvent}
+						onScroll={this.handlerTreeOnScrollEvent}
+					>
+						{(props: ITreeItemProps<IMainResultReport>) => {
+							return <TreeItem level={1}></TreeItem>;
+						}}
+					</TreeList>
+				</TreeListContainer>
 			</Content>
 		);
+	};
+
+	componentDidMount = () => {
+		const { dataOffset, dataLimit, treeOnLoadEvent } = this.props;
+
+		treeOnLoadEvent(ETreeList.MainResultReport, dataLimit, dataOffset);
 	};
 }
 
 const mapStateToProps = (state: IStore): IContentDatasetState => {
 	const { tree } = state;
-	const list = tree[ETreeList.Dataset];
+	const list = tree[ETreeList.MainResultReport];
 
 	const props: IContentDatasetState = {
 		list: list.list as IMainResultReport[],
@@ -124,7 +188,7 @@ const mapDispatchToProps = (
 				listKey: key,
 				dataLimit: limit,
 				dataOffset: offset,
-				controller: "/datasets",
+				controller: "/mainresultreport",
 				filter: {},
 			});
 		},

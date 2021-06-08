@@ -9,4 +9,6 @@ export interface IMainResultReport {
 	margin: number;
 }
 
+export interface IMainResultReportFilter {}
+
 export default IMainResultReport;

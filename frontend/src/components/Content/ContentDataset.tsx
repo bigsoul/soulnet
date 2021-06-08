@@ -56,15 +56,7 @@ const TreeListContainer = styled(BasisContainer)`
 	position: relative;
 `;
 
-interface IDatasetDataItem {
-	name: string;
-}
-
-const TreeList = treeListCreator<
-	ETreeList,
-	IDatasetDataItem,
-	TreeListEntityFilters
->();
+const TreeList = treeListCreator<ETreeList, IDataset, TreeListEntityFilters>();
 
 interface IContentDatasetState {
 	list: IDataset[];
@@ -145,7 +137,7 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 							onLoadDown={this.handlerTreeOnLoadEvent}
 							onScroll={this.handlerTreeOnScrollEvent}
 						>
-							{(props: ITreeItemProps<IDatasetDataItem>) => {
+							{(props: ITreeItemProps<IDataset>) => {
 								return (
 									<TreeItem level={1}>
 										<TreeColumn>

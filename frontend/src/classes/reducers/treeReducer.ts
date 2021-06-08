@@ -1,7 +1,9 @@
 import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
 import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
-import IMainResultReport from "../../interfaces/IMainResultReport";
+import IMainResultReport, {
+	IMainResultReportFilter,
+} from "../../interfaces/IMainResultReport";
 import ITesting, { ITestingFilter } from "../../interfaces/ITesting";
 import TTreeAction, * as ACT from "../actions/ITreeAction";
 
@@ -11,7 +13,10 @@ export type TreeListEntity =
 	| ITesting
 	| IMainResultReport;
 
-export type TreeListEntityFilters = ILearningFilter | ITestingFilter;
+export type TreeListEntityFilters =
+	| ILearningFilter
+	| ITestingFilter
+	| IMainResultReportFilter;
 
 export type TreeListReducer<T> = {
 	list: T[];
