@@ -24,7 +24,7 @@ import treeDelete from "./../../assets/svg/tree-delete.svg";
 import loading from "./../../assets/gif/loading.gif";
 
 import IStore from "../../interfaces/IStore";
-import { ILearningFilter } from "../../interfaces/ILearning";
+import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
@@ -36,11 +36,6 @@ import TTreeAction, {
 	TREE_ON_LOAD_EVENT,
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
-
-import {
-	TreeListEntity,
-	TreeListEntityFilters,
-} from "../../classes/reducers/treeReducer";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -90,24 +85,16 @@ const StoringContainer = styled(BasisContainer)<{
 	position: relative;
 `;
 
-interface ILearningDataItem {
-	name: string;
-}
-
-const TreeList = treeListCreator<
-	ETreeList,
-	ILearningDataItem,
-	TreeListEntityFilters
->();
+const TreeList = treeListCreator<ETreeList, ILearning, ILearningFilter>();
 
 interface IContentLearningState {
-	runningList: TreeListEntity[];
+	runningList: ILearning[];
 	runningIsVisible: boolean;
 	runningIsLoading: boolean;
 	runningDataOffset: number;
 	runningDataLimit: number;
 	runningScrollOffset: number;
-	storingList: TreeListEntity[];
+	storingList: ILearning[];
 	storingIsVisible: boolean;
 	storingIsLoading: boolean;
 	storingDataOffset: number;
@@ -135,7 +122,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 		listKey: ETreeList,
 		dataOffset: number,
 		dataLimit: number,
-		filter: TreeListEntityFilters
+		filter: ILearningFilter
 	) => {
 		const { treeOnLoadEvent } = this.props;
 
@@ -220,7 +207,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							onLoadDown={this.handlerTreeOnLoadEvent}
 							onScroll={this.handlerTreeOnScrollEvent}
 						>
-							{(props: ITreeItemProps<ILearningDataItem>) => {
+							{(props: ITreeItemProps<ILearning>) => {
 								return (
 									<TreeItem level={1}>
 										<TreeColumn>
@@ -273,7 +260,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							onLoadDown={this.handlerTreeOnLoadEvent}
 							onScroll={this.handlerTreeOnScrollEvent}
 						>
-							{(props: ITreeItemProps<ILearningDataItem>) => {
+							{(props: ITreeItemProps<ILearning>) => {
 								return (
 									<TreeItem level={1}>
 										<TreeColumn>
@@ -331,13 +318,13 @@ const mapStateToProps = (state: IStore): IContentLearningState => {
 	const storingList = tree[ETreeList.LearningStoring];
 
 	const props: IContentLearningState = {
-		runningList: runningList.list,
+		runningList: runningList.list as ILearning[],
 		runningIsVisible: runningList.isVisible,
 		runningIsLoading: runningList.isLoading,
 		runningDataOffset: runningList.dataOffset,
 		runningDataLimit: 50,
 		runningScrollOffset: runningList.scrollOffset,
-		storingList: storingList.list,
+		storingList: storingList.list as ILearning[],
 		storingIsVisible: storingList.isVisible,
 		storingIsLoading: storingList.isLoading,
 		storingDataOffset: storingList.dataOffset,

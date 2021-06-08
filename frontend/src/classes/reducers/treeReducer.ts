@@ -1,14 +1,20 @@
 import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
 import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
+import IMainResultReport from "../../interfaces/IMainResultReport";
 import ITesting, { ITestingFilter } from "../../interfaces/ITesting";
 import TTreeAction, * as ACT from "../actions/ITreeAction";
 
-export type TreeListEntity = IDataset | ILearning | ITesting;
+export type TreeListEntity =
+	| IDataset
+	| ILearning
+	| ITesting
+	| IMainResultReport;
+
 export type TreeListEntityFilters = ILearningFilter | ITestingFilter;
 
-export type TreeListReducer = {
-	list: TreeListEntity[];
+export type TreeListReducer<T> = {
+	list: T[];
 	isVisible: boolean;
 	isLoading: boolean;
 	scrollOffset: number;
@@ -16,11 +22,20 @@ export type TreeListReducer = {
 	dataOffset: number;
 };
 
-export type TreeReducer = {
-	[key in ETreeList]: TreeListReducer;
+export type TreeReducer<T> = {
+	[key in ETreeList]: TreeListReducer<T>;
 };
 
-const treeList: TreeListReducer = {
+/*export type TreeReducer<T> = {
+	Dataset: TreeListReducer<T>;
+	LearningRunning: TreeListReducer<T>;
+	LearningStoring: TreeListReducer<T>;
+	TestingRunning: TreeListReducer<T>;
+	TestingStoring: TreeListReducer<T>;
+	MainResultReport: TreeListReducer<T>;
+};*/
+
+const treeList = {
 	list: [],
 	isVisible: true,
 	isLoading: false,
@@ -29,19 +44,19 @@ const treeList: TreeListReducer = {
 	dataLimit: 0,
 };
 
-const preloadedState: TreeReducer = {
+const preloadedState: TreeReducer<TreeListEntity> = {
 	Dataset: { ...treeList },
 	LearningRunning: { ...treeList },
 	LearningStoring: { ...treeList },
 	TestingRunning: { ...treeList },
 	TestingStoring: { ...treeList },
-	Results: { ...treeList },
+	MainResultReport: { ...treeList },
 };
 
 const treeReducer = (
-	curState: TreeReducer = preloadedState,
+	curState: TreeReducer<TreeListEntity> = preloadedState,
 	action: TTreeAction
-): TreeReducer => {
+): TreeReducer<TreeListEntity> => {
 	switch (action.type) {
 		case ACT.TREE_ON_LOAD: {
 			const newState = { ...curState };

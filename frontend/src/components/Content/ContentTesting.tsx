@@ -24,7 +24,7 @@ import treeDelete from "./../../assets/svg/tree-delete.svg";
 import loading from "./../../assets/gif/loading.gif";
 
 import IStore from "../../interfaces/IStore";
-import { ITestingFilter } from "../../interfaces/ITesting";
+import ITesting, { ITestingFilter } from "../../interfaces/ITesting";
 
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
@@ -36,11 +36,6 @@ import TTreeAction, {
 	TREE_ON_LOAD_EVENT,
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
-
-import {
-	TreeListEntity,
-	TreeListEntityFilters,
-} from "../../classes/reducers/treeReducer";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -90,24 +85,16 @@ const StoringContainer = styled(BasisContainer)<{
 	position: relative;
 `;
 
-interface ITestingDataItem {
-	name: string;
-}
-
-const TreeList = treeListCreator<
-	ETreeList,
-	ITestingDataItem,
-	TreeListEntityFilters
->();
+const TreeList = treeListCreator<ETreeList, ITesting, ITestingFilter>();
 
 interface IContentTestingState {
-	runningList: TreeListEntity[];
+	runningList: ITesting[];
 	runningIsVisible: boolean;
 	runningIsLoading: boolean;
 	runningDataOffset: number;
 	runningDataLimit: number;
 	runningScrollOffset: number;
-	storingList: TreeListEntity[];
+	storingList: ITesting[];
 	storingIsVisible: boolean;
 	storingIsLoading: boolean;
 	storingDataOffset: number;
@@ -135,7 +122,7 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 		listKey: ETreeList,
 		dataOffset: number,
 		dataLimit: number,
-		filter: TreeListEntityFilters
+		filter: ITestingFilter
 	) => {
 		const { treeOnLoadEvent } = this.props;
 
@@ -220,7 +207,7 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 							onLoadDown={this.handlerTreeOnLoadEvent}
 							onScroll={this.handlerTreeOnScrollEvent}
 						>
-							{(props: ITreeItemProps<ITestingDataItem>) => {
+							{(props: ITreeItemProps<ITesting>) => {
 								return (
 									<TreeItem level={1}>
 										<TreeColumn>
@@ -272,7 +259,7 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 							onLoadDown={this.handlerTreeOnLoadEvent}
 							onScroll={this.handlerTreeOnScrollEvent}
 						>
-							{(props: ITreeItemProps<ITestingDataItem>) => {
+							{(props: ITreeItemProps<ITesting>) => {
 								return (
 									<TreeItem level={1}>
 										<TreeColumn>
@@ -327,13 +314,13 @@ const mapStateToProps = (state: IStore): IContentTestingState => {
 	const storingList = tree[ETreeList.TestingStoring];
 
 	const props: IContentTestingState = {
-		runningList: runningList.list,
+		runningList: runningList.list as ITesting[],
 		runningIsVisible: runningList.isVisible,
 		runningIsLoading: runningList.isLoading,
 		runningDataOffset: runningList.dataOffset,
 		runningDataLimit: 50,
 		runningScrollOffset: runningList.scrollOffset,
-		storingList: storingList.list,
+		storingList: storingList.list as ITesting[],
 		storingIsVisible: storingList.isVisible,
 		storingIsLoading: storingList.isLoading,
 		storingDataOffset: storingList.dataOffset,

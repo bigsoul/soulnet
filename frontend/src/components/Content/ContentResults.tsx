@@ -1,8 +1,9 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
 
 import Content from "../Content";
-import Tree from "../Tree/Tree";
 import Button from "../Button";
 import TreeColumn from "../Tree/TreeColumn";
 import TreeHeader from "../Tree/TreeHeader";
@@ -15,6 +16,18 @@ import entityDataset from "./../../assets/svg/entity-dataset.svg";
 import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeTree from "./../../assets/svg/tree-tree.svg";
 import loading from "./../../assets/gif/loading.gif";
+import IMainResultReport from "../../interfaces/IMainResultReport";
+import ETreeList from "../../enums/ETreeList";
+
+import IStore from "../../interfaces/IStore";
+import TTreeAction, {
+	ITreeIsVisibleAction,
+	ITreeOnLoadEventAction,
+	ITreeOnScrollAction,
+	TREE_IS_VISIBLE,
+	TREE_ON_LOAD_EVENT,
+	TREE_ON_SCROLL,
+} from "../../classes/actions/ITreeAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -33,7 +46,25 @@ const TreeColumnEnd = styled(TreeColumn)`
 	padding-left: 5px;
 `;
 
-class ContentResults extends PureComponent {
+interface IContentDatasetState {
+	list: IMainResultReport[];
+	isLoading: boolean;
+	dataOffset: number;
+	dataLimit: number;
+	scrollOffset: number;
+}
+
+interface IContentDatasetDispatch {
+	treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => void;
+	treeOnScrollEvent: (key: ETreeList, offset: number) => void;
+	treeIsVisibleEvent: (key: ETreeList, visible: boolean) => void;
+}
+
+interface IContentDatasetProps
+	extends IContentDatasetState,
+		IContentDatasetDispatch {}
+
+class ContentResults extends PureComponent<IContentDatasetProps> {
 	render = () => {
 		const isLoading = true;
 
@@ -68,4 +99,50 @@ class ContentResults extends PureComponent {
 	};
 }
 
-export default ContentResults;
+const mapStateToProps = (state: IStore): IContentDatasetState => {
+	const { tree } = state;
+	const list = tree[ETreeList.Dataset];
+
+	const props: IContentDatasetState = {
+		list: list.list as IMainResultReport[],
+		isLoading: list.isLoading,
+		dataOffset: list.dataOffset,
+		dataLimit: 50,
+		scrollOffset: list.scrollOffset,
+	};
+
+	return props;
+};
+
+const mapDispatchToProps = (
+	dispatch: Dispatch<TTreeAction>
+): IContentDatasetDispatch => {
+	return {
+		treeOnLoadEvent: (key: ETreeList, limit: number, offset: number) => {
+			dispatch<ITreeOnLoadEventAction>({
+				type: TREE_ON_LOAD_EVENT,
+				listKey: key,
+				dataLimit: limit,
+				dataOffset: offset,
+				controller: "/datasets",
+				filter: {},
+			});
+		},
+		treeOnScrollEvent: (key: ETreeList, offset: number) => {
+			dispatch<ITreeOnScrollAction>({
+				type: TREE_ON_SCROLL,
+				listKey: key,
+				scrollOffset: offset,
+			});
+		},
+		treeIsVisibleEvent: (key: ETreeList, visible: boolean) => {
+			dispatch<ITreeIsVisibleAction>({
+				type: TREE_IS_VISIBLE,
+				listKey: key,
+				visible: visible,
+			});
+		},
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContentResults);

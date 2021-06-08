@@ -1,4 +1,4 @@
-import { TreeListEntity } from "../classes/reducers/treeReducer";
+//import { TreeListEntity } from "../classes/reducers/treeReducer";
 import { TRequest } from "./IRequest";
 
 export interface IAuthDataResponse {
@@ -8,7 +8,7 @@ export interface IAuthDataResponse {
 }
 
 export interface ITreeResultResponse {
-	list: TreeListEntity[];
+	list: any[];
 	dataOffset: number;
 	dataLimit: number;
 }

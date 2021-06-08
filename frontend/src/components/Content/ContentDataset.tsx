@@ -19,7 +19,7 @@ import treeList from "./../../assets/svg/tree-list.svg";
 import loading from "./../../assets/gif/loading.gif";
 
 import IStore from "../../interfaces/IStore";
-import { IDatasetFilter } from "../../interfaces/IDataset";
+import IDataset, { IDatasetFilter } from "../../interfaces/IDataset";
 
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
@@ -32,10 +32,7 @@ import TTreeAction, {
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
 
-import {
-	TreeListEntity,
-	TreeListEntityFilters,
-} from "../../classes/reducers/treeReducer";
+import { TreeListEntityFilters } from "../../classes/reducers/treeReducer";
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;
@@ -70,7 +67,7 @@ const TreeList = treeListCreator<
 >();
 
 interface IContentDatasetState {
-	list: TreeListEntity[];
+	list: IDataset[];
 	isLoading: boolean;
 	dataOffset: number;
 	dataLimit: number;
@@ -181,7 +178,7 @@ const mapStateToProps = (state: IStore): IContentDatasetState => {
 	const list = tree[ETreeList.Dataset];
 
 	const props: IContentDatasetState = {
-		list: list.list,
+		list: list.list as IDataset[],
 		isLoading: list.isLoading,
 		dataOffset: list.dataOffset,
 		dataLimit: 50,
