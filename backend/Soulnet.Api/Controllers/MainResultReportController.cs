@@ -33,17 +33,20 @@ namespace Soulnet.Api.Controllers
 
             var result = new List<MainResultReportViewModel>();
 
+            var id = section.DataOffset;
+
             foreach(var item in section.List) {
                 result.Add(new MainResultReportViewModel() {
-                    Id = item.Id.ToString(),
-                    LearningName = "LearningName",
-                    TestingName = "TestingName",
-                    DatasetLearningName = "DatasetLearningName",
-                    DatasetTestingName = "DatasetTestingName",
-                    StartDeposit = 10,
-                    EndDeposit = 15,
-                    Margin = 5
+                    Id = id.ToString(),
+                    LearningName = item.LearningName,
+                    TestingName = item.TestingName,
+                    DatasetLearningName = item.DatasetLearningName,
+                    DatasetTestingName = item.DatasetTestingName,
+                    StartDeposit = item.StartDeposit,
+                    EndDeposit = item.EndDeposit,
+                    Margin = item.Margin
                 });  
+                id++;
             }
 
             return Ok(new TreeResultViewModel<MainResultReportViewModel> {
