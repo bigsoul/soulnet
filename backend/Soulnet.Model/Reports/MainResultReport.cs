@@ -7,6 +7,7 @@ namespace Soulnet.Model.Entity
     public class MainResultReport : IEntityBase
     {
 		public Guid Id { get; set; }
+		public string Version { get; set; }
 		public string LearningName { get; set; }
 		public string TestingName { get; set; }
 		public string DatasetLearningName { get; set; }

@@ -1,5 +1,6 @@
-export interface IMainResultReport {
-	id: string;
+import { IDataItem } from "../components/Tree/TreeItem";
+
+export interface IMainResultReport extends IDataItem {
 	learningName: string;
 	testingName: string;
 	datasetLearningName: string;

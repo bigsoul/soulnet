@@ -1,7 +1,7 @@
+import { IDataItem } from "../components/Tree/TreeItem";
 import ETestingState from "../enums/ETestingState";
 
-export interface ITesting {
-	id: string;
+export interface ITesting extends IDataItem {
 	name: string;
 	state: ETestingState;
 	isArchive: boolean;

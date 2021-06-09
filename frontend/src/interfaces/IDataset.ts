@@ -1,5 +1,6 @@
-export interface IDataset {
-	id: string;
+import { IDataItem } from "../components/Tree/TreeItem";
+
+export interface IDataset extends IDataItem {
 	name: string;
 	isLoaded: boolean;
 }

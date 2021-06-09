@@ -36,6 +36,7 @@ namespace Soulnet.Api.Controllers
             foreach(var item in section.List) {
                 result.Add(new LearningViewModel() {
                     Id = item.Id.ToString(),
+                    Version = item.Version,
                     Name = item.Name,
                     State = item.State,
                     IsArchive = item.IsArchive,

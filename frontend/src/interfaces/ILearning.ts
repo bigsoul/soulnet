@@ -1,7 +1,7 @@
+import { IDataItem } from "../components/Tree/TreeItem";
 import ELearningState from "../enums/ELearningState";
 
-export interface ILearning {
-	id: string;
+export interface ILearning extends IDataItem {
 	name: string;
 	state: ELearningState;
 	isArchive: boolean;

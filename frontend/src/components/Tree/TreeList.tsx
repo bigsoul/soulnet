@@ -489,7 +489,10 @@ const treeListCreator = function <K, T, F>() {
 					(item) => item.key === dataItem.id
 				);
 
-				if (!element) {
+				if (
+					!element ||
+					element.props.dataItem.version !== dataItem.version
+				) {
 					element = createElement<ITreeItemProps<T>>(props.children, {
 						key: dataItem.id,
 						index: i,

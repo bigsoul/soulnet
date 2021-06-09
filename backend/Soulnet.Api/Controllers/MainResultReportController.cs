@@ -38,6 +38,7 @@ namespace Soulnet.Api.Controllers
             foreach(var item in section.List) {
                 result.Add(new MainResultReportViewModel() {
                     Id = id.ToString(),
+                    Version = item.Version,
                     LearningName = item.LearningName,
                     TestingName = item.TestingName,
                     DatasetLearningName = item.DatasetLearningName,

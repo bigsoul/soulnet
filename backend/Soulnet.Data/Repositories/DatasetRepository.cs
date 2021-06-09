@@ -28,7 +28,12 @@ namespace Soulnet.Data.Repositories
             IEnumerable<Dataset> result;
 
             using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
-                var query = @"SELECT * FROM public.""Dataset"" 
+                var query = @"SELECT 
+                                public.""Dataset"".xmin AS ""Version"",
+                                public.""Dataset"".""Id"",
+                                public.""Dataset"".""Name"",
+                                public.""Dataset"".""IsLoaded""
+                              FROM public.""Dataset"" 
                               ORDER BY ""Name"" ASC LIMIT @Limit OFFSET @Offset;"; 
 
                 result = db.Query<Dataset>(query, new {

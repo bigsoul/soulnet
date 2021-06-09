@@ -9,9 +9,10 @@ const Item = styled.div`
 
 export interface IDataItem {
 	id: string;
+	version: string;
 }
 
-export type DataItem<T, U = { id: string }> = {
+export type DataItem<T, U = { id: string; version: string }> = {
 	[K in keyof (T & U)]: (T & U)[K];
 };
 

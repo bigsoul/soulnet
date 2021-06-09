@@ -26,6 +26,7 @@ namespace Soulnet.Data.Repositories
 
             using(IDbConnection db = new NpgsqlConnection(connectionString)) { 
                 var query = @"SELECT 
+                                '' AS ""Version"",
                                 public.""Learning"".""Name"" AS ""LearningName"",
                                 public.""Testing"".""Name"" AS ""TestingName"",
                                 ""DatasetLearning"".""Name"" AS ""DatasetLearningName"",

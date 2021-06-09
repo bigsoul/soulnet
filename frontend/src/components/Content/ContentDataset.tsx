@@ -103,6 +103,12 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 		treeOnScrollEvent(listKey, scrollOffset);
 	};
 
+	hendlerTreeRefresh = () => {
+		const { treeOnLoadEvent, dataOffset, dataLimit } = this.props;
+
+		treeOnLoadEvent(ETreeList.Dataset, dataLimit, dataOffset, {});
+	};
+
 	render = () => {
 		const {
 			list,
@@ -122,6 +128,7 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 							<ButtonStyled
 								template="icon"
 								svgPath={treeRefresh}
+								onClick={this.hendlerTreeRefresh}
 							/>
 							<ButtonStyled template="icon" svgPath={treeAdd} />
 						</TreeColumn>

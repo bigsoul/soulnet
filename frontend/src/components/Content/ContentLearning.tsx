@@ -149,6 +149,30 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 		treeIsVisibleEvent(ETreeList.LearningStoring, !storingIsVisible);
 	};
 
+	hendlerTreeRefresh = () => {
+		const {
+			treeOnLoadEvent,
+			runningDataOffset,
+			runningDataLimit,
+			storingDataOffset,
+			storingDataLimit,
+		} = this.props;
+
+		treeOnLoadEvent(
+			ETreeList.LearningRunning,
+			runningDataLimit,
+			runningDataOffset,
+			{ isArchive: false }
+		);
+
+		treeOnLoadEvent(
+			ETreeList.LearningStoring,
+			storingDataLimit,
+			storingDataOffset,
+			{ isArchive: true }
+		);
+	};
+
 	render = () => {
 		const {
 			runningList,
@@ -174,6 +198,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							<ButtonStyled
 								template="icon"
 								svgPath={treeRefresh}
+								onClick={this.hendlerTreeRefresh}
 							/>
 							<ButtonStyled template="icon" svgPath={treeAdd} />
 						</TreeColumn>

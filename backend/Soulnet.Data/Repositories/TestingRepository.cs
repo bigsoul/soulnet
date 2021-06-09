@@ -28,7 +28,20 @@ namespace Soulnet.Data.Repositories
             IEnumerable<Testing> result;
 
             using(IDbConnection db = new NpgsqlConnection(connectionString)) { 
-                var query = @"SELECT * FROM public.""Testing"" 
+                var query = @"SELECT
+                                public.""Testing"".xmin AS ""Version"",
+                                public.""Testing"".""Id"",
+                                public.""Testing"".""Name"",
+                                public.""Testing"".""State"",
+                                public.""Testing"".""IsArchive"",
+                                public.""Testing"".""IterationCount"",
+                                public.""Testing"".""IterationCurrent"",
+                                public.""Testing"".""StopLossPercent"",
+                                public.""Testing"".""StartDeposit"",
+                                public.""Testing"".""EndDeposit"",
+                                public.""Testing"".""LearningId"",
+                                public.""Testing"".""DatasetId""
+                              FROM public.""Testing"" 
                               WHERE ""IsArchive"" = @IsArchive 
                               ORDER BY ""Name"" ASC LIMIT @Limit OFFSET @Offset;"; 
 

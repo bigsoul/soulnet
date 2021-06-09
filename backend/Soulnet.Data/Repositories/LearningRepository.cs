@@ -28,7 +28,18 @@ namespace Soulnet.Data.Repositories
             IEnumerable<Learning> result;
 
             using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
-                var query = @"SELECT * FROM public.""Learning"" 
+                var query = @"SELECT 
+                                public.""Learning"".xmin AS ""Version"",
+                                public.""Learning"".""Id"",
+                                public.""Learning"".""Name"",
+                                public.""Learning"".""State"",
+                                public.""Learning"".""IsArchive"",
+                                public.""Learning"".""IterationCount"",
+                                public.""Learning"".""IterationCurrent"",
+                                public.""Learning"".""InputNeuronsCount"",
+                                public.""Learning"".""DeepLayersCount"",
+                                public.""Learning"".""DatasetId""
+                              FROM public.""Learning"" 
                               WHERE ""IsArchive"" = @IsArchive 
                               ORDER BY ""Name"" ASC LIMIT @Limit OFFSET @Offset;"; 
 

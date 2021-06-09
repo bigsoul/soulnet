@@ -7,6 +7,7 @@ namespace Soulnet.Model.Entity
     public class Learning : IEntityBase
     {
         public Guid Id { get; set; }
+        public string Version { get; set; }
         public string Name { get; set; }
         public int State { get; set; }
         public bool IsArchive { get; set; }
