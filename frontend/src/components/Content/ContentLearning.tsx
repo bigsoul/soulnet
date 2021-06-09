@@ -45,6 +45,10 @@ const IconStyled = styled(Icon)`
 	margin-right: 5px;
 `;
 
+const TreeItemStyled = styled(TreeItem)<{ level: number }>`
+	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
+`;
+
 const BasisContainer = styled.div`
 	overflow-y: scroll;
 	&::-webkit-scrollbar {
@@ -209,7 +213,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						>
 							{(props: ITreeItemProps<ILearning>) => {
 								return (
-									<TreeItem level={1}>
+									<TreeItemStyled level={1}>
 										<TreeColumn>
 											<IconStyled path={entityLearning} />
 											{props.dataItem.name}
@@ -222,7 +226,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 											template="icon"
 											svgPath={treeFolder}
 										/>
-									</TreeItem>
+									</TreeItemStyled>
 								);
 							}}
 						</TreeList>
@@ -262,7 +266,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						>
 							{(props: ITreeItemProps<ILearning>) => {
 								return (
-									<TreeItem level={1}>
+									<TreeItemStyled level={1}>
 										<TreeColumn>
 											<IconStyled path={entityLearning} />
 											{props.dataItem.name}
@@ -272,7 +276,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 											template="icon"
 											svgPath={treeDelete}
 										/>
-									</TreeItem>
+									</TreeItemStyled>
 								);
 							}}
 						</TreeList>

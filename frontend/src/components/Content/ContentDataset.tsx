@@ -42,6 +42,10 @@ const ButtonStyled = styled(Button)`
 	margin-right: 5px;
 `;
 
+const TreeItemStyled = styled(TreeItem)<{ level: number }>`
+	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
+`;
+
 const BasisContainer = styled.div`
 	overflow-y: scroll;
 	&::-webkit-scrollbar {
@@ -139,7 +143,7 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 						>
 							{(props: ITreeItemProps<IDataset>) => {
 								return (
-									<TreeItem level={1}>
+									<TreeItemStyled level={1}>
 										<TreeColumn>
 											<IconStyled path={entityDataset} />
 											{props.dataItem.name}
@@ -148,7 +152,7 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 											template="icon"
 											svgPath={treeDelete}
 										/>
-									</TreeItem>
+									</TreeItemStyled>
 								);
 							}}
 						</TreeList>

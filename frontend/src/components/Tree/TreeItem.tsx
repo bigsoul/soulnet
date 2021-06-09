@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
-const Item = styled.div<ITreeItemPrivateProps>`
+const Item = styled.div`
 	height: 29px;
 	border-bottom: 1px solid #8a8a8a;
 	display: flex;
 	align-items: center;
-	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
 `;
 
 export interface IDataItem {
@@ -24,19 +23,10 @@ export interface ITreeItemProps<T> {
 interface ITreeItemPrivateProps {
 	className?: string;
 	children?: React.ReactNode;
-	level?: number;
 }
 
 const TreeItem = (props: ITreeItemPrivateProps) => {
-	return (
-		<Item
-			id="tree-item"
-			className={props.className}
-			level={props.level || 0}
-		>
-			{props.children}
-		</Item>
-	);
+	return <Item className={props.className}>{props.children}</Item>;
 };
 
 export default TreeItem;
