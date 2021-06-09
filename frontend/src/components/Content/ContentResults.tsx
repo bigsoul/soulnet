@@ -42,11 +42,13 @@ const IconStyled = styled(Icon)`
 
 const TreeColumnStyled = styled(TreeColumn)`
 	padding-left: 5px;
+	padding-right: 5px;
 	border-right: 1px solid #8a8a8a;
 `;
 
 const TreeColumnEnd = styled(TreeColumn)`
 	padding-left: 5px;
+	padding-right: 5px;
 `;
 
 const TreeListContainer = styled.div`
@@ -152,27 +154,29 @@ class ContentResults extends PureComponent<IContentDatasetProps> {
 								<TreeItem>
 									<TreeColumnStyled>
 										<IconStyled path={entityLearning} />
-										Learning
+										{props.dataItem.learningName}
 									</TreeColumnStyled>
 									<TreeColumnStyled>
 										<IconStyled path={entityTesting} />
-										Testing
+										{props.dataItem.testingName}
 									</TreeColumnStyled>
 									<TreeColumnStyled>
 										<IconStyled path={entityDataset} />
-										Dataset Learning
+										{props.dataItem.datasetLearningName}
 									</TreeColumnStyled>
 									<TreeColumnStyled>
 										<IconStyled path={entityDataset} />
-										Dataset Testing
+										{props.dataItem.datasetTestingName}
 									</TreeColumnStyled>
-									<TreeColumnStyled>
-										Start Deposit
+									<TreeColumnStyled align="right">
+										{props.dataItem.startDeposit}
 									</TreeColumnStyled>
-									<TreeColumnStyled>
-										End Deposit
+									<TreeColumnStyled align="right">
+										{props.dataItem.endDeposit}
 									</TreeColumnStyled>
-									<TreeColumnEnd>Margin, %</TreeColumnEnd>
+									<TreeColumnEnd align="right">
+										{props.dataItem.margin}
+									</TreeColumnEnd>
 								</TreeItem>
 							);
 						}}
