@@ -5,6 +5,9 @@ const Item = styled.div`
 	border-bottom: 1px solid #8a8a8a;
 	display: flex;
 	align-items: center;
+	&:hover {
+		background-color: #1d1c1c;
+	}
 `;
 
 export interface IDataItem {
@@ -12,7 +15,7 @@ export interface IDataItem {
 	version: string;
 }
 
-export type DataItem<T, U = { id: string; version: string }> = {
+export type DataItem<T, U = IDataItem> = {
 	[K in keyof (T & U)]: (T & U)[K];
 };
 
