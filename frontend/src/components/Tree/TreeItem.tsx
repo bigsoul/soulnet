@@ -22,13 +22,18 @@ export interface ITreeItemProps<T> {
 }
 
 interface ITreeItemPrivateProps {
+	className?: string;
 	children?: React.ReactNode;
 	level?: number;
 }
 
 const TreeItem = (props: ITreeItemPrivateProps) => {
 	return (
-		<Item id="tree-item" level={props.level || 0}>
+		<Item
+			id="tree-item"
+			className={props.className}
+			level={props.level || 0}
+		>
 			{props.children}
 		</Item>
 	);

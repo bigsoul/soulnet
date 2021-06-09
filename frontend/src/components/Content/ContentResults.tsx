@@ -148,7 +148,33 @@ class ContentResults extends PureComponent<IContentDatasetProps> {
 						onScroll={this.handlerTreeOnScrollEvent}
 					>
 						{(props: ITreeItemProps<IMainResultReport>) => {
-							return <TreeItem level={1}></TreeItem>;
+							return (
+								<TreeItem>
+									<TreeColumnStyled>
+										<IconStyled path={entityLearning} />
+										Learning
+									</TreeColumnStyled>
+									<TreeColumnStyled>
+										<IconStyled path={entityTesting} />
+										Testing
+									</TreeColumnStyled>
+									<TreeColumnStyled>
+										<IconStyled path={entityDataset} />
+										Dataset Learning
+									</TreeColumnStyled>
+									<TreeColumnStyled>
+										<IconStyled path={entityDataset} />
+										Dataset Testing
+									</TreeColumnStyled>
+									<TreeColumnStyled>
+										Start Deposit
+									</TreeColumnStyled>
+									<TreeColumnStyled>
+										End Deposit
+									</TreeColumnStyled>
+									<TreeColumnEnd>Margin, %</TreeColumnEnd>
+								</TreeItem>
+							);
 						}}
 					</TreeList>
 				</TreeListContainer>
