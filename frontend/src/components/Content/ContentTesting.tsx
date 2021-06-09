@@ -149,6 +149,30 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 		treeIsVisibleEvent(ETreeList.TestingStoring, !storingIsVisible);
 	};
 
+	hendlerTreeRefresh = () => {
+		const {
+			treeOnLoadEvent,
+			runningDataOffset,
+			runningDataLimit,
+			storingDataOffset,
+			storingDataLimit,
+		} = this.props;
+
+		treeOnLoadEvent(
+			ETreeList.TestingRunning,
+			runningDataLimit,
+			runningDataOffset,
+			{ isArchive: false }
+		);
+
+		treeOnLoadEvent(
+			ETreeList.TestingStoring,
+			storingDataLimit,
+			storingDataOffset,
+			{ isArchive: true }
+		);
+	};
+
 	render = () => {
 		const {
 			runningList,
@@ -174,6 +198,7 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 							<ButtonStyled
 								template="icon"
 								svgPath={treeRefresh}
+								onClick={this.hendlerTreeRefresh}
 							/>
 							<ButtonStyled template="icon" svgPath={treeAdd} />
 						</TreeColumn>
