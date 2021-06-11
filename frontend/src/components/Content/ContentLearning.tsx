@@ -36,6 +36,7 @@ import TTreeAction, {
 	TREE_ON_LOAD_EVENT,
 	TREE_ON_SCROLL,
 } from "../../classes/actions/ITreeAction";
+import LearningForm from "../Forms/LearningForm";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -87,6 +88,12 @@ const StoringContainer = styled(BasisContainer)<{
 	}};
 	overflow: hidden;
 	position: relative;
+`;
+
+const ItemContainer = styled.div`
+	width: 100%;
+	height: 100%;
+	background-color: red;
 `;
 
 const TreeList = treeListCreator<ETreeList, ILearning, ILearningFilter>();
@@ -307,6 +314,19 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						</TreeList>
 					</StoringContainer>
 				</Tree>
+				<ItemContainer>
+					<TreeHeader svgPath={treeTree}>
+						<TreeColumn>Learning</TreeColumn>
+						<TreeColumn align="right">
+							<ButtonStyled
+								template="icon"
+								svgPath={treeRefresh}
+								onClick={this.hendlerTreeRefresh}
+							/>
+						</TreeColumn>
+					</TreeHeader>
+					<LearningForm></LearningForm>
+				</ItemContainer>
 			</Content>
 		);
 

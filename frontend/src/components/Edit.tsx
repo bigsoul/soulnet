@@ -28,6 +28,7 @@ const EditInput = styled.input<{ error?: string }>`
 interface IEditProps {
 	className?: string;
 	placeholder?: string;
+	name?: string;
 	value?: string;
 	error?: string;
 	type?: string;

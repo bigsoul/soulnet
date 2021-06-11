@@ -63,6 +63,10 @@ const TreeList = treeListCreator<
 	TreeListEntityFilters
 >();
 
+const ContentStyled = styled(Content)`
+	display: block;
+`;
+
 interface IContentDatasetState {
 	list: IMainResultReport[];
 	isLoading: boolean;
@@ -115,7 +119,7 @@ class ContentResults extends PureComponent<IContentDatasetProps> {
 		} = this.props;
 
 		return (
-			<Content>
+			<ContentStyled>
 				<TreeHeader svgPath={treeTree}>
 					<TreeColumn>Main result report</TreeColumn>
 					<TreeColumn align="right">
@@ -192,7 +196,7 @@ class ContentResults extends PureComponent<IContentDatasetProps> {
 						}}
 					</TreeList>
 				</TreeListContainer>
-			</Content>
+			</ContentStyled>
 		);
 	};
 
