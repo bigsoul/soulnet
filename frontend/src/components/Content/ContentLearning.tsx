@@ -93,7 +93,6 @@ const StoringContainer = styled(BasisContainer)<{
 const ItemContainer = styled.div`
 	width: 100%;
 	height: 100%;
-	background-color: red;
 `;
 
 const TreeList = treeListCreator<ETreeList, ILearning, ILearningFilter>();
@@ -325,7 +324,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							/>
 						</TreeColumn>
 					</TreeHeader>
-					<LearningForm></LearningForm>
+					<LearningForm />
 				</ItemContainer>
 			</Content>
 		);
