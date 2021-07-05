@@ -1,6 +1,5 @@
-/*import React, { PureComponent } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import Content from "../Content";
@@ -28,15 +27,14 @@ import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
-import TTreeAction, {
-	ITreeIsVisibleAction,
-	ITreeOnLoadEventAction,
-	ITreeOnScrollAction,
-	TREE_IS_VISIBLE,
-	TREE_ON_LOAD_EVENT,
-	TREE_ON_SCROLL,
-} from "../../classes/actions/ITreeAction";
+
 import LearningForm from "../Forms/LearningForm";
+import store from "../../classes/store";
+
+import {
+	doTreeIsVisible,
+	doTreeOnLoadEvent,
+} from "../../classes/actions/ITreeAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -95,104 +93,92 @@ const ItemContainer = styled.div`
 	height: 100%;
 `;
 
-const TreeList = treeListCreator<ETreeList, ILearning, ILearningFilter>();
+const controller = "/learnings";
+const filterRunning = { isArchive: false };
+const filterStoring = { isArchive: true };
 
-interface IContentLearningState {
-	runningList: ILearning[];
+const TreeListRunning = treeListCreator<ETreeList, ILearning, ILearningFilter>(
+	ETreeList.LearningRunning,
+	{ controller: controller }
+);
+
+const TreeListStoring = treeListCreator<ETreeList, ILearning, ILearningFilter>(
+	ETreeList.LearningStoring,
+	{ controller: controller }
+);
+
+interface IContentLearningProps {
 	runningIsVisible: boolean;
 	runningIsLoading: boolean;
-	runningDataOffset: number;
-	runningDataLimit: number;
-	runningScrollOffset: number;
-	storingList: ILearning[];
 	storingIsVisible: boolean;
 	storingIsLoading: boolean;
-	storingDataOffset: number;
-	storingDataLimit: number;
-	storingScrollOffset: number;
 }
 
-interface IContentLearningDispatch {
-	treeOnLoadEvent: (
-		key: ETreeList,
-		limit: number,
-		offset: number,
-		filter: ILearningFilter
-	) => void;
-	treeOnScrollEvent: (key: ETreeList, offset: number) => void;
-	treeIsVisibleEvent: (key: ETreeList, visible: boolean) => void;
-}
+const mapStateToProps = (state: IStore): IContentLearningProps => {
+	const { tree } = state;
 
-interface IContentLearningProps
-	extends IContentLearningState,
-		IContentLearningDispatch {}
+	const runningList = tree[ETreeList.LearningRunning];
+	const storingList = tree[ETreeList.LearningStoring];
+
+	const props: IContentLearningProps = {
+		runningIsVisible: runningList.isVisible,
+		runningIsLoading: runningList.isLoading,
+		storingIsVisible: storingList.isVisible,
+		storingIsLoading: storingList.isLoading,
+	};
+
+	return props;
+};
+
+const connector = connect(mapStateToProps);
 
 class ContentLearning extends PureComponent<IContentLearningProps> {
-	handlerTreeOnLoadEvent = (
-		listKey: ETreeList,
-		dataOffset: number,
-		dataLimit: number,
-		filter: ILearningFilter
-	) => {
-		const { treeOnLoadEvent } = this.props;
-
-		treeOnLoadEvent(listKey, dataLimit, dataOffset, filter);
-	};
-
-	handlerTreeOnScrollEvent = (listKey: ETreeList, scrollOffset: number) => {
-		const { treeOnScrollEvent } = this.props;
-
-		treeOnScrollEvent(listKey, scrollOffset);
-	};
-
 	hendlerRunningIsVisibleEvent = () => {
-		const { runningIsVisible, treeIsVisibleEvent } = this.props;
-		treeIsVisibleEvent(ETreeList.LearningRunning, !runningIsVisible);
+		const listRunning = store.getState().tree[ETreeList.LearningRunning];
+
+		doTreeIsVisible<ETreeList.LearningRunning>({
+			listKey: ETreeList.LearningRunning,
+			visible: !listRunning.isVisible,
+		});
 	};
 
 	hendlerStoringIsVisibleEvent = () => {
-		const { storingIsVisible, treeIsVisibleEvent } = this.props;
-		treeIsVisibleEvent(ETreeList.LearningStoring, !storingIsVisible);
+		const listStoring = store.getState().tree[ETreeList.LearningStoring];
+
+		doTreeIsVisible<ETreeList.LearningStoring>({
+			listKey: ETreeList.LearningStoring,
+			visible: !listStoring.isVisible,
+		});
 	};
 
 	hendlerTreeRefresh = () => {
-		const {
-			treeOnLoadEvent,
-			runningDataOffset,
-			runningDataLimit,
-			storingDataOffset,
-			storingDataLimit,
-		} = this.props;
+		const listRunning = store.getState().tree[ETreeList.LearningRunning];
 
-		treeOnLoadEvent(
-			ETreeList.LearningRunning,
-			runningDataLimit,
-			runningDataOffset,
-			{ isArchive: false }
-		);
+		doTreeOnLoadEvent<ETreeList.LearningRunning, {}>({
+			listKey: ETreeList.LearningRunning,
+			dataLimit: listRunning.dataLimit,
+			dataOffset: listRunning.dataOffset,
+			filter: filterRunning,
+			controller: controller,
+		});
 
-		treeOnLoadEvent(
-			ETreeList.LearningStoring,
-			storingDataLimit,
-			storingDataOffset,
-			{ isArchive: true }
-		);
+		const listStoring = store.getState().tree[ETreeList.LearningStoring];
+
+		doTreeOnLoadEvent<ETreeList.LearningStoring, {}>({
+			listKey: ETreeList.LearningStoring,
+			dataLimit: listStoring.dataLimit,
+			dataOffset: listStoring.dataOffset,
+			filter: filterStoring,
+			controller: controller,
+		});
 	};
 
 	render = () => {
 		const {
-			runningList,
 			runningIsVisible,
 			runningIsLoading,
-			runningDataOffset,
-			runningDataLimit,
-			runningScrollOffset,
-			storingList,
 			storingIsVisible,
 			storingIsLoading,
-			storingDataOffset,
-			storingDataLimit,
-			storingScrollOffset,
 		} = this.props;
 
 		const result = (
@@ -228,19 +214,11 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						runningOpen={runningIsVisible}
 						storingOpen={storingIsVisible}
 					>
-						<TreeList
-							listKey={ETreeList.LearningRunning}
-							filter={{ isArchive: false }}
-							dataList={runningList}
-							dataOffset={runningDataOffset}
-							dataLimit={runningDataLimit}
-							scrollOffset={runningScrollOffset}
+						<TreeListRunning
+							filter={filterRunning}
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
-							onLoadUp={this.handlerTreeOnLoadEvent}
-							onLoadDown={this.handlerTreeOnLoadEvent}
-							onScroll={this.handlerTreeOnScrollEvent}
 						>
 							{(props: ITreeItemProps<ILearning>) => {
 								return (
@@ -260,7 +238,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 									</TreeItemStyled>
 								);
 							}}
-						</TreeList>
+						</TreeListRunning>
 					</RunningContainer>
 					<TreeBranchStyled>
 						<TreeColumn>
@@ -281,19 +259,11 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						runningOpen={runningIsVisible}
 						storingOpen={storingIsVisible}
 					>
-						<TreeList
-							listKey={ETreeList.LearningStoring}
-							filter={{ isArchive: true }}
-							dataList={storingList}
-							dataOffset={storingDataOffset}
-							dataLimit={storingDataLimit}
-							scrollOffset={storingScrollOffset}
+						<TreeListStoring
+							filter={filterStoring}
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
-							onLoadUp={this.handlerTreeOnLoadEvent}
-							onLoadDown={this.handlerTreeOnLoadEvent}
-							onScroll={this.handlerTreeOnScrollEvent}
 						>
 							{(props: ITreeItemProps<ILearning>) => {
 								return (
@@ -310,7 +280,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 									</TreeItemStyled>
 								);
 							}}
-						</TreeList>
+						</TreeListStoring>
 					</StoringContainer>
 				</Tree>
 				<ItemContainer>
@@ -331,94 +301,6 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 
 		return result;
 	};
-
-	componentDidMount = () => {
-		const {
-			runningDataOffset,
-			runningDataLimit,
-			storingDataOffset,
-			storingDataLimit,
-			treeOnLoadEvent,
-		} = this.props;
-
-		treeOnLoadEvent(
-			ETreeList.LearningRunning,
-			runningDataLimit,
-			runningDataOffset,
-			{
-				isArchive: false,
-			}
-		);
-		treeOnLoadEvent(
-			ETreeList.LearningStoring,
-			storingDataLimit,
-			storingDataOffset,
-			{
-				isArchive: true,
-			}
-		);
-	};
 }
 
-const mapStateToProps = (state: IStore): IContentLearningState => {
-	const { tree } = state;
-	const runningList = tree[ETreeList.LearningRunning];
-	const storingList = tree[ETreeList.LearningStoring];
-
-	const props: IContentLearningState = {
-		runningList: runningList.list as ILearning[],
-		runningIsVisible: runningList.isVisible,
-		runningIsLoading: runningList.isLoading,
-		runningDataOffset: runningList.dataOffset,
-		runningDataLimit: 50,
-		runningScrollOffset: runningList.scrollOffset,
-		storingList: storingList.list as ILearning[],
-		storingIsVisible: storingList.isVisible,
-		storingIsLoading: storingList.isLoading,
-		storingDataOffset: storingList.dataOffset,
-		storingDataLimit: 50,
-		storingScrollOffset: storingList.scrollOffset,
-	};
-
-	return props;
-};
-
-const mapDispatchToProps = (
-	dispatch: Dispatch<TTreeAction>
-): IContentLearningDispatch => {
-	return {
-		treeOnLoadEvent: (
-			key: ETreeList,
-			limit: number,
-			offset: number,
-			filter: ILearningFilter
-		) => {
-			dispatch<ITreeOnLoadEventAction>({
-				type: TREE_ON_LOAD_EVENT,
-				listKey: key,
-				dataLimit: limit,
-				dataOffset: offset,
-				controller: "/learnings",
-				filter: filter,
-			});
-		},
-		treeOnScrollEvent: (key: ETreeList, offset: number) => {
-			dispatch<ITreeOnScrollAction>({
-				type: TREE_ON_SCROLL,
-				listKey: key,
-				scrollOffset: offset,
-			});
-		},
-		treeIsVisibleEvent: (key: ETreeList, visible: boolean) => {
-			dispatch<ITreeIsVisibleAction>({
-				type: TREE_IS_VISIBLE,
-				listKey: key,
-				visible: visible,
-			});
-		},
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContentLearning);*/
-
-export default null;
+export default connector(ContentLearning);

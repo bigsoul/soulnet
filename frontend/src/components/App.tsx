@@ -26,8 +26,8 @@ function App() {
 				<Route exact path="/signin" component={ContentSignIn} />
 				<Route exact path="/signup" component={ContentSignUp} />
 				<Route exact path="/dataset" component={ContentDataset} />
-				{/*<Route exact path="/learning" component={ContentLearning} />
-				<Route exact path="/testing" component={ContentTesting} />
+				<Route exact path="/learning" component={ContentLearning} />
+				{/*<Route exact path="/testing" component={ContentTesting} />
 				<Route exact path="/results" component={ContentResults} />*/}
 				<Redirect to="/" />
 			</Switch>

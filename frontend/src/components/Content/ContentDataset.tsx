@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import Content from "../Content";
@@ -8,7 +7,7 @@ import Tree from "../Tree/Tree";
 import Icon from "../Icon";
 import Button from "../Button";
 import TreeColumn from "../Tree/TreeColumn";
-import TreeItem, { DataItem, ITreeItemProps } from "../Tree/TreeItem";
+import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
 import TreeHeader from "../Tree/TreeHeader";
 
 import entityDataset from "./../../assets/svg/entity-dataset.svg";
