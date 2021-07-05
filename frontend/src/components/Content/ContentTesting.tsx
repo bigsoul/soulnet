@@ -112,6 +112,7 @@ interface IContentTestingProps {
 
 const mapStateToProps = (state: IStore): IContentTestingProps => {
 	const { tree } = state;
+
 	const runningList = tree[ETreeList.TestingRunning];
 	const storingList = tree[ETreeList.TestingStoring];
 
