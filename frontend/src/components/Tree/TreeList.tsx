@@ -6,7 +6,16 @@ import {
 	PureComponent,
 	FunctionComponentElement,
 } from "react";
+
+import {
+	doTreeOnLoadEvent,
+	doTreeOnScroll,
+} from "../../classes/actions/ITreeAction";
+
+import { connect } from "react-redux";
 import styled from "styled-components";
+
+import IStore from "../../interfaces/IStore";
 import { DataItem } from "./TreeItem";
 import { ITreeItemProps } from "./TreeItem";
 
@@ -14,7 +23,6 @@ const ListBox = styled.div`
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	//border: 1px solid white;
 	box-sizing: border-box;
 	overflow-y: scroll;
 	&::-webkit-scrollbar {
@@ -35,6 +43,10 @@ const ListBox = styled.div`
 	align-items: center;
 	pointer-events: none;
 `*/
+
+type TreeListConfig = {
+	controller: string;
+};
 
 type MutationState<K, T, F> = {
 	listKey: K;
@@ -77,21 +89,24 @@ const calculateNewDataOffset = (
 	return 0;
 };
 
-const treeListCreator = function <K, T, F>() {
+const treeListCreator = function <K extends string, T, F = {}>(
+	listKey: K,
+	config: TreeListConfig
+) {
 	type TreeListProps = {
 		children: FunctionComponent<ITreeItemProps<T>>;
-		listKey: K;
 		filter: F;
-		dataList: DataItem<T>[];
-		dataOffset: number;
-		dataLimit: number;
 		dataItemHeight: number;
-		scrollOffset: number;
 		preLoaderUpMaxHeight: number;
 		preLoaderDownMaxHeight: number;
-		onLoadUp?: OnLoad;
-		onLoadDown?: OnLoad;
-		onScroll?: OnScroll;
+	};
+
+	type TreeListReduxProps = {
+		dataList: DataItem<T>[];
+		isLoading: boolean;
+		dataOffset: number;
+		dataLimit: number;
+		scrollOffset: number;
 	};
 
 	type TreeListState = {
@@ -102,15 +117,6 @@ const treeListCreator = function <K, T, F>() {
 		preLoaderDownHeight: number;
 		mutationState: MutationState<K, T, F>;
 	};
-
-	type OnLoad = (
-		listKey: K,
-		dataOffset: number,
-		dataLimit: number,
-		filter: F
-	) => void;
-
-	type OnScroll = (listKey: K, scrollOffset: number) => void;
 
 	const eventIsLocked = (
 		eventKey: keyof EventTimers,
@@ -159,430 +165,451 @@ const treeListCreator = function <K, T, F>() {
 	};
 
 	const onLoadUpDoNotRush = (
-		onLoadUp: OnLoad,
 		dataOffset: number,
 		dataLimit: number,
 		mutationState: MutationState<K, T, F>
 	) => {
-		if (eventIsLocked("onLoadUpTimer", mutationState)) {
-			return;
-		}
+		if (eventIsLocked("onLoadUpTimer", mutationState)) return;
 		eventLock("onLoadUpTimer", mutationState);
-		onLoadUp(
-			mutationState.listKey,
-			dataOffset,
-			dataLimit,
-			mutationState.filter
-		);
+		doTreeOnLoadEvent<K, F>({
+			listKey: listKey,
+			dataLimit: dataLimit,
+			dataOffset: dataOffset,
+			filter: mutationState.filter,
+			controller: config.controller,
+		});
 	};
 
 	const onLoadDownDoNotRush = (
-		onLoadDown: OnLoad,
 		dataOffset: number,
 		dataLimit: number,
 		mutationState: MutationState<K, T, F>
 	) => {
-		if (eventIsLocked("onLoadDownTimer", mutationState)) {
-			return;
-		}
+		if (eventIsLocked("onLoadDownTimer", mutationState)) return;
 		eventLock("onLoadDownTimer", mutationState);
-		onLoadDown(
-			mutationState.listKey,
-			dataOffset,
-			dataLimit,
-			mutationState.filter
-		);
+		doTreeOnLoadEvent<K, F>({
+			listKey: listKey,
+			dataLimit: dataLimit,
+			dataOffset: dataOffset,
+			filter: mutationState.filter,
+			controller: config.controller,
+		});
 	};
-	return class TreeList extends PureComponent<TreeListProps, TreeListState> {
-		resizeObserver: ResizeObserver;
 
-		constructor(props: TreeListProps) {
-			super(props);
+	const mapStateToProps = (state: IStore): TreeListReduxProps => {
+		const { tree } = state;
+		const list = tree[listKey];
 
-			const eventTimer: EventTimer = {
-				lockTime: 0,
-				leftToWaitMs: 0,
-				leftToWaitTry: 0,
-			};
+		const props: TreeListReduxProps = {
+			dataList: list.list as DataItem<T>[],
+			isLoading: list.isLoading,
+			dataOffset: list.dataOffset,
+			dataLimit: 50,
+			scrollOffset: list.scrollOffset,
+		};
 
-			this.state = {
-				dataListHeight: 0,
-				preLoaderUpTop: 0,
-				preLoaderDownTop: 0,
-				preLoaderUpHeight: 0,
-				preLoaderDownHeight: 0,
-				mutationState: {
-					listKey: props.listKey,
-					filter: props.filter,
-					dataOffset: props.dataOffset,
-					dataLimit: props.dataLimit,
-					dataListHeight:
-						props.dataItemHeight * props.dataList.length,
-					dataListLength: props.dataList.length,
-					listBoxHeight: 0,
-					scrollOffset: props.scrollOffset,
-					scrollStep: 0,
-					listBoxRef: createRef<HTMLDivElement>(),
-					items: [],
-					eventTimers: {
-						onLoadUpTimer: { ...eventTimer },
-						onLoadDownTimer: { ...eventTimer },
+		return props;
+	};
+
+	const connector = connect(mapStateToProps);
+
+	return connector(
+		class TreeList extends PureComponent<
+			TreeListProps & TreeListReduxProps,
+			TreeListState
+		> {
+			resizeObserver: ResizeObserver;
+
+			constructor(props: TreeListProps & TreeListReduxProps) {
+				super(props);
+
+				const eventTimer: EventTimer = {
+					lockTime: 0,
+					leftToWaitMs: 0,
+					leftToWaitTry: 0,
+				};
+
+				this.state = {
+					dataListHeight: 0,
+					preLoaderUpTop: 0,
+					preLoaderDownTop: 0,
+					preLoaderUpHeight: 0,
+					preLoaderDownHeight: 0,
+					mutationState: {
+						listKey: listKey,
+						filter: props.filter,
+						dataOffset: props.dataOffset,
+						dataLimit: props.dataLimit,
+						dataListHeight:
+							props.dataItemHeight * props.dataList.length,
+						dataListLength: props.dataList.length,
+						listBoxHeight: 0,
+						scrollOffset: props.scrollOffset,
+						scrollStep: 0,
+						listBoxRef: createRef<HTMLDivElement>(),
+						items: [],
+						eventTimers: {
+							onLoadUpTimer: { ...eventTimer },
+							onLoadDownTimer: { ...eventTimer },
+						},
 					},
-				},
-			};
+				};
 
-			const { mutationState } = this.state;
+				const { mutationState } = this.state;
 
-			this.resizeObserver = new ResizeObserver(
-				(entries: ResizeObserverEntry[]) => {
-					mutationState.listBoxHeight = Math.round(
-						entries[0].contentRect.height
-					);
-					this.setState({});
+				this.resizeObserver = new ResizeObserver(
+					(entries: ResizeObserverEntry[]) => {
+						mutationState.listBoxHeight = Math.round(
+							entries[0].contentRect.height
+						);
+						this.setState({});
+					}
+				);
+			}
+
+			static getDerivedStateFromProps = (
+				props: TreeListProps & TreeListReduxProps,
+				state: TreeListState
+			): TreeListState => {
+				const { mutationState } = state;
+
+				// basic properties of the calculation algorithm
+
+				const dataListHeight =
+					props.dataItemHeight * props.dataList.length;
+
+				// pre-loaders height of the calculation algorithm
+
+				let preLoaderUpHeight = 0;
+				let preLoaderDownHeight = 0;
+
+				if (dataListHeight > mutationState.listBoxHeight) {
+					const availableHeights =
+						dataListHeight - mutationState.listBoxHeight;
+
+					const halfHeight = Math.floor(availableHeights / 2);
+
+					preLoaderUpHeight =
+						halfHeight > props.preLoaderUpMaxHeight
+							? props.preLoaderUpMaxHeight
+							: halfHeight;
+
+					preLoaderDownHeight =
+						halfHeight > props.preLoaderDownMaxHeight
+							? props.preLoaderDownMaxHeight
+							: halfHeight;
 				}
-			);
-		}
 
-		static getDerivedStateFromProps = (
-			props: TreeListProps,
-			state: TreeListState
-		): TreeListState => {
-			//console.debug('TreeList - getDerivedStateFromProps')
+				// pre-loaders position of the calculation algorithm
 
-			const { mutationState } = state;
+				const preLoaderUpTop = 0;
+				const preLoaderDownTop = dataListHeight - preLoaderDownHeight;
 
-			// basic properties of the calculation algorithm
+				const scrollStart = 0;
+				const scrollEnd = dataListHeight - mutationState.listBoxHeight;
 
-			const dataListHeight = props.dataItemHeight * props.dataList.length;
+				// calculation offset of data list position
 
-			// pre-loaders height of the calculation algorithm
+				const diffAbsDataOffset = Math.abs(
+					props.dataOffset - mutationState.dataOffset
+				);
 
-			let preLoaderUpHeight = 0;
-			let preLoaderDownHeight = 0;
+				let scrollTop = scrollStart;
 
-			if (dataListHeight > mutationState.listBoxHeight) {
-				const availableHeights =
-					dataListHeight - mutationState.listBoxHeight;
+				if (diffAbsDataOffset > props.dataList.length) {
+					mutationState.dataOffset = props.dataOffset;
+					mutationState.scrollOffset = scrollStart;
+				}
 
-				const halfHeight = Math.floor(availableHeights / 2);
+				if (!props.dataList.length) {
+					mutationState.dataListLength = 0;
+					mutationState.scrollOffset = scrollStart;
+				}
 
-				preLoaderUpHeight =
-					halfHeight > props.preLoaderUpMaxHeight
-						? props.preLoaderUpMaxHeight
-						: halfHeight;
+				if (dataListHeight < mutationState.listBoxHeight) {
+					mutationState.scrollOffset = scrollStart;
+				}
 
-				preLoaderDownHeight =
-					halfHeight > props.preLoaderDownMaxHeight
-						? props.preLoaderDownMaxHeight
-						: halfHeight;
-			}
+				// calculation offset of new scroll-top position
 
-			// pre-loaders position of the calculation algorithm
+				const itemsOffset = props.dataOffset - mutationState.dataOffset;
 
-			const preLoaderUpTop = 0;
-			const preLoaderDownTop = dataListHeight - preLoaderDownHeight;
+				scrollTop = mutationState.scrollOffset;
+				scrollTop += mutationState.scrollStep * props.dataItemHeight;
+				scrollTop -= itemsOffset * props.dataItemHeight;
 
-			const scrollStart = 0;
-			const scrollEnd = dataListHeight - mutationState.listBoxHeight;
+				if (scrollTop < 0) {
+					scrollTop = scrollStart;
+				}
 
-			// calculation offset of data list position
+				if (scrollTop >= scrollEnd) {
+					scrollTop = scrollEnd;
+					if (scrollTop < 0) scrollTop = scrollStart;
+				}
 
-			const diffAbsDataOffset = Math.abs(
-				props.dataOffset - mutationState.dataOffset
-			);
+				if (scrollTop > preLoaderUpTop && scrollTop < scrollEnd) {
+					const residual = scrollTop % props.dataItemHeight;
+					if (residual)
+						scrollTop = scrollTop - residual + props.dataItemHeight;
+				}
 
-			let scrollTop = scrollStart;
+				// calculation of the event observer
 
-			if (diffAbsDataOffset > props.dataList.length) {
-				mutationState.dataOffset = props.dataOffset;
-				mutationState.scrollOffset = scrollStart;
-			}
-
-			if (!props.dataList.length) {
-				mutationState.dataListLength = 0;
-				mutationState.scrollOffset = scrollStart;
-			}
-
-			if (dataListHeight < mutationState.listBoxHeight) {
-				mutationState.scrollOffset = scrollStart;
-			}
-
-			// calculation offset of new scroll-top position
-
-			const itemsOffset = props.dataOffset - mutationState.dataOffset;
-
-			scrollTop = mutationState.scrollOffset;
-			scrollTop += mutationState.scrollStep * props.dataItemHeight;
-			scrollTop -= itemsOffset * props.dataItemHeight;
-
-			if (scrollTop < 0) {
-				scrollTop = scrollStart;
-			}
-
-			if (scrollTop >= scrollEnd) {
-				scrollTop = scrollEnd;
-				if (scrollTop < 0) scrollTop = scrollStart;
-			}
-
-			if (scrollTop > preLoaderUpTop && scrollTop < scrollEnd) {
-				const residual = scrollTop % props.dataItemHeight;
-				if (residual)
-					scrollTop = scrollTop - residual + props.dataItemHeight;
-			}
-
-			// calculation of the event observer
-
-			if (
-				dataListHeight === state.dataListHeight &&
-				props.dataOffset === mutationState.dataOffset
-			) {
 				if (
-					scrollTop >= preLoaderUpTop &&
-					scrollTop < preLoaderUpHeight
+					dataListHeight === state.dataListHeight &&
+					props.dataOffset === mutationState.dataOffset
 				) {
-					if (mutationState.scrollOffset - scrollTop > 0) {
-						if (props.onLoadUp) {
+					if (
+						scrollTop >= preLoaderUpTop &&
+						scrollTop < preLoaderUpHeight
+					) {
+						if (mutationState.scrollOffset - scrollTop > 0) {
 							const newDataOffset = calculateNewDataOffset(
 								props.dataOffset,
 								props.dataLimit,
 								true
 							);
 							onLoadUpDoNotRush(
-								props.onLoadUp,
 								newDataOffset,
 								props.dataLimit,
 								mutationState
 							);
 						}
 					}
-				}
 
-				if (
-					scrollTop + mutationState.listBoxHeight >
-						preLoaderDownTop &&
-					scrollTop + mutationState.listBoxHeight <=
-						preLoaderDownTop + preLoaderDownHeight
-				)
-					if (mutationState.scrollOffset - scrollTop < 0) {
-						if (props.onLoadDown) {
+					if (
+						scrollTop + mutationState.listBoxHeight >
+							preLoaderDownTop &&
+						scrollTop + mutationState.listBoxHeight <=
+							preLoaderDownTop + preLoaderDownHeight
+					)
+						if (mutationState.scrollOffset - scrollTop < 0) {
 							const newDataOffset = calculateNewDataOffset(
 								props.dataOffset,
 								props.dataLimit,
 								false
 							);
 							onLoadDownDoNotRush(
-								props.onLoadDown,
 								newDataOffset,
 								props.dataLimit,
 								mutationState
 							);
 						}
-					}
-			}
+				}
 
-			// applay to DOM
+				// applay to DOM
 
-			if (mutationState.listBoxRef.current)
-				mutationState.listBoxRef.current.scrollTop = scrollTop;
+				if (mutationState.listBoxRef.current)
+					mutationState.listBoxRef.current.scrollTop = scrollTop;
 
-			// fix the state
+				// fix the state
 
-			mutationState.listKey = props.listKey;
-			mutationState.filter = props.filter;
-			mutationState.dataOffset = props.dataOffset;
-			mutationState.dataLimit = props.dataLimit;
-			mutationState.dataListHeight = dataListHeight;
-			mutationState.dataListLength = props.dataList.length;
-			mutationState.scrollOffset = scrollTop;
-			mutationState.scrollStep = 0;
+				mutationState.listKey = listKey;
+				mutationState.filter = props.filter;
+				mutationState.dataOffset = props.dataOffset;
+				mutationState.dataLimit = props.dataLimit;
+				mutationState.dataListHeight = dataListHeight;
+				mutationState.dataListLength = props.dataList.length;
+				mutationState.scrollOffset = scrollTop;
+				mutationState.scrollStep = 0;
 
-			/*if (mutationState.listBoxRef.current)
-			console.debug(
-				'debug: ' +
-					mutationState.listBoxRef.current.scrollTop +
-					'/' +
-					mutationState.scrollOffset
-			)*/
+				/*
+				if (mutationState.listBoxRef.current)
+					console.debug(
+						'debug: ' +
+							mutationState.listBoxRef.current.scrollTop +
+							'/' +
+							mutationState.scrollOffset
+					)
+				*/
 
-			return {
-				dataListHeight: dataListHeight,
-				preLoaderUpTop: preLoaderUpTop,
-				preLoaderDownTop: preLoaderDownTop,
-				preLoaderUpHeight: preLoaderUpHeight,
-				preLoaderDownHeight: preLoaderDownHeight,
-				mutationState: mutationState,
+				return {
+					dataListHeight: dataListHeight,
+					preLoaderUpTop: preLoaderUpTop,
+					preLoaderDownTop: preLoaderDownTop,
+					preLoaderUpHeight: preLoaderUpHeight,
+					preLoaderDownHeight: preLoaderDownHeight,
+					mutationState: mutationState,
+				};
 			};
-		};
 
-		handlerOnScroll = (scrollTop: number) => {
-			//console.debug("TreeList - handlerOnScrollStop");
+			handlerOnScroll = (scrollTop: number) => {
+				const { mutationState } = this.state;
 
-			const { mutationState } = this.state;
+				let scroll = mutationState.scrollOffset - scrollTop;
 
-			let scroll = mutationState.scrollOffset - scrollTop;
+				if (scroll === 0) return;
 
-			if (scroll === 0) return;
+				mutationState.scrollStep += scroll > 0 ? -1 : 1;
 
-			mutationState.scrollStep += scroll > 0 ? -1 : 1;
+				this.setState({});
+			};
 
-			this.setState({});
-		};
+			handlerOnWheel = (deltaY: number) => {
+				const { mutationState } = this.state;
 
-		handlerOnWheel = (deltaY: number) => {
-			//console.debug('TreeList - handlerOnWheel: ', deltaY)
+				const { props, state } = this;
 
-			const { mutationState } = this.state;
-
-			const { props, state } = this;
-
-			if (
-				mutationState.scrollOffset === 0 &&
-				deltaY < 0 &&
-				props.onLoadUp
-			) {
-				const newDataOffset = calculateNewDataOffset(
-					props.dataOffset,
-					props.dataLimit,
-					true
-				);
-				onLoadUpDoNotRush(
-					props.onLoadUp,
-					newDataOffset,
-					props.dataLimit,
-					mutationState
-				);
-			}
-
-			if (
-				mutationState.scrollOffset >=
-					state.dataListHeight - mutationState.listBoxHeight &&
-				deltaY > 0 &&
-				props.onLoadDown
-			) {
-				const newDataOffset = calculateNewDataOffset(
-					props.dataOffset,
-					props.dataLimit,
-					false
-				);
-				onLoadDownDoNotRush(
-					props.onLoadDown,
-					newDataOffset,
-					props.dataLimit,
-					mutationState
-				);
-			}
-		};
-
-		render = () => {
-			//console.debug('TreeList - render')
-
-			const { props } = this;
-			const { mutationState } = this.state;
-
-			const newItems: FunctionComponentElement<ITreeItemProps<T>>[] = [];
-			const items: ReactNode[] = [];
-
-			for (let i = 0; i < props.dataList.length; i++) {
-				const dataItem = props.dataList[i];
-
-				let element = mutationState.items.find(
-					(item) => item.key === dataItem.id
-				);
+				if (mutationState.scrollOffset === 0 && deltaY < 0) {
+					const newDataOffset = calculateNewDataOffset(
+						props.dataOffset,
+						props.dataLimit,
+						true
+					);
+					onLoadUpDoNotRush(
+						newDataOffset,
+						props.dataLimit,
+						mutationState
+					);
+				}
 
 				if (
-					!element ||
-					element.props.dataItem.version !== dataItem.version
+					mutationState.scrollOffset >=
+						state.dataListHeight - mutationState.listBoxHeight &&
+					deltaY > 0
 				) {
-					element = createElement<ITreeItemProps<T>>(props.children, {
-						key: dataItem.id,
-						index: i,
-						dataItem: dataItem,
-					});
+					const newDataOffset = calculateNewDataOffset(
+						props.dataOffset,
+						props.dataLimit,
+						false
+					);
+					onLoadDownDoNotRush(
+						newDataOffset,
+						props.dataLimit,
+						mutationState
+					);
 				}
-				items.push(element);
-				newItems.push(element);
-			}
+			};
 
-			mutationState.items = newItems;
+			render = () => {
+				const { props } = this;
+				const { mutationState } = this.state;
 
-			/*const { state } = this
+				const newItems: FunctionComponentElement<
+					ITreeItemProps<T>
+				>[] = [];
 
-		items.push(
-			<PreLoader
-				id='pre-loader-up'
-				key='pre-loader-up'
-				height={state.preLoaderUpHeight}
-				top={state.preLoaderUpTop}
-			/>
-		)
-		items.push(
-			<PreLoader
-				id='pre-loader-down'
-				key='pre-loader-down'
-				height={state.preLoaderDownHeight}
-				top={state.preLoaderDownTop}
-			/>
-		)*/
+				const items: ReactNode[] = [];
 
-			return (
-				<ListBox
-					onScroll={(e) =>
-						this.handlerOnScroll(e.currentTarget.scrollTop)
+				for (let i = 0; i < props.dataList.length; i++) {
+					const dataItem = props.dataList[i];
+
+					let element = mutationState.items.find(
+						(item) => item.key === dataItem.id
+					);
+
+					if (
+						!element ||
+						element.props.dataItem.version !== dataItem.version
+					) {
+						element = createElement<ITreeItemProps<T>>(
+							props.children,
+							{
+								key: dataItem.id,
+								index: i,
+								dataItem: dataItem,
+							}
+						);
 					}
-					onWheel={(e) => this.handlerOnWheel(e.deltaY)}
-					ref={mutationState.listBoxRef}
-					id="tree-list"
-				>
-					{items}
-				</ListBox>
-			);
-		};
+					items.push(element);
+					newItems.push(element);
+				}
 
-		componentDidUpdate = () => {
-			const { props } = this;
-			const { mutationState } = this.state;
+				mutationState.items = newItems;
 
-			const dataListHeight = props.dataItemHeight * props.dataList.length;
-			const diffHeight = dataListHeight - mutationState.dataListHeight;
+				/*const { state } = this
 
-			if (!diffHeight) mutationState.scrollOffset += diffHeight;
+				items.push(
+					<PreLoader
+						id='pre-loader-up'
+						key='pre-loader-up'
+						height={state.preLoaderUpHeight}
+						top={state.preLoaderUpTop}
+					/>
+				)
+				items.push(
+					<PreLoader
+						id='pre-loader-down'
+						key='pre-loader-down'
+						height={state.preLoaderDownHeight}
+						top={state.preLoaderDownTop}
+					/>
+				)*/
 
-			if (mutationState.listBoxRef.current)
-				mutationState.listBoxRef.current.scrollTop =
-					mutationState.scrollOffset;
-
-			eventClearLock(mutationState);
-		};
-
-		componentDidMount = () => {
-			const { mutationState } = this.state;
-
-			if (mutationState.listBoxRef.current) {
-				mutationState.listBoxHeight = Math.round(
-					mutationState.listBoxRef.current.clientHeight
+				return (
+					<ListBox
+						onScroll={(e) =>
+							this.handlerOnScroll(e.currentTarget.scrollTop)
+						}
+						onWheel={(e) => this.handlerOnWheel(e.deltaY)}
+						ref={mutationState.listBoxRef}
+					>
+						{items}
+					</ListBox>
 				);
+			};
 
-				mutationState.listBoxRef.current.scrollTop =
-					mutationState.scrollOffset;
+			componentDidUpdate = () => {
+				const { props } = this;
+				const { mutationState } = this.state;
 
-				this.resizeObserver.observe(mutationState.listBoxRef.current);
-				this.setState({});
-			}
-		};
+				const dataListHeight =
+					props.dataItemHeight * props.dataList.length;
+				const diffHeight =
+					dataListHeight - mutationState.dataListHeight;
 
-		componentWillUnmount = () => {
-			const { mutationState } = this.state;
+				if (!diffHeight) mutationState.scrollOffset += diffHeight;
 
-			if (mutationState.listBoxRef.current)
-				this.resizeObserver.unobserve(mutationState.listBoxRef.current);
+				if (mutationState.listBoxRef.current)
+					mutationState.listBoxRef.current.scrollTop =
+						mutationState.scrollOffset;
 
-			if (this.props.onScroll)
-				this.props.onScroll(
-					mutationState.listKey,
-					mutationState.scrollOffset
-				);
-		};
-	};
+				eventClearLock(mutationState);
+			};
+
+			componentDidMount = () => {
+				const { mutationState } = this.state;
+
+				if (mutationState.listBoxRef.current) {
+					mutationState.listBoxHeight = Math.round(
+						mutationState.listBoxRef.current.clientHeight
+					);
+
+					mutationState.listBoxRef.current.scrollTop =
+						mutationState.scrollOffset;
+
+					this.resizeObserver.observe(
+						mutationState.listBoxRef.current
+					);
+					this.setState({});
+				}
+
+				const { dataLimit, dataOffset, filter } = this.props;
+
+				doTreeOnLoadEvent<K, F>({
+					listKey: listKey,
+					dataLimit: dataLimit,
+					dataOffset: dataOffset,
+					filter: filter,
+					controller: config.controller,
+				});
+			};
+
+			componentWillUnmount = () => {
+				const { mutationState } = this.state;
+
+				if (mutationState.listBoxRef.current)
+					this.resizeObserver.unobserve(
+						mutationState.listBoxRef.current
+					);
+
+				doTreeOnScroll<K>({
+					listKey: listKey,
+					scrollOffset: mutationState.scrollOffset,
+				});
+			};
+		}
+	);
 };
 
 export default treeListCreator;

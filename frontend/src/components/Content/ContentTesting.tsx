@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+/*import React, { PureComponent } from "react";
 import styled from "styled-components";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
@@ -396,4 +396,6 @@ const mapDispatchToProps = (
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentTesting);
+export default connect(mapStateToProps, mapDispatchToProps)(ContentTesting);*/
+
+export default null;

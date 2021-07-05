@@ -1,4 +1,3 @@
-import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
 import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 import IMainResultReport, {
@@ -27,18 +26,9 @@ export type TreeListReducer<T> = {
 	dataOffset: number;
 };
 
-export type TreeReducer<T> = {
-	[key in ETreeList]: TreeListReducer<T>;
+export type TreeReducer<K extends string, T> = {
+	[key in K]: TreeListReducer<T>;
 };
-
-/*export type TreeReducer<T> = {
-	Dataset: TreeListReducer<T>;
-	LearningRunning: TreeListReducer<T>;
-	LearningStoring: TreeListReducer<T>;
-	TestingRunning: TreeListReducer<T>;
-	TestingStoring: TreeListReducer<T>;
-	MainResultReport: TreeListReducer<T>;
-};*/
 
 const treeList = {
 	list: [],
@@ -49,7 +39,7 @@ const treeList = {
 	dataLimit: 0,
 };
 
-const preloadedState: TreeReducer<TreeListEntity> = {
+const preloadedState: unknown = {
 	Dataset: { ...treeList },
 	LearningRunning: { ...treeList },
 	LearningStoring: { ...treeList },
@@ -58,29 +48,29 @@ const preloadedState: TreeReducer<TreeListEntity> = {
 	MainResultReport: { ...treeList },
 };
 
-const treeReducer = (
-	curState: TreeReducer<TreeListEntity> = preloadedState,
-	action: TTreeAction
-): TreeReducer<TreeListEntity> => {
+const treeReducer = <K extends string, T, F>(
+	curState: TreeReducer<K, T> = preloadedState as TreeReducer<K, T>,
+	action: TTreeAction<K, T, F>
+): TreeReducer<K, T> => {
 	switch (action.type) {
-		case ACT.TREE_ON_LOAD: {
+		case "TREE/ON-LOAD": {
 			const newState = { ...curState };
 			newState[action.listKey].list = action.list;
 			newState[action.listKey].dataOffset = action.dataOffset;
 			newState[action.listKey].dataLimit = action.dataLimit;
 			return newState;
 		}
-		case ACT.TREE_IS_LOADING: {
+		case "TREE/IS-LOADING": {
 			const newState = { ...curState };
 			newState[action.listKey].isLoading = action.loading;
 			return newState;
 		}
-		case ACT.TREE_IS_VISIBLE: {
+		case "TREE/IS-VISIBLE": {
 			const newState = { ...curState };
 			newState[action.listKey].isVisible = action.visible;
 			return newState;
 		}
-		case ACT.TREE_ON_SCROLL: {
+		case "TREE/ON-SCROLL": {
 			const newState = { ...curState };
 			newState[action.listKey].scrollOffset = action.scrollOffset;
 			return newState;

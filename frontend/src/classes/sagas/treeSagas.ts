@@ -9,7 +9,9 @@ import * as RES from "../../interfaces/IResponse";
 import store from "../store";
 import IStore from "../../interfaces/IStore";
 
-function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
+function* workerTreeOnLoadEvent<K extends string, T, F>(
+	action: ACT.ITreeOnLoadEventAction<K, F>
+) {
 	const state: IStore = yield call(store.getState);
 
 	const { tree } = state;
@@ -22,7 +24,7 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 		filter: action.filter,
 	};
 
-	yield put<ACT.ITreeIsLoadingAction>({
+	yield put<ACT.ITreeIsLoadingAction<K>>({
 		type: ACT.TREE_IS_LOADING,
 		listKey: action.listKey,
 		loading: true,
@@ -34,7 +36,7 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 		requestData
 	);
 
-	yield put<ACT.ITreeOnLoadAction>({
+	yield put<ACT.ITreeOnLoadAction<K, T>>({
 		type: ACT.TREE_ON_LOAD,
 		list: responseBody.data.list,
 		listKey: action.listKey,
@@ -42,7 +44,7 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 		dataOffset: responseBody.data.dataOffset,
 	});
 
-	yield put<ACT.ITreeIsLoadingAction>({
+	yield put<ACT.ITreeIsLoadingAction<K>>({
 		type: ACT.TREE_IS_LOADING,
 		listKey: action.listKey,
 		loading: false,
@@ -50,7 +52,7 @@ function* workerTreeOnLoadEvent(action: ACT.ITreeOnLoadEventAction) {
 }
 
 function* treeSagas() {
-	yield takeEvery(ACT.TREE_ON_LOAD_EVENT, workerTreeOnLoadEvent);
+	yield takeEvery("TREE/ON-LOAD-EVENT", workerTreeOnLoadEvent);
 }
 
 export default treeSagas;
