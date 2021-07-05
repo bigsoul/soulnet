@@ -1,6 +1,5 @@
-/*import React, { PureComponent } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import Content from "../Content";
@@ -28,13 +27,10 @@ import ITesting, { ITestingFilter } from "../../interfaces/ITesting";
 
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
-import TTreeAction, {
-	ITreeIsVisibleAction,
-	ITreeOnLoadEventAction,
-	ITreeOnScrollAction,
-	TREE_IS_VISIBLE,
-	TREE_ON_LOAD_EVENT,
-	TREE_ON_SCROLL,
+import store from "../../classes/store";
+import {
+	doTreeIsVisible,
+	doTreeOnLoadEvent,
 } from "../../classes/actions/ITreeAction";
 
 const ButtonStyled = styled(Button)`
@@ -89,104 +85,95 @@ const StoringContainer = styled(BasisContainer)<{
 	position: relative;
 `;
 
-const TreeList = treeListCreator<ETreeList, ITesting, ITestingFilter>();
+const controller = "/testings";
+const filterRunning = { isArchive: false };
+const filterStoring = { isArchive: true };
 
-interface IContentTestingState {
-	runningList: ITesting[];
+const TreeListRunning = treeListCreator<ETreeList, ITesting, ITestingFilter>(
+	ETreeList.TestingRunning,
+	{
+		controller: controller,
+	}
+);
+
+const TreeListStoring = treeListCreator<ETreeList, ITesting, ITestingFilter>(
+	ETreeList.TestingStoring,
+	{
+		controller: controller,
+	}
+);
+
+interface IContentTestingProps {
 	runningIsVisible: boolean;
 	runningIsLoading: boolean;
-	runningDataOffset: number;
-	runningDataLimit: number;
-	runningScrollOffset: number;
-	storingList: ITesting[];
 	storingIsVisible: boolean;
 	storingIsLoading: boolean;
-	storingDataOffset: number;
-	storingDataLimit: number;
-	storingScrollOffset: number;
 }
 
-interface IContentTestingDispatch {
-	treeOnLoadEvent: (
-		key: ETreeList,
-		limit: number,
-		offset: number,
-		filter: ITestingFilter
-	) => void;
-	treeOnScrollEvent: (key: ETreeList, offset: number) => void;
-	treeIsVisibleEvent: (key: ETreeList, visible: boolean) => void;
-}
+const mapStateToProps = (state: IStore): IContentTestingProps => {
+	const { tree } = state;
+	const runningList = tree[ETreeList.TestingRunning];
+	const storingList = tree[ETreeList.TestingStoring];
 
-interface IContentTestingProps
-	extends IContentTestingState,
-		IContentTestingDispatch {}
+	const props = {
+		runningIsVisible: runningList.isVisible,
+		runningIsLoading: runningList.isLoading,
+		storingIsVisible: storingList.isVisible,
+		storingIsLoading: storingList.isLoading,
+	};
+
+	return props;
+};
+
+const connector = connect(mapStateToProps);
 
 class ContentTesting extends PureComponent<IContentTestingProps> {
-	handlerTreeOnLoadEvent = (
-		listKey: ETreeList,
-		dataOffset: number,
-		dataLimit: number,
-		filter: ITestingFilter
-	) => {
-		const { treeOnLoadEvent } = this.props;
-
-		treeOnLoadEvent(listKey, dataLimit, dataOffset, filter);
-	};
-
-	handlerTreeOnScrollEvent = (listKey: ETreeList, scrollOffset: number) => {
-		const { treeOnScrollEvent } = this.props;
-
-		treeOnScrollEvent(listKey, scrollOffset);
-	};
-
 	hendlerRunningIsVisibleEvent = () => {
-		const { runningIsVisible, treeIsVisibleEvent } = this.props;
-		treeIsVisibleEvent(ETreeList.TestingRunning, !runningIsVisible);
+		const listRunning = store.getState().tree[ETreeList.TestingRunning];
+
+		doTreeIsVisible<ETreeList.TestingRunning>({
+			listKey: ETreeList.TestingRunning,
+			visible: !listRunning.isVisible,
+		});
 	};
 
 	hendlerStoringIsVisibleEvent = () => {
-		const { storingIsVisible, treeIsVisibleEvent } = this.props;
-		treeIsVisibleEvent(ETreeList.TestingStoring, !storingIsVisible);
+		const listStoring = store.getState().tree[ETreeList.TestingStoring];
+
+		doTreeIsVisible<ETreeList.TestingStoring>({
+			listKey: ETreeList.TestingStoring,
+			visible: !listStoring.isVisible,
+		});
 	};
 
 	hendlerTreeRefresh = () => {
-		const {
-			treeOnLoadEvent,
-			runningDataOffset,
-			runningDataLimit,
-			storingDataOffset,
-			storingDataLimit,
-		} = this.props;
+		const listRunning = store.getState().tree[ETreeList.TestingRunning];
 
-		treeOnLoadEvent(
-			ETreeList.TestingRunning,
-			runningDataLimit,
-			runningDataOffset,
-			{ isArchive: false }
-		);
+		doTreeOnLoadEvent<ETreeList.TestingRunning, {}>({
+			listKey: ETreeList.TestingRunning,
+			dataLimit: listRunning.dataLimit,
+			dataOffset: listRunning.dataOffset,
+			filter: filterRunning,
+			controller: controller,
+		});
 
-		treeOnLoadEvent(
-			ETreeList.TestingStoring,
-			storingDataLimit,
-			storingDataOffset,
-			{ isArchive: true }
-		);
+		const listStoring = store.getState().tree[ETreeList.TestingStoring];
+
+		doTreeOnLoadEvent<ETreeList.TestingStoring, {}>({
+			listKey: ETreeList.TestingStoring,
+			dataLimit: listStoring.dataLimit,
+			dataOffset: listStoring.dataOffset,
+			filter: filterStoring,
+			controller: controller,
+		});
 	};
 
 	render = () => {
 		const {
-			runningList,
 			runningIsVisible,
 			runningIsLoading,
-			runningDataOffset,
-			runningDataLimit,
-			runningScrollOffset,
-			storingList,
 			storingIsVisible,
 			storingIsLoading,
-			storingDataOffset,
-			storingDataLimit,
-			storingScrollOffset,
 		} = this.props;
 
 		return (
@@ -222,19 +209,11 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 						runningOpen={runningIsVisible}
 						storingOpen={storingIsVisible}
 					>
-						<TreeList
-							listKey={ETreeList.TestingRunning}
-							filter={{ isArchive: false }}
-							dataList={runningList}
-							dataOffset={runningDataOffset}
-							dataLimit={runningDataLimit}
-							scrollOffset={runningScrollOffset}
+						<TreeListRunning
+							filter={filterRunning}
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
-							onLoadUp={this.handlerTreeOnLoadEvent}
-							onLoadDown={this.handlerTreeOnLoadEvent}
-							onScroll={this.handlerTreeOnScrollEvent}
 						>
 							{(props: ITreeItemProps<ITesting>) => {
 								return (
@@ -253,7 +232,7 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 									</TreeItemStyled>
 								);
 							}}
-						</TreeList>
+						</TreeListRunning>
 					</RunningContainer>
 					<TreeBranchStyled>
 						<TreeColumn>
@@ -274,19 +253,11 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 						runningOpen={runningIsVisible}
 						storingOpen={storingIsVisible}
 					>
-						<TreeList
-							listKey={ETreeList.TestingStoring}
-							filter={{ isArchive: true }}
-							dataList={storingList}
-							dataOffset={storingDataOffset}
-							dataLimit={storingDataLimit}
-							scrollOffset={storingScrollOffset}
+						<TreeListStoring
+							filter={filterStoring}
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
-							onLoadUp={this.handlerTreeOnLoadEvent}
-							onLoadDown={this.handlerTreeOnLoadEvent}
-							onScroll={this.handlerTreeOnScrollEvent}
 						>
 							{(props: ITreeItemProps<ITesting>) => {
 								return (
@@ -302,100 +273,12 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 									</TreeItemStyled>
 								);
 							}}
-						</TreeList>
+						</TreeListStoring>
 					</StoringContainer>
 				</Tree>
 			</Content>
 		);
 	};
-
-	componentDidMount = () => {
-		const {
-			runningDataOffset,
-			runningDataLimit,
-			storingDataOffset,
-			storingDataLimit,
-			treeOnLoadEvent,
-		} = this.props;
-
-		treeOnLoadEvent(
-			ETreeList.TestingRunning,
-			runningDataLimit,
-			runningDataOffset,
-			{
-				isArchive: false,
-			}
-		);
-		treeOnLoadEvent(
-			ETreeList.TestingStoring,
-			storingDataLimit,
-			storingDataOffset,
-			{
-				isArchive: true,
-			}
-		);
-	};
 }
 
-const mapStateToProps = (state: IStore): IContentTestingState => {
-	const { tree } = state;
-	const runningList = tree[ETreeList.TestingRunning];
-	const storingList = tree[ETreeList.TestingStoring];
-
-	const props: IContentTestingState = {
-		runningList: runningList.list as ITesting[],
-		runningIsVisible: runningList.isVisible,
-		runningIsLoading: runningList.isLoading,
-		runningDataOffset: runningList.dataOffset,
-		runningDataLimit: 50,
-		runningScrollOffset: runningList.scrollOffset,
-		storingList: storingList.list as ITesting[],
-		storingIsVisible: storingList.isVisible,
-		storingIsLoading: storingList.isLoading,
-		storingDataOffset: storingList.dataOffset,
-		storingDataLimit: 50,
-		storingScrollOffset: storingList.scrollOffset,
-	};
-
-	return props;
-};
-
-const mapDispatchToProps = (
-	dispatch: Dispatch<TTreeAction>
-): IContentTestingDispatch => {
-	return {
-		treeOnLoadEvent: (
-			key: ETreeList,
-			limit: number,
-			offset: number,
-			filter: ITestingFilter
-		) => {
-			dispatch<ITreeOnLoadEventAction>({
-				type: TREE_ON_LOAD_EVENT,
-				listKey: key,
-				dataLimit: limit,
-				dataOffset: offset,
-				controller: "/testings",
-				filter: filter,
-			});
-		},
-		treeOnScrollEvent: (key: ETreeList, offset: number) => {
-			dispatch<ITreeOnScrollAction>({
-				type: TREE_ON_SCROLL,
-				listKey: key,
-				scrollOffset: offset,
-			});
-		},
-		treeIsVisibleEvent: (key: ETreeList, visible: boolean) => {
-			dispatch<ITreeIsVisibleAction>({
-				type: TREE_IS_VISIBLE,
-				listKey: key,
-				visible: visible,
-			});
-		},
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContentTesting);*/
-
-export default null;
+export default connector(ContentTesting);
