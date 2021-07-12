@@ -1,3 +1,4 @@
+import { EBADF } from "node:constants";
 import React, { Component, ReactNode } from "react";
 import styled from "styled-components";
 import { history } from "./../classes/reducers/routerReducer";
@@ -88,13 +89,15 @@ interface IButtonProps {
 	template?: "default" | "icon" | undefined;
 	selected?: boolean;
 	disabled?: boolean;
+	clearFocus?: boolean;
 	onClick?: () => void;
 }
 
 class Button extends Component<IButtonProps> {
-	to = () => {
+	to = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		if (this.props.onClick) this.props.onClick();
 		if (this.props.path) history.push(this.props.path);
+		if (this.props.clearFocus) e.currentTarget.blur();
 	};
 
 	render = () => {

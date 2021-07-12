@@ -1,8 +1,5 @@
 import { PureComponent } from "react";
-import { connect } from "react-redux";
 import styled from "styled-components";
-import { doTreeIsVisibleConvert } from "../../classes/actions/ITreeAction";
-import { IStore } from "../../classes/store";
 import ELearningState from "../../enums/ELearningState";
 import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
@@ -96,26 +93,7 @@ const DatasetList = treeListCreator<ETreeList, IDataset>(ETreeList.Dataset, {
 	controller: "/datasets",
 });
 
-const mapStateToProps = (state: IStore): ILearningFormProps => {
-	const { tree } = state;
-	const list = tree[ETreeList.Dataset];
-
-	const props = {
-		datasetSelectVisible: list.isVisible,
-	};
-
-	return props;
-};
-
-const connector = connect(mapStateToProps);
-
 class LearningForm extends PureComponent<ILearningFormProps> {
-	selectDatasetHandler = () => {
-		doTreeIsVisibleConvert({
-			listKey: ETreeList.Dataset,
-		});
-	};
-
 	render = () => {
 		return (
 			<Form
@@ -135,49 +113,38 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 								value={values.name}
 								onChange={(value) => change("name", value)}
 							/>
-							<div>
-								<SelectStyled
-									name="dataset"
-									type="text"
-									placeholder="Select dataset"
-									autoComplete={"off"}
-									value={values.dataset}
-									onChange={(value) =>
-										change("dataset", value)
-									}
-									onClick={this.selectDatasetHandler}
-								/>
-								{this.props.datasetSelectVisible && (
-									<TreeListContainer>
-										<DatasetList
-											filter={{}}
-											dataItemHeight={30}
-											preLoaderUpMaxHeight={150}
-											preLoaderDownMaxHeight={150}
-										>
-											{(
-												props: ITreeItemProps<IDataset>
-											) => {
-												return (
-													<TreeItemStyled level={1}>
-														<TreeColumn>
-															<IconStyled
-																path={
-																	entityDataset
-																}
-															/>
-															{
-																props.dataItem
-																	.name
-															}
-														</TreeColumn>
-													</TreeItemStyled>
-												);
-											}}
-										</DatasetList>
-									</TreeListContainer>
-								)}
-							</div>
+
+							<SelectStyled
+								listKey={ETreeList.Dataset}
+								name="dataset"
+								type="text"
+								placeholder="Select dataset"
+								autoComplete={"off"}
+								value={values.dataset}
+								onChange={(value) => change("dataset", value)}
+							>
+								<TreeListContainer>
+									<DatasetList
+										filter={{}}
+										dataItemHeight={30}
+										preLoaderUpMaxHeight={150}
+										preLoaderDownMaxHeight={150}
+									>
+										{(props: ITreeItemProps<IDataset>) => {
+											return (
+												<TreeItemStyled level={1}>
+													<TreeColumn>
+														<IconStyled
+															path={entityDataset}
+														/>
+														{props.dataItem.name}
+													</TreeColumn>
+												</TreeItemStyled>
+											);
+										}}
+									</DatasetList>
+								</TreeListContainer>
+							</SelectStyled>
 							<EditStyled10
 								name="inputNeurons"
 								type="number"
@@ -209,4 +176,4 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 	};
 }
 
-export default connector(LearningForm);
+export default LearningForm;

@@ -1,18 +1,23 @@
 import styled from "styled-components";
 import Button from "./Button";
 import combobox from "./../assets/svg/combobox.svg";
+import { IStore } from "../classes/store";
+import ETreeList from "../enums/ETreeList";
+import { connect } from "react-redux";
+import { doTreeIsVisibleConvert } from "../classes/actions/ITreeAction";
 
-const Div = styled.div<{ error?: string }>`
+const SelectContainer = styled.div<{ isVisible?: boolean; error?: string }>`
 	height: 20px;
 	border: 1px solid ${(p) => (p.error ? "#ff0000" : "#00f0ff")};
 	background-color: #001819;
 	color: #ffffff;
 	box-sizing: border-box;
 	display: flex;
+	position: relative;
 	&:hover {
 		outline: 0;
 		outline-offset: 0;
-		border: 1px solid #ebff99;
+		${(p) => !p.isVisible && "border: 1px solid #ebff99"};
 	}
 	&:focus-within {
 		outline: 0;
@@ -47,7 +52,14 @@ const SelectInput = styled.input`
 	}
 `;
 
-export interface ISelect {
+const ButtonStyled = styled(Button)<{ error?: string }>`
+	width: 24px;
+	height: 18px;
+`;
+
+export interface ISelectProps {
+	children: JSX.Element;
+	listKey: ETreeList;
 	className?: string;
 	placeholder?: string;
 	autoComplete?: string;
@@ -57,35 +69,63 @@ export interface ISelect {
 	type?: string;
 	disabled?: boolean;
 	path?: string;
-	onClick?: () => void;
 	onChange: (value: string) => void;
 }
 
-const ButtonStyled = styled(Button)`
-	width: 24px;
-	height: 18px;
-`;
+export interface ISelectState {
+	isVisible?: boolean;
+}
 
-const Select = (props: ISelect) => {
+const mapStateToProps = (
+	state: IStore,
+	ownProps: ISelectProps
+): ISelectState => {
+	const { tree } = state;
+	const list = tree[ownProps.listKey];
+
+	const props = {
+		isVisible: list.isVisible,
+	};
+
+	return props;
+};
+
+const connector = connect(mapStateToProps);
+
+const Select = (props: ISelectProps & ISelectState) => {
+	const clickHandler = () => {
+		doTreeIsVisibleConvert({
+			listKey: props.listKey,
+		});
+	};
+
 	return (
-		<Div className={props.className} error={props.error}>
-			<SelectInput
-				placeholder={props.placeholder}
-				autoComplete={props.autoComplete}
-				name={props.name}
-				value={props.value}
-				type={props.type}
-				disabled={props.disabled}
-				onChange={(e) => props.onChange(e.currentTarget.value)}
-			/>
-			<ButtonStyled
-				template={"icon"}
-				svgPath={combobox}
-				path={props.path}
-				onClick={props.onClick}
-			/>
-		</Div>
+		<div>
+			<SelectContainer
+				className={props.className}
+				isVisible={props.isVisible}
+				error={props.error}
+			>
+				<SelectInput
+					placeholder={props.placeholder}
+					autoComplete={props.autoComplete}
+					name={props.name}
+					value={props.value}
+					type={props.type}
+					disabled={props.disabled}
+					onChange={(e) => props.onChange(e.currentTarget.value)}
+				/>
+				<ButtonStyled
+					template={"icon"}
+					clearFocus
+					svgPath={combobox}
+					path={props.path}
+					onClick={clickHandler}
+				/>
+			</SelectContainer>
+			{props.isVisible && props.children}
+		</div>
 	);
 };
 
-export default Select;
+export default connector(Select);
