@@ -7,7 +7,7 @@ import * as REQ from "../../interfaces/IRequest";
 import * as RES from "../../interfaces/IResponse";
 
 import store from "../store";
-import IStore from "../../interfaces/IStore";
+import { IStore } from "../store";
 
 function* workerTreeOnLoadEvent<K extends string, T, F>(
 	action: ACT.ITreeOnLoadEventAction<K, F>

@@ -15,7 +15,7 @@ import {
 import { connect } from "react-redux";
 import styled from "styled-components";
 
-import IStore from "../../interfaces/IStore";
+import { IStore } from "../../classes/store";
 import { DataItem } from "./TreeItem";
 import { ITreeItemProps } from "./TreeItem";
 

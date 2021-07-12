@@ -1,8 +1,7 @@
 import styled from "styled-components";
 
 const EditInput = styled.input<{ error?: string }>`
-	width: 154px;
-	height: 18px;
+	height: 20px;
 	border: 1px solid ${(p) => (p.error ? "#ff0000" : "#00f0ff")};
 	background-color: #001819;
 	color: #ffffff;
@@ -11,7 +10,12 @@ const EditInput = styled.input<{ error?: string }>`
 	padding-right: 5px;
 	padding-top: 0px;
 	padding-bottom: 0px;
-	text-align: center;
+	text-align: inherit;
+	box-sizing: border-box;
+	&::-webkit-inner-spin-button {
+		display: none;
+	}
+	-moz-appearance: textfield;
 	&:hover {
 		outline: 0;
 		outline-offset: 0;
@@ -28,8 +32,9 @@ const EditInput = styled.input<{ error?: string }>`
 interface IEditProps {
 	className?: string;
 	placeholder?: string;
+	autoComplete?: string;
 	name?: string;
-	value?: string;
+	value?: string | number;
 	error?: string;
 	type?: string;
 	disabled?: boolean;
@@ -38,7 +43,14 @@ interface IEditProps {
 
 const Edit = (props: IEditProps) => (
 	<EditInput
-		{...props}
+		className={props.className}
+		placeholder={props.placeholder}
+		autoComplete={props.autoComplete}
+		name={props.name}
+		value={props.value}
+		error={props.error}
+		type={props.type}
+		disabled={props.disabled}
 		onChange={(e) => props.onChange(e.currentTarget.value)}
 	/>
 );

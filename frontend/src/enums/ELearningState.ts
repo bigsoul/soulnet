@@ -1,8 +1,8 @@
 enum ELearningState {
-	"config",
-	"playing",
-	"paused",
-	"completed",
+	Config = "config",
+	Playing = "playing",
+	Paused = "paused",
+	Completed = "completed",
 }
 
 export default ELearningState;

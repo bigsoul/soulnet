@@ -4,6 +4,7 @@ export const TREE_ON_LOAD = "TREE/ON-LOAD";
 export const TREE_ON_SCROLL = "TREE/ON-SCROLL";
 export const TREE_IS_LOADING = "TREE/IS-LOADING";
 export const TREE_IS_VISIBLE = "TREE/IS-VISIBLE";
+export const TREE_IS_VISIBLE_CONVERT = "TREE/IS-VISIBLE-CONVERT";
 
 export const TREE_ON_LOAD_EVENT = "TREE/ON-LOAD-EVENT";
 
@@ -42,12 +43,18 @@ export interface ITreeIsVisibleAction<K> {
 	visible: boolean;
 }
 
+export interface ITreeIsVisibleConvertAction<K> {
+	type: typeof TREE_IS_VISIBLE_CONVERT;
+	listKey: K;
+}
+
 export type TTreeAction<K, T, F> =
 	| ITreeOnLoadEventAction<K, F>
 	| ITreeOnLoadAction<K, T>
 	| ITreeOnScrollAction<K>
 	| ITreeIsLoadingAction<K>
-	| ITreeIsVisibleAction<K>;
+	| ITreeIsVisibleAction<K>
+	| ITreeIsVisibleConvertAction<K>;
 
 export const doTreeOnLoadEvent = <K, F>(
 	payload: Omit<ITreeOnLoadEventAction<K, F>, "type">
@@ -101,6 +108,15 @@ export const doTreeIsVisible = <K>(
 		type: TREE_IS_VISIBLE,
 		listKey: payload.listKey,
 		visible: payload.visible,
+	});
+};
+
+export const doTreeIsVisibleConvert = <K>(
+	payload: Omit<ITreeIsVisibleConvertAction<K>, "type">
+) => {
+	store.dispatch({
+		type: TREE_IS_VISIBLE_CONVERT,
+		listKey: payload.listKey,
 	});
 };
 

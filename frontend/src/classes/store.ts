@@ -25,4 +25,8 @@ const configureStore = () => {
 	return store;
 };
 
-export default configureStore();
+const store = configureStore();
+
+export type IStore = ReturnType<typeof store.getState>;
+
+export default store;

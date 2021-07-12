@@ -18,13 +18,12 @@ import loading from "./../../assets/gif/loading.gif";
 import IMainResultReport from "../../interfaces/IMainResultReport";
 import ETreeList from "../../enums/ETreeList";
 
-import IStore from "../../interfaces/IStore";
 import { doTreeOnLoadEvent } from "../../classes/actions/ITreeAction";
 
 import treeListCreator from "../Tree/TreeList";
 import { TreeListEntityFilters } from "../../classes/reducers/treeReducer";
 import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
-import store from "../../classes/store";
+import store, { IStore } from "../../classes/store";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;

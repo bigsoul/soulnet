@@ -32,14 +32,17 @@ const Form = styled.form`
 
 const LogoStyled = styled(Logo)`
 	margin-bottom: 15px;
+	text-align: center;
 `;
 
 const EditStyled10 = styled(EditField)`
 	margin-bottom: 10px;
+	text-align: center;
 `;
 
 const EditStyled15 = styled(EditField)`
 	margin-bottom: 15px;
+	text-align: center;
 `;
 
 const CheckboxStyled = styled(CheckboxField)`

@@ -70,6 +70,12 @@ const treeReducer = <K extends string, T, F>(
 			newState[action.listKey].isVisible = action.visible;
 			return newState;
 		}
+		case "TREE/IS-VISIBLE-CONVERT": {
+			const newState = { ...curState };
+			newState[action.listKey].isVisible = !newState[action.listKey]
+				.isVisible;
+			return newState;
+		}
 		case "TREE/ON-SCROLL": {
 			const newState = { ...curState };
 			newState[action.listKey].scrollOffset = action.scrollOffset;

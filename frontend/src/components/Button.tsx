@@ -100,11 +100,14 @@ class Button extends Component<IButtonProps> {
 	render = () => {
 		let TargetButton = ButtonDefault;
 		let TargetIcon: typeof IconDefault | typeof Icon = IconDefault;
+		let type = this.props.type;
 
 		if (this.props.template === "icon") {
 			TargetButton = ButtonIcon;
 			TargetIcon = Icon;
 		}
+
+		if (!type) type = "button";
 
 		const svgPath =
 			(this.props.selected
@@ -114,7 +117,7 @@ class Button extends Component<IButtonProps> {
 		return (
 			<TargetButton
 				className={this.props.className}
-				type={this.props.type}
+				type={type}
 				onClick={this.to}
 				selected={this.props.selected || false}
 				disabled={this.props.disabled}

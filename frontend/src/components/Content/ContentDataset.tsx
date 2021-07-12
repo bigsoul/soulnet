@@ -22,9 +22,8 @@ import IDataset from "../../interfaces/IDataset";
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
 
-import IStore from "../../interfaces/IStore";
 import { doTreeOnLoadEvent } from "../../classes/actions/ITreeAction";
-import store from "../../classes/store";
+import store, { IStore } from "../../classes/store";
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;

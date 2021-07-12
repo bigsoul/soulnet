@@ -4,7 +4,7 @@ import Content from "./../Content";
 import SignInForm from "../Forms/SignInForm";
 import { ISignInFormProps } from "./../Forms/SignInForm";
 import { connect } from "react-redux";
-import IStore from "../../interfaces/IStore";
+import { IStore } from "../../classes/store";
 import {
 	IUserSignInAction,
 	TUserAction,

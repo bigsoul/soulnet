@@ -3,7 +3,7 @@ import styled from "styled-components";
 import React from "react";
 import SignUnForm, { ISignUpFormProps } from "../Forms/SignUpForm";
 import IUser from "../../interfaces/IUser";
-import IStore from "../../interfaces/IStore";
+import { IStore } from "../../classes/store";
 import { Dispatch } from "redux";
 import {
 	IUserSignUpAction,

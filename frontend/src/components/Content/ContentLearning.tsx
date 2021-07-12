@@ -22,14 +22,13 @@ import treeFolder from "./../../assets/svg/tree-folder.svg";
 import treeDelete from "./../../assets/svg/tree-delete.svg";
 import loading from "./../../assets/gif/loading.gif";
 
-import IStore from "../../interfaces/IStore";
 import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
 
 import LearningForm from "../Forms/LearningForm";
-import store from "../../classes/store";
+import store, { IStore } from "../../classes/store";
 
 import {
 	doTreeIsVisible,

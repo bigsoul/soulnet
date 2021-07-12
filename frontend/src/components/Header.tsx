@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import IStore from "../interfaces/IStore";
+import { IStore } from "../classes/store";
 import Button from "./Button";
 import Logo from "./Logo";
 import Profile from "./Profile";
