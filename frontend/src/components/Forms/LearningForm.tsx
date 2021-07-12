@@ -89,9 +89,12 @@ const Form = formCreator<"LearningForm", ILearningFormData>("LearningForm", {
 	state: ELearningState.Config,
 });
 
-const DatasetList = treeListCreator<ETreeList, IDataset>(ETreeList.Dataset, {
-	controller: "/datasets",
-});
+const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
+	ETreeList.Dataset,
+	{
+		controller: "/datasets",
+	}
+);
 
 class LearningForm extends PureComponent<ILearningFormProps> {
 	render = () => {

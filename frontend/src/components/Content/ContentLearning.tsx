@@ -223,6 +223,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 								return (
 									<TreeItemStyled
 										level={1}
+										selected={props.dataItem.selected}
 										onClick={props.select}
 									>
 										<TreeColumn>

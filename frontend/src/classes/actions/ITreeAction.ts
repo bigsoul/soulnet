@@ -1,3 +1,4 @@
+import { IDataItem } from "../../components/Tree/TreeItem";
 import store from "../store";
 
 export const TREE_ON_LOAD = "TREE/ON-LOAD";
@@ -20,7 +21,7 @@ export interface ITreeOnLoadEventAction<K, F> {
 
 export interface ITreeOnLoadAction<K, T> {
 	type: typeof TREE_ON_LOAD;
-	list: T[];
+	list: (T & IDataItem)[];
 	listKey: K;
 	dataOffset: number;
 	dataLimit: number;

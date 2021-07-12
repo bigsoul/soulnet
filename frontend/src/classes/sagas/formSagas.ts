@@ -2,7 +2,6 @@ import { change, actionTypes, FormAction } from "redux-form";
 import { put, takeLatest } from "redux-saga/effects";
 
 function* workerInitialize(action: FormAction) {
-	console.log("workerTest: ", action);
 	if (action.meta.form === "signIn") {
 		const username = localStorage.getItem("username") || "";
 		const rememberMe = localStorage.getItem("rememberMe") || 0;

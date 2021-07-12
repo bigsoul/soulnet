@@ -25,10 +25,11 @@ export type TreeListReducer<T> = {
 	scrollOffset: number;
 	dataLimit: number;
 	dataOffset: number;
+	currentRows: string[];
 };
 
 export type TreeReducer<K extends string, T> = {
-	[key in K]: TreeListReducer<T>;
+	[key in K]: TreeListReducer<IDataItem & T>;
 };
 
 const treeList = {
@@ -38,6 +39,7 @@ const treeList = {
 	scrollOffset: 0,
 	dataOffset: 0,
 	dataLimit: 0,
+	currentRows: [],
 };
 
 const preloadedState: unknown = {
@@ -59,6 +61,9 @@ const treeReducer = <K extends string, T, F>(
 			newState[action.listKey].list = action.list;
 			newState[action.listKey].dataOffset = action.dataOffset;
 			newState[action.listKey].dataLimit = action.dataLimit;
+			newState[action.listKey].list.forEach((item) => {
+				item.selected = false;
+			});
 			return newState;
 		}
 		case "TREE/IS-LOADING": {
@@ -84,11 +89,10 @@ const treeReducer = <K extends string, T, F>(
 		}
 		case "TREE/ITEM-SELECT": {
 			const newState = { ...curState };
-			const list = newState[action.listKey].list;
-			for (let i = 0; i < treeList.list.length; i++) {
-				const item = list[i];
-				//if (item.id === action.id) item.
-			}
+			newState[action.listKey].list = [...newState[action.listKey].list];
+			newState[action.listKey].list.forEach((item) => {
+				item.selected = item.id === action.id;
+			});
 			return newState;
 		}
 		default:
