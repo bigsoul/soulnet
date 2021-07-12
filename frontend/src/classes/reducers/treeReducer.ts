@@ -1,3 +1,4 @@
+import { IDataItem } from "../../components/Tree/TreeItem";
 import IDataset from "../../interfaces/IDataset";
 import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 import IMainResultReport, {
@@ -79,6 +80,15 @@ const treeReducer = <K extends string, T, F>(
 		case "TREE/ON-SCROLL": {
 			const newState = { ...curState };
 			newState[action.listKey].scrollOffset = action.scrollOffset;
+			return newState;
+		}
+		case "TREE/ITEM-SELECT": {
+			const newState = { ...curState };
+			const list = newState[action.listKey].list;
+			for (let i = 0; i < treeList.list.length; i++) {
+				const item = list[i];
+				//if (item.id === action.id) item.
+			}
 			return newState;
 		}
 		default:

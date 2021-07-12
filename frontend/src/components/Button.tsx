@@ -98,6 +98,7 @@ class Button extends Component<IButtonProps> {
 		if (this.props.onClick) this.props.onClick();
 		if (this.props.path) history.push(this.props.path);
 		if (this.props.clearFocus) e.currentTarget.blur();
+		e.stopPropagation();
 	};
 
 	render = () => {

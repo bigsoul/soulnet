@@ -221,7 +221,10 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 						>
 							{(props: ITreeItemProps<ILearning>) => {
 								return (
-									<TreeItemStyled level={1}>
+									<TreeItemStyled
+										level={1}
+										onClick={props.select}
+									>
 										<TreeColumn>
 											<IconStyled path={entityLearning} />
 											{props.dataItem.name}
@@ -229,10 +232,14 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 										<TreeColumn align="right">
 											<Player />
 										</TreeColumn>
-
 										<ButtonStyled
 											template="icon"
 											svgPath={treeFolder}
+											onClick={() => {
+												console.log(
+													"click: treeFolder"
+												);
+											}}
 										/>
 									</TreeItemStyled>
 								);
@@ -275,6 +282,11 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 										<ButtonStyled
 											template="icon"
 											svgPath={treeDelete}
+											onClick={() => {
+												console.log(
+													"click: treeDelete"
+												);
+											}}
 										/>
 									</TreeItemStyled>
 								);

@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import {
+	doItemSelect,
 	doTreeOnLoadEvent,
 	doTreeOnScroll,
 } from "../../classes/actions/ITreeAction";
@@ -507,7 +508,14 @@ const treeListCreator = function <K extends string, T, F = {}>(
 							{
 								key: dataItem.id,
 								index: i,
+								selected: false,
 								dataItem: dataItem,
+								select: () => {
+									doItemSelect({
+										listKey: listKey,
+										id: dataItem.id,
+									});
+								},
 							}
 						);
 					}

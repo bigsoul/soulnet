@@ -16,8 +16,20 @@ const PlayerDiv = styled.div`
 const Player = () => {
 	return (
 		<PlayerDiv>
-			<Button template="icon" svgPath={playerPlay} />
-			<Button template="icon" svgPath={playerStop} />
+			<Button
+				template="icon"
+				svgPath={playerPlay}
+				onClick={() => {
+					console.log("click: playerPlay");
+				}}
+			/>
+			<Button
+				template="icon"
+				svgPath={playerStop}
+				onClick={() => {
+					console.log("click: playerStop");
+				}}
+			/>
 		</PlayerDiv>
 	);
 };

@@ -21,16 +21,23 @@ export type DataItem<T, U = IDataItem> = {
 
 export interface ITreeItemProps<T> {
 	index: number;
+	selected: boolean;
 	dataItem: DataItem<T>;
+	select: () => void;
 }
 
 interface ITreeItemPrivateProps {
 	className?: string;
 	children?: React.ReactNode;
+	onClick?: () => void;
 }
 
 const TreeItem = (props: ITreeItemPrivateProps) => {
-	return <Item className={props.className}>{props.children}</Item>;
+	return (
+		<Item className={props.className} onClick={props.onClick}>
+			{props.children}
+		</Item>
+	);
 };
 
 export default TreeItem;
