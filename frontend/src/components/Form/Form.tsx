@@ -1,4 +1,4 @@
-import { createElement, PureComponent } from "react";
+import { PureComponent } from "react";
 import { connect } from "react-redux";
 import { doInitialize, doChange } from "../../classes/actions/IFormAction";
 import { IStore } from "../../classes/store";
@@ -27,7 +27,7 @@ const formCreator = function <K extends string, T>(
 	const mapStateToProps = (state: IStore): IFormState<T> => {
 		const { forms } = state;
 		const form = forms[formKey] as T;
-		return { values: { ...form } };
+		return { values: form };
 	};
 
 	const connector = connect(mapStateToProps);

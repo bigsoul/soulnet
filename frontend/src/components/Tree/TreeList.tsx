@@ -100,6 +100,7 @@ const treeListCreator = function <K extends string, T, F = {}>(
 		dataItemHeight: number;
 		preLoaderUpMaxHeight: number;
 		preLoaderDownMaxHeight: number;
+		currentRow?: string;
 	};
 
 	type TreeListReduxProps = {
@@ -108,6 +109,7 @@ const treeListCreator = function <K extends string, T, F = {}>(
 		dataOffset: number;
 		dataLimit: number;
 		scrollOffset: number;
+		currentRows: string[];
 	};
 
 	type TreeListState = {
@@ -207,6 +209,7 @@ const treeListCreator = function <K extends string, T, F = {}>(
 			dataOffset: list.dataOffset,
 			dataLimit: 50,
 			scrollOffset: list.scrollOffset,
+			currentRows: list.currentRows,
 		};
 
 		return props;
@@ -398,6 +401,16 @@ const treeListCreator = function <K extends string, T, F = {}>(
 						}
 				}
 
+				// setup current row
+				if (
+					props.currentRow &&
+					!props.currentRows.some((row) => row === props.currentRow)
+				)
+					doTreeSetCurrentRow({
+						listKey: listKey,
+						id: props.currentRow,
+					});
+
 				// applay to DOM
 
 				if (mutationState.listBoxRef.current)
@@ -485,6 +498,9 @@ const treeListCreator = function <K extends string, T, F = {}>(
 			render = () => {
 				const { props } = this;
 				const { mutationState } = this.state;
+
+				/*if (listKey === ETreeList.LearningRunning)
+					console.log(props.currentRow);*/
 
 				const newItems: FunctionComponentElement<
 					ITreeItemProps<T>

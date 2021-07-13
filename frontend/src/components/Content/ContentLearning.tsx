@@ -34,6 +34,8 @@ import {
 	doTreeIsVisible,
 	doTreeOnLoadEvent,
 } from "../../classes/actions/ITreeAction";
+import { history } from "../../classes/reducers/routerReducer";
+import { match } from "react-router";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -111,6 +113,7 @@ interface IContentLearningProps {
 	runningIsLoading: boolean;
 	storingIsVisible: boolean;
 	storingIsLoading: boolean;
+	match?: match<{ id: string }>;
 }
 
 const mapStateToProps = (state: IStore): IContentLearningProps => {
@@ -178,8 +181,9 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 			runningIsLoading,
 			storingIsVisible,
 			storingIsLoading,
+			match,
 		} = this.props;
-
+		//console.log("match: ", match);
 		const result = (
 			<Content>
 				<Tree>
@@ -218,13 +222,19 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
+							currentRow={match?.params.id}
 						>
 							{(props: ITreeItemProps<ILearning>) => {
 								return (
 									<TreeItemStyled
 										level={1}
 										selected={props.dataItem.selected}
-										onClick={props.select}
+										onClick={() => {
+											//props.select();
+											history.push(
+												`/learning/${props.dataItem.id}`
+											);
+										}}
 									>
 										<TreeColumn>
 											<IconStyled path={entityLearning} />

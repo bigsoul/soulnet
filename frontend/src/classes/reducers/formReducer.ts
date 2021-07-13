@@ -16,6 +16,7 @@ const formsReducer = <K extends string, T>(
 		}
 		case "FORM/CHANGE": {
 			const newState = { ...curState };
+			newState[action.formKey] = { ...newState[action.formKey] };
 			newState[action.formKey][action.field] = action.value;
 			return newState;
 		}
