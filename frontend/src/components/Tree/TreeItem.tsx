@@ -7,7 +7,7 @@ const Item = styled.div<{ selected?: boolean }>`
 	align-items: center;
 	background-color: ${(p) => (p.selected ? "#5C5C5C" : "#000000")};
 	&:hover {
-		background-color: #1d1c1c;
+		background-color: ${(p) => (p.selected ? "#5C5C5C" : "#1d1c1c")};
 	}
 `;
 

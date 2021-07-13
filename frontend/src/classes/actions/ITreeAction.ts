@@ -7,6 +7,8 @@ export const TREE_IS_LOADING = "TREE/IS-LOADING";
 export const TREE_IS_VISIBLE = "TREE/IS-VISIBLE";
 export const TREE_IS_VISIBLE_CONVERT = "TREE/IS-VISIBLE-CONVERT";
 export const TREE_ITEM_SELECT = "TREE/ITEM-SELECT";
+export const TREE_SET_CURRENT_ROW = "TREE/SET-CURRENT-ROW";
+export const TREE_CLEAR_CURRENT_ROWS = "TREE/CLEAR-CURRENT-ROWS";
 
 export const TREE_ON_LOAD_EVENT = "TREE/ON-LOAD-EVENT";
 
@@ -56,6 +58,17 @@ export interface ITreeItemSelectAction<K> {
 	id: string;
 }
 
+export interface ITreeSetCurrentRowAction<K> {
+	type: typeof TREE_SET_CURRENT_ROW;
+	listKey: K;
+	id: string;
+}
+
+export interface ITreeClearCurrentRowsAction<K> {
+	type: typeof TREE_CLEAR_CURRENT_ROWS;
+	listKey: K;
+}
+
 export type TTreeAction<K, T, F> =
 	| ITreeOnLoadEventAction<K, F>
 	| ITreeOnLoadAction<K, T>
@@ -63,7 +76,9 @@ export type TTreeAction<K, T, F> =
 	| ITreeIsLoadingAction<K>
 	| ITreeIsVisibleAction<K>
 	| ITreeIsVisibleConvertAction<K>
-	| ITreeItemSelectAction<K>;
+	| ITreeItemSelectAction<K>
+	| ITreeSetCurrentRowAction<K>
+	| ITreeClearCurrentRowsAction<K>;
 
 export const doTreeOnLoadEvent = <K, F>(
 	payload: Omit<ITreeOnLoadEventAction<K, F>, "type">
@@ -129,13 +144,32 @@ export const doTreeIsVisibleConvert = <K>(
 	});
 };
 
-export const doItemSelect = <K>(
+export const doTreeItemSelect = <K>(
 	payload: Omit<ITreeItemSelectAction<K>, "type">
 ) => {
 	store.dispatch({
 		type: TREE_ITEM_SELECT,
 		listKey: payload.listKey,
 		id: payload.id,
+	});
+};
+
+export const doTreeSetCurrentRow = <K>(
+	payload: Omit<ITreeSetCurrentRowAction<K>, "type">
+) => {
+	store.dispatch({
+		type: TREE_SET_CURRENT_ROW,
+		listKey: payload.listKey,
+		id: payload.id,
+	});
+};
+
+export const doTreeClearCurrentRows = <K>(
+	payload: Omit<ITreeClearCurrentRowsAction<K>, "type">
+) => {
+	store.dispatch({
+		type: TREE_CLEAR_CURRENT_ROWS,
+		listKey: payload.listKey,
 	});
 };
 

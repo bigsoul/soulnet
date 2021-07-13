@@ -39,12 +39,4 @@ function App() {
 	);
 }
 
-/*const activeElement = () => {
-	setInterval(() => {
-		console.log(document.activeElement);
-	}, 500);
-};
-
-activeElement();*/
-
 export default App;

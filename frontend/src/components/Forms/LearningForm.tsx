@@ -90,7 +90,7 @@ const Form = formCreator<"LearningForm", ILearningFormData>("LearningForm", {
 });
 
 const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
-	ETreeList.Dataset,
+	ETreeList.DatasetLearningSelect,
 	{
 		controller: "/datasets",
 	}
@@ -118,7 +118,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 							/>
 
 							<SelectStyled
-								listKey={ETreeList.Dataset}
+								listKey={ETreeList.DatasetLearningSelect}
 								name="dataset"
 								type="text"
 								placeholder="Select dataset"

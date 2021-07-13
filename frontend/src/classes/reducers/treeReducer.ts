@@ -44,6 +44,7 @@ const treeList = {
 
 const preloadedState: unknown = {
 	Dataset: { ...treeList },
+	DatasetLearningSelect: { ...treeList },
 	LearningRunning: { ...treeList },
 	LearningStoring: { ...treeList },
 	TestingRunning: { ...treeList },
@@ -58,11 +59,14 @@ const treeReducer = <K extends string, T, F>(
 	switch (action.type) {
 		case "TREE/ON-LOAD": {
 			const newState = { ...curState };
-			newState[action.listKey].list = action.list;
-			newState[action.listKey].dataOffset = action.dataOffset;
-			newState[action.listKey].dataLimit = action.dataLimit;
-			newState[action.listKey].list.forEach((item) => {
-				item.selected = false;
+			const treeList = newState[action.listKey];
+			treeList.list = action.list;
+			treeList.dataOffset = action.dataOffset;
+			treeList.dataLimit = action.dataLimit;
+			treeList.list.forEach((item) => {
+				item.selected = treeList.currentRows.some(
+					(row) => row === item.id
+				);
 			});
 			return newState;
 		}
@@ -92,6 +96,25 @@ const treeReducer = <K extends string, T, F>(
 			newState[action.listKey].list = [...newState[action.listKey].list];
 			newState[action.listKey].list.forEach((item) => {
 				item.selected = item.id === action.id;
+			});
+			return newState;
+		}
+		case "TREE/SET-CURRENT-ROW": {
+			const newState = { ...curState };
+			newState[action.listKey].list = [...newState[action.listKey].list];
+			newState[action.listKey].currentRows = [];
+			newState[action.listKey].currentRows.push(action.id);
+			newState[action.listKey].list.forEach((item) => {
+				item.selected = item.id === action.id;
+			});
+			return newState;
+		}
+		case "TREE/CLEAR-CURRENT-ROWS": {
+			const newState = { ...curState };
+			newState[action.listKey].list = [...newState[action.listKey].list];
+			newState[action.listKey].currentRows = [];
+			newState[action.listKey].list.forEach((item) => {
+				item.selected = false;
 			});
 			return newState;
 		}

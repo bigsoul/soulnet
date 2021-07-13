@@ -8,9 +8,9 @@ import {
 } from "react";
 
 import {
-	doItemSelect,
 	doTreeOnLoadEvent,
 	doTreeOnScroll,
+	doTreeSetCurrentRow,
 } from "../../classes/actions/ITreeAction";
 
 import { connect } from "react-redux";
@@ -511,7 +511,7 @@ const treeListCreator = function <K extends string, T, F = {}>(
 								index: i,
 								dataItem: { ...dataItem },
 								select: () => {
-									doItemSelect({
+									doTreeSetCurrentRow({
 										listKey: listKey,
 										id: dataItem.id,
 									});
