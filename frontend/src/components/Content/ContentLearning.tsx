@@ -31,6 +31,7 @@ import LearningForm from "../Forms/LearningForm";
 import store, { IStore } from "../../classes/store";
 
 import {
+	doTreeClearCurrentRows,
 	doTreeIsVisible,
 	doTreeOnLoadEvent,
 } from "../../classes/actions/ITreeAction";
@@ -230,6 +231,10 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 										level={1}
 										selected={props.dataItem.selected}
 										onClick={() => {
+											doTreeClearCurrentRows({
+												listKey:
+													ETreeList.LearningStoring,
+											});
 											history.push(
 												`/learning/${props.dataItem.id}`
 											);
@@ -288,6 +293,10 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 										level={1}
 										selected={props.dataItem.selected}
 										onClick={() => {
+											doTreeClearCurrentRows({
+												listKey:
+													ETreeList.LearningRunning,
+											});
 											history.push(
 												`/learning/${props.dataItem.id}`
 											);

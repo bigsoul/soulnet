@@ -104,6 +104,7 @@ const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
 	ETreeList.DatasetLearningSelect,
 	{
 		controller: "/datasets",
+		visible: false,
 	}
 );
 

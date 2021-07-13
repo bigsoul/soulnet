@@ -1,6 +1,8 @@
 import { IDataItem } from "../../components/Tree/TreeItem";
+import { ITreeListConfig } from "../../components/Tree/TreeList";
 import store from "../store";
 
+export const TREE_INITIALIZE = "TREE/INITIALIZE";
 export const TREE_ON_LOAD = "TREE/ON-LOAD";
 export const TREE_ON_SCROLL = "TREE/ON-SCROLL";
 export const TREE_IS_LOADING = "TREE/IS-LOADING";
@@ -11,6 +13,12 @@ export const TREE_SET_CURRENT_ROW = "TREE/SET-CURRENT-ROW";
 export const TREE_CLEAR_CURRENT_ROWS = "TREE/CLEAR-CURRENT-ROWS";
 
 export const TREE_ON_LOAD_EVENT = "TREE/ON-LOAD-EVENT";
+
+export interface ITreeInitializeAction<K> {
+	type: typeof TREE_INITIALIZE;
+	listKey: K;
+	config: ITreeListConfig;
+}
 
 export interface ITreeOnLoadEventAction<K, F> {
 	type: typeof TREE_ON_LOAD_EVENT;
@@ -78,7 +86,8 @@ export type TTreeAction<K, T, F> =
 	| ITreeIsVisibleConvertAction<K>
 	| ITreeItemSelectAction<K>
 	| ITreeSetCurrentRowAction<K>
-	| ITreeClearCurrentRowsAction<K>;
+	| ITreeClearCurrentRowsAction<K>
+	| ITreeInitializeAction<K>;
 
 export const doTreeOnLoadEvent = <K, F>(
 	payload: Omit<ITreeOnLoadEventAction<K, F>, "type">
@@ -170,6 +179,16 @@ export const doTreeClearCurrentRows = <K>(
 	store.dispatch({
 		type: TREE_CLEAR_CURRENT_ROWS,
 		listKey: payload.listKey,
+	});
+};
+
+export const doTreeInitialize = <K>(
+	payload: Omit<ITreeInitializeAction<K>, "type">
+) => {
+	store.dispatch({
+		type: TREE_INITIALIZE,
+		listKey: payload.listKey,
+		config: payload.config,
 	});
 };
 

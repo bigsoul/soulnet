@@ -5,7 +5,7 @@ import IMainResultReport, {
 	IMainResultReportFilter,
 } from "../../interfaces/IMainResultReport";
 import ITesting, { ITestingFilter } from "../../interfaces/ITesting";
-import TTreeAction, * as ACT from "../actions/ITreeAction";
+import TTreeAction from "../actions/ITreeAction";
 
 export type TreeListEntity =
 	| IDataset
@@ -57,6 +57,16 @@ const treeReducer = <K extends string, T, F>(
 	action: TTreeAction<K, T, F>
 ): TreeReducer<K, T> => {
 	switch (action.type) {
+		case "TREE/INITIALIZE": {
+			const newState = { ...curState };
+			const treeList = newState[action.listKey];
+			treeList.isVisible =
+				action.config.visible === undefined
+					? true
+					: action.config.visible;
+			console.log(treeList);
+			return newState;
+		}
 		case "TREE/ON-LOAD": {
 			const newState = { ...curState };
 			const treeList = newState[action.listKey];

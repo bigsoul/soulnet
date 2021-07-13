@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import {
-	doTreeClearCurrentRows,
+	doTreeInitialize,
 	doTreeOnLoadEvent,
 	doTreeOnScroll,
 	doTreeSetCurrentRow,
@@ -46,9 +46,10 @@ const ListBox = styled.div`
 	pointer-events: none;
 `*/
 
-type TreeListConfig = {
+export interface ITreeListConfig {
 	controller: string;
-};
+	visible?: boolean;
+}
 
 type MutationState<K, T, F> = {
 	listKey: K;
@@ -93,7 +94,7 @@ const calculateNewDataOffset = (
 
 const treeListCreator = function <K extends string, T, F = {}>(
 	listKey: K,
-	config: TreeListConfig
+	config: ITreeListConfig
 ) {
 	type TreeListProps = {
 		children: FunctionComponent<ITreeItemProps<T>>;
@@ -121,6 +122,11 @@ const treeListCreator = function <K extends string, T, F = {}>(
 		preLoaderDownHeight: number;
 		mutationState: MutationState<K, T, F>;
 	};
+
+	doTreeInitialize({
+		listKey: listKey,
+		config: config,
+	});
 
 	const eventIsLocked = (
 		eventKey: keyof EventTimers,
@@ -416,8 +422,6 @@ const treeListCreator = function <K extends string, T, F = {}>(
 						listKey: listKey,
 						id: props.currentRow,
 					});
-				} else if (props.currentRows.length && !inList) {
-					doTreeClearCurrentRows({ listKey: listKey });
 				}
 
 				// applay to DOM

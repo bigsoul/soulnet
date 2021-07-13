@@ -70,7 +70,7 @@ function Header(props: IHeaderProps) {
 						<ButtonStyled
 							path={dataset}
 							svgPath={entityDataset}
-							selected={pathname === dataset}
+							selected={pathname.startsWith(dataset)}
 						>
 							Dataset
 						</ButtonStyled>
@@ -79,20 +79,20 @@ function Header(props: IHeaderProps) {
 								props.learningId && "/" + props.learningId
 							}`}
 							svgPath={entityLearning}
-							selected={pathname === learning}
+							selected={pathname.startsWith(learning)}
 						>
 							Learning
 						</ButtonStyled>
 						<ButtonStyled
 							path={testing}
 							svgPath={entityTesting}
-							selected={pathname === testing}
+							selected={pathname.startsWith(testing)}
 						>
 							Testing
 						</ButtonStyled>
 						<ButtonStyled
 							path={results}
-							selected={pathname === results}
+							selected={pathname.startsWith(results)}
 						>
 							Results
 						</ButtonStyled>
