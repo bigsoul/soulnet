@@ -9,6 +9,7 @@ import Profile from "./Profile";
 import entityDataset from "./../assets/svg/entity-dataset.svg";
 import entityLearning from "./../assets/svg/entity-learning.svg";
 import entityTesting from "./../assets/svg/entity-testing.svg";
+import ETreeList from "../enums/ETreeList";
 
 const HeaderDiv = styled.div`
 	width: calc(100% - 2px);
@@ -48,6 +49,7 @@ const ButtonStyled = styled(Button)`
 interface IHeaderProps {
 	isAuth: boolean;
 	pathname: string;
+	learningId: string;
 }
 
 function Header(props: IHeaderProps) {
@@ -73,7 +75,9 @@ function Header(props: IHeaderProps) {
 							Dataset
 						</ButtonStyled>
 						<ButtonStyled
-							path={learning}
+							path={`${learning}${
+								props.learningId && "/" + props.learningId
+							}`}
 							svgPath={entityLearning}
 							selected={pathname === learning}
 						>
@@ -103,10 +107,23 @@ function Header(props: IHeaderProps) {
 }
 
 const mapStateToProps = (state: IStore): IHeaderProps => {
-	const { user } = state;
+	const { user, tree } = state;
+
+	const lerningTreeRunning = tree[ETreeList.LearningRunning];
+	const lerningTreeStoring = tree[ETreeList.LearningStoring];
+
+	let learningId = "";
+
+	if (lerningTreeRunning.currentRows.length) {
+		learningId = lerningTreeRunning.currentRows[0];
+	} else if (lerningTreeStoring.currentRows.length) {
+		learningId = lerningTreeStoring.currentRows[0];
+	}
+
 	return {
 		isAuth: user.isAuth,
 		pathname: state.router.location.pathname,
+		learningId: learningId,
 	};
 };
 

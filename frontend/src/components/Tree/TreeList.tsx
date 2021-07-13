@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import {
+	doTreeClearCurrentRows,
 	doTreeOnLoadEvent,
 	doTreeOnScroll,
 	doTreeSetCurrentRow,
@@ -402,14 +403,22 @@ const treeListCreator = function <K extends string, T, F = {}>(
 				}
 
 				// setup current row
-				if (
-					props.currentRow &&
-					!props.currentRows.some((row) => row === props.currentRow)
-				)
+				const inCurrent = props.currentRows.find(
+					(row) => row === props.currentRow
+				);
+
+				const inList = !!props.dataList.filter(
+					(item) => item.id === props.currentRow
+				).length;
+
+				if (props.currentRow && !inCurrent && inList) {
 					doTreeSetCurrentRow({
 						listKey: listKey,
 						id: props.currentRow,
 					});
+				} else if (props.currentRows.length && !inList) {
+					doTreeClearCurrentRows({ listKey: listKey });
+				}
 
 				// applay to DOM
 

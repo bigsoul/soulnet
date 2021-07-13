@@ -5,13 +5,23 @@ import ELearningState from "../../enums/ELearningState";
 import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
 import Edit from "../Edit";
-import formCreator from "../Form/Form";
+import formCreator, { IFormDispatch, IFormState } from "../Form/Form";
 import Icon from "../Icon";
 import Select from "../Select";
 import TreeColumn from "../Tree/TreeColumn";
+import TreeHeader from "../Tree/TreeHeader";
 import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
 import treeListCreator from "../Tree/TreeList";
 import entityDataset from "./../../assets/svg/entity-dataset.svg";
+import treeTree from "./../../assets/svg/tree-tree.svg";
+import treeRefresh from "./../../assets/svg/tree-refresh.svg";
+import treeCancel from "./../../assets/svg/tree-cancel.svg";
+import Button from "./../Button";
+import { history } from "../../classes/reducers/routerReducer";
+
+const ButtonStyled = styled(Button)`
+	margin-right: 5px;
+`;
 
 const EditStyled10 = styled(Edit)`
 	margin-bottom: 10px;
@@ -69,7 +79,7 @@ const TreeItemStyled = styled(TreeItem)<{ level: number }>`
 `;
 
 interface ILearningFormProps {
-	datasetSelectVisible?: boolean;
+	entityId?: string;
 }
 
 interface ILearningFormData {
@@ -98,100 +108,115 @@ const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
 );
 
 class LearningForm extends PureComponent<ILearningFormProps> {
-	render = () => {
-		return (
-			<Form
-				render={(props) => {
-					const { values, change } = props;
-					return (
-						<FormStyled
-							onSubmit={() => {
-								console.log("submit");
-							}}
-						>
-							<NameStyled
-								name="name"
-								type="text"
-								placeholder="Learning name"
-								autoComplete="off"
-								value={values.name}
-								onChange={(value) => change("name", value)}
-							/>
+	formBodyRender = (
+		props: IFormState<ILearningFormData> & IFormDispatch<ILearningFormData>
+	) => {
+		const { values, change } = props;
 
-							<SelectStyled
-								listKey={ETreeList.DatasetLearningSelect}
-								name="dataset"
-								type="text"
-								placeholder="Select dataset"
-								autoComplete={"off"}
-								value={values.dataset}
-								onChange={(value) => change("dataset", value)}
-							>
-								<TreeListContainer>
-									<DatasetList
-										filter={{}}
-										dataItemHeight={30}
-										preLoaderUpMaxHeight={150}
-										preLoaderDownMaxHeight={150}
-									>
-										{(props: ITreeItemProps<IDataset>) => {
-											return (
-												<TreeItemStyled
-													level={1}
-													onClick={() => {
-														change(
-															"dataset",
-															props.dataItem.name
-														);
-														change(
-															"datasetId",
-															props.dataItem.id
-														);
-														doTreeIsVisibleConvert({
-															listKey:
-																ETreeList.DatasetLearningSelect,
-														});
-													}}
-												>
-													<TreeColumn>
-														<IconStyled
-															path={entityDataset}
-														/>
-														{props.dataItem.name}
-													</TreeColumn>
-												</TreeItemStyled>
-											);
-										}}
-									</DatasetList>
-								</TreeListContainer>
-							</SelectStyled>
-							<EditStyled10
-								name="inputNeurons"
-								type="number"
-								placeholder="input neurons"
-								autoComplete="off"
-								value={values.inputNeurons}
-								onChange={(value) =>
-									change("inputNeurons", value)
-								}
-							/>
-							<EditStyled10
-								name="deepLayers"
-								type="number"
-								placeholder="deep layers"
-								autoComplete="off"
-								value={values.deepLayers}
-								onChange={(value) =>
-									change("deepLayers", value)
-								}
-							/>
-							<label>
-								{"state: " + props.values.state.toString()}
-							</label>
-						</FormStyled>
-					);
+		return (
+			<FormStyled
+				onSubmit={() => {
+					console.log("submit");
 				}}
-			/>
+			>
+				<NameStyled
+					name="name"
+					type="text"
+					placeholder="Learning name"
+					autoComplete="off"
+					value={values.name}
+					onChange={(value) => change("name", value)}
+				/>
+
+				<SelectStyled
+					listKey={ETreeList.DatasetLearningSelect}
+					name="dataset"
+					type="text"
+					placeholder="Select dataset"
+					autoComplete={"off"}
+					value={values.dataset}
+					onChange={(value) => change("dataset", value)}
+				>
+					<TreeListContainer>
+						<DatasetList
+							filter={{}}
+							dataItemHeight={30}
+							preLoaderUpMaxHeight={150}
+							preLoaderDownMaxHeight={150}
+						>
+							{(props: ITreeItemProps<IDataset>) => {
+								return (
+									<TreeItemStyled
+										level={1}
+										onClick={() => {
+											change(
+												"dataset",
+												props.dataItem.name
+											);
+											change(
+												"datasetId",
+												props.dataItem.id
+											);
+											doTreeIsVisibleConvert({
+												listKey:
+													ETreeList.DatasetLearningSelect,
+											});
+										}}
+									>
+										<TreeColumn>
+											<IconStyled path={entityDataset} />
+											{props.dataItem.name}
+										</TreeColumn>
+									</TreeItemStyled>
+								);
+							}}
+						</DatasetList>
+					</TreeListContainer>
+				</SelectStyled>
+				<EditStyled10
+					name="inputNeurons"
+					type="number"
+					placeholder="input neurons"
+					autoComplete="off"
+					value={values.inputNeurons}
+					onChange={(value) => change("inputNeurons", value)}
+				/>
+				<EditStyled10
+					name="deepLayers"
+					type="number"
+					placeholder="deep layers"
+					autoComplete="off"
+					value={values.deepLayers}
+					onChange={(value) => change("deepLayers", value)}
+				/>
+				<label>{"state: " + props.values.state.toString()}</label>
+			</FormStyled>
+		);
+	};
+
+	render = () => {
+		if (!this.props.entityId) return null;
+		return (
+			<>
+				<TreeHeader svgPath={treeTree}>
+					<TreeColumn>Learning</TreeColumn>
+					<TreeColumn align="right">
+						<ButtonStyled
+							template="icon"
+							svgPath={treeRefresh}
+							onClick={undefined}
+						/>
+						<ButtonStyled
+							template="icon"
+							svgPath={treeCancel}
+							onClick={() => {
+								history.push("/learning");
+							}}
+						/>
+					</TreeColumn>
+				</TreeHeader>
+				<Form render={this.formBodyRender} />
+			</>
 		);
 	};
 }

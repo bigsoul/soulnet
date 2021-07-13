@@ -230,7 +230,6 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 										level={1}
 										selected={props.dataItem.selected}
 										onClick={() => {
-											//props.select();
 											history.push(
 												`/learning/${props.dataItem.id}`
 											);
@@ -281,10 +280,19 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
+							currentRow={match?.params.id}
 						>
 							{(props: ITreeItemProps<ILearning>) => {
 								return (
-									<TreeItemStyled level={1}>
+									<TreeItemStyled
+										level={1}
+										selected={props.dataItem.selected}
+										onClick={() => {
+											history.push(
+												`/learning/${props.dataItem.id}`
+											);
+										}}
+									>
 										<TreeColumn>
 											<IconStyled path={entityLearning} />
 											{props.dataItem.name}
@@ -306,17 +314,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 					</StoringContainer>
 				</Tree>
 				<ItemContainer>
-					<TreeHeader svgPath={treeTree}>
-						<TreeColumn>Learning</TreeColumn>
-						<TreeColumn align="right">
-							<ButtonStyled
-								template="icon"
-								svgPath={treeRefresh}
-								onClick={this.hendlerTreeRefresh}
-							/>
-						</TreeColumn>
-					</TreeHeader>
-					<LearningForm />
+					<LearningForm entityId={this.props.match?.params.id} />
 				</ItemContainer>
 			</Content>
 		);
