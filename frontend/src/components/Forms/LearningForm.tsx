@@ -1,5 +1,6 @@
 import { PureComponent } from "react";
 import styled from "styled-components";
+import { doTreeIsVisibleConvert } from "../../classes/actions/ITreeAction";
 import ELearningState from "../../enums/ELearningState";
 import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
@@ -135,7 +136,23 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 									>
 										{(props: ITreeItemProps<IDataset>) => {
 											return (
-												<TreeItemStyled level={1}>
+												<TreeItemStyled
+													level={1}
+													onClick={() => {
+														change(
+															"dataset",
+															props.dataItem.name
+														);
+														change(
+															"datasetId",
+															props.dataItem.id
+														);
+														doTreeIsVisibleConvert({
+															listKey:
+																ETreeList.DatasetLearningSelect,
+														});
+													}}
+												>
 													<TreeColumn>
 														<IconStyled
 															path={entityDataset}

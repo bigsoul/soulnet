@@ -6,6 +6,7 @@ const Item = styled.div<{ selected?: boolean }>`
 	display: flex;
 	align-items: center;
 	background-color: ${(p) => (p.selected ? "#5C5C5C" : "#000000")};
+	cursor: pointer;
 	&:hover {
 		background-color: ${(p) => (p.selected ? "#5C5C5C" : "#1d1c1c")};
 	}
