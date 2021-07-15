@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +12,8 @@ using Microsoft.Extensions.Configuration;
 namespace Soulnet.Data.Repositories 
 {
     public class LearningFilter {
-        public bool IsArchive { get; set; }
+        public Guid? Id { get; set; }
+        public bool? IsArchive { get; set; }
     }
 
     public class LearningRepository : EntityBaseRepository<Learning>
@@ -38,15 +41,22 @@ namespace Soulnet.Data.Repositories
                                 public.""Learning"".""IterationCurrent"",
                                 public.""Learning"".""InputNeuronsCount"",
                                 public.""Learning"".""DeepLayersCount"",
-                                public.""Learning"".""DatasetId""
-                              FROM public.""Learning"" 
-                              WHERE ""IsArchive"" = @IsArchive 
+                                public.""Learning"".""DatasetId"",
+                                public.""Dataset"".""Name"" AS ""DatasetName""
+                              FROM 
+                                public.""Learning""
+                                LEFT OUTER JOIN public.""Dataset"" ON (public.""Learning"".""DatasetId"" = public.""Dataset"".""Id"")
+                              WHERE 
+                                CASE WHEN @IsArchive IS NULL THEN true ELSE ""IsArchive"" = @IsArchive END
+                              AND
+                                CASE WHEN @Id IS NULL THEN true ELSE ""Learning"".""Id"" = @Id END
                               ORDER BY ""Name"" ASC LIMIT @Limit OFFSET @Offset;"; 
 
                 result = db.Query<Learning>(query, new {
                     Offset = dataOffset, 
                     Limit = dataLimit,
-                    IsArchive = filter.IsArchive
+                    IsArchive = filter.IsArchive,
+                    Id = filter.Id
                 });
 
                 if (result.Count() == dataLimit) {
@@ -63,7 +73,8 @@ namespace Soulnet.Data.Repositories
                     result = db.Query<Learning>(query, new {
                         Offset = dataOffsetMax - dataLimit, 
                         Limit = dataLimit,
-                        IsArchive = filter.IsArchive
+                        IsArchive = filter.IsArchive,
+                        Id = filter.Id
                     });
 
                     return new Section<Learning> {
@@ -76,7 +87,8 @@ namespace Soulnet.Data.Repositories
                 result = db.Query<Learning>(query, new {
                     Offset = 0, 
                     Limit = dataLimit,
-                    IsArchive = filter.IsArchive
+                    IsArchive = filter.IsArchive,
+                    Id = filter.Id
                 });
             }
 

@@ -1,8 +1,9 @@
+import { IDataItem } from "../../components/Tree/TreeItem";
 import TFormAction from "../actions/IFormAction";
 
 export type FormReducer<T> = {
 	initialValues: T;
-	values: T;
+	values: T & IDataItem;
 	isLoading: boolean;
 	isLoaded: boolean;
 };
@@ -13,7 +14,7 @@ type FormsReducer<K extends string, T> = {
 
 const formsReducer = <K extends string, T, F>(
 	curState: FormsReducer<K, T> = ({} as unknown) as FormsReducer<K, T>,
-	action: TFormAction<K, T, F>
+	action: TFormAction<K, T & IDataItem, F>
 ): FormsReducer<K, T> => {
 	switch (action.type) {
 		case "FORM/INITIALIZE": {
@@ -21,8 +22,8 @@ const formsReducer = <K extends string, T, F>(
 			newState[action.formKey] = {
 				initialValues: action.values,
 				values: action.values,
-				isLoading: false,
-				isLoaded: false,
+				isLoading: !!action.loading,
+				isLoaded: !!action.loaded,
 			};
 			return newState;
 		}
@@ -33,6 +34,24 @@ const formsReducer = <K extends string, T, F>(
 				...newState[action.formKey].values,
 				[action.field]: action.value,
 			};
+			return newState;
+		}
+		case "FORM/ON-LOAD": {
+			const newState = { ...curState };
+			newState[action.formKey] = { ...newState[action.formKey] };
+			newState[action.formKey].values = action.values;
+			return newState;
+		}
+		case "FORM/IS-LOADING": {
+			const newState = { ...curState };
+			newState[action.formKey] = { ...newState[action.formKey] };
+			newState[action.formKey].isLoading = action.loading;
+			return newState;
+		}
+		case "FORM/IS-LOADED": {
+			const newState = { ...curState };
+			newState[action.formKey] = { ...newState[action.formKey] };
+			newState[action.formKey].isLoaded = action.loaded;
 			return newState;
 		}
 		default:

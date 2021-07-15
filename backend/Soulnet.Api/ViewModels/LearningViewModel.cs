@@ -12,5 +12,6 @@ namespace Soulnet.Api.ViewModels
         public int InputNeuronsCount { get; set; }
         public int DeepLayersCount { get; set; }
         public string DatasetId { get; set; }
+        public string DatasetName { get; set; }
     }
 }

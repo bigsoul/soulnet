@@ -19,8 +19,10 @@ import entityDataset from "./../../assets/svg/entity-dataset.svg";
 import treeTree from "./../../assets/svg/tree-tree.svg";
 import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeCancel from "./../../assets/svg/tree-cancel.svg";
+import loading from "./../../assets/gif/loading.gif";
 import Button from "./../Button";
 import { history } from "../../classes/reducers/routerReducer";
+import { doFormOnLoadEvent } from "../../classes/actions/IFormAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -81,6 +83,9 @@ const TreeItemStyled = styled(TreeItem)<{ level: number }>`
 	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
 `;
 
+const formKey = "LearningForm";
+const controller = "/learnings";
+
 interface ILearningFormProps {
 	entityId?: string;
 }
@@ -105,11 +110,12 @@ const LearningFormDataDefault = {
 	state: ELearningState.Config,
 };
 
-const Form = formCreator<"LearningForm", ILearningFormData>(
-	"LearningForm",
+const Form = formCreator<typeof formKey, ILearningFormData>(
+	formKey,
 	LearningFormDataDefault,
 	{
-		controller: "/learning",
+		controller: controller,
+		loading: true,
 	}
 );
 
@@ -126,10 +132,13 @@ type ChildrenProps = IFormState<ILearningFormData> &
 
 class LearningForm extends PureComponent<ILearningFormProps> {
 	renderHeader = (props: ChildrenProps) => {
+		const { isLoading } = props;
+
 		return (
 			<TreeHeader svgPath={treeTree}>
 				<TreeColumn>Learning</TreeColumn>
 				<TreeColumn align="right">
+					{isLoading && <IconStyled path={loading} />}
 					<ButtonStyled
 						template="icon"
 						svgPath={treeRefresh}
@@ -240,11 +249,12 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 	render = () => {
 		if (!this.props.entityId) return null;
 		return (
-			<Form>
+			<Form entityId={this.props.entityId}>
 				{(props: ChildrenProps) => {
 					return (
 						<>
 							{this.renderHeader(props)}
+							{/*!props.isLoading && this.renderBody(props)*/}
 							{this.renderBody(props)}
 						</>
 					);

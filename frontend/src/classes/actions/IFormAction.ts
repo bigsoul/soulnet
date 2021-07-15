@@ -4,6 +4,8 @@ import store from "../store";
 export const FORM_INITIALIZE = "FORM/INITIALIZE";
 export const FORM_ON_LOAD = "FORM/ON-LOAD";
 export const FORM_CHANGE = "FORM/CHANGE";
+export const FORM_IS_LOADING = "FORM/IS-LOADING";
+export const FORM_IS_LOADED = "FORM/IS-LOADED";
 
 export const FORM_ON_LOAD_EVENT = "FORM/ON-LOAD-EVENT";
 
@@ -11,6 +13,8 @@ export interface IFormInitializeAction<K, T> {
 	type: typeof FORM_INITIALIZE;
 	formKey: K;
 	values: T;
+	loading?: boolean;
+	loaded?: boolean;
 }
 
 export interface IFormChangeAction<K, T> {
@@ -29,15 +33,29 @@ export interface IFormOnLoadEventAction<K, F> {
 
 export interface IFormOnLoadAction<K, T> {
 	type: typeof FORM_ON_LOAD;
-	listKey: K;
-	values: (T & IDataItem)[];
+	formKey: K;
+	values: T & IDataItem;
+}
+
+export interface IFormIsLoadingAction<K> {
+	type: typeof FORM_IS_LOADING;
+	formKey: K;
+	loading: boolean;
+}
+
+export interface IFormIsLoadedAction<K> {
+	type: typeof FORM_IS_LOADED;
+	formKey: K;
+	loaded: boolean;
 }
 
 export type TFormAction<K, T, F> =
 	| IFormInitializeAction<K, T>
 	| IFormChangeAction<K, T>
 	| IFormOnLoadEventAction<K, F>
-	| IFormOnLoadAction<K, T>;
+	| IFormOnLoadAction<K, T>
+	| IFormIsLoadingAction<K>
+	| IFormIsLoadedAction<K>;
 
 export const doInitialize = <K, T>(
 	payload: Omit<IFormInitializeAction<K, T>, "type">
@@ -46,6 +64,8 @@ export const doInitialize = <K, T>(
 		type: FORM_INITIALIZE,
 		formKey: payload.formKey,
 		values: payload.values,
+		loading: payload.loading,
+		loaded: payload.loaded,
 	});
 };
 
@@ -76,8 +96,28 @@ export const doFormOnLoad = <K, T>(
 ) => {
 	store.dispatch<IFormOnLoadAction<K, T>>({
 		type: FORM_ON_LOAD,
-		listKey: payload.listKey,
+		formKey: payload.formKey,
 		values: payload.values,
+	});
+};
+
+export const doFormIsLoading = <K>(
+	payload: Omit<IFormIsLoadingAction<K>, "type">
+) => {
+	store.dispatch<IFormIsLoadingAction<K>>({
+		type: FORM_IS_LOADING,
+		formKey: payload.formKey,
+		loading: payload.loading,
+	});
+};
+
+export const doFormIsLoaded = <K>(
+	payload: Omit<IFormIsLoadedAction<K>, "type">
+) => {
+	store.dispatch<IFormIsLoadedAction<K>>({
+		type: FORM_IS_LOADED,
+		formKey: payload.formKey,
+		loaded: payload.loaded,
 	});
 };
 

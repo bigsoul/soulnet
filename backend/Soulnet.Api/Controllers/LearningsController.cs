@@ -1,3 +1,5 @@
+using System.Data;
+using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +46,8 @@ namespace Soulnet.Api.Controllers
                     IterationCurrent = item.IterationCurrent,
                     InputNeuronsCount = item.InputNeuronsCount,
                     DeepLayersCount = item.DeepLayersCount,
-                    DatasetId = item.DatasetId.ToString()
+                    DatasetId = item.DatasetId.ToString(),
+                    DatasetName = item.DatasetName
                 });  
             }
 
