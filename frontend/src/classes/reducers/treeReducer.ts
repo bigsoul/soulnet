@@ -1,4 +1,4 @@
-import { IDataItem } from "../../components/Tree/TreeItem";
+import { IDataItemUI } from "../../components/Tree/TreeItem";
 import IDataset from "../../interfaces/IDataset";
 import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 import IMainResultReport, {
@@ -29,7 +29,7 @@ export type TreeListReducer<T> = {
 };
 
 export type TreeReducer<K extends string, T> = {
-	[key in K]: TreeListReducer<IDataItem & T>;
+	[key in K]: TreeListReducer<IDataItemUI & T>;
 };
 
 const treeList = {
@@ -64,7 +64,6 @@ const treeReducer = <K extends string, T, F>(
 				action.config.visible === undefined
 					? true
 					: action.config.visible;
-			console.log(treeList);
 			return newState;
 		}
 		case "TREE/ON-LOAD": {

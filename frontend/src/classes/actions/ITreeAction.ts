@@ -1,4 +1,4 @@
-import { IDataItem } from "../../components/Tree/TreeItem";
+import { IDataItemUI } from "../../components/Tree/TreeItem";
 import { ITreeListConfig } from "../../components/Tree/TreeList";
 import store from "../store";
 
@@ -31,7 +31,7 @@ export interface ITreeOnLoadEventAction<K, F> {
 
 export interface ITreeOnLoadAction<K, T> {
 	type: typeof TREE_ON_LOAD;
-	list: (T & IDataItem)[];
+	list: (T & IDataItemUI)[];
 	listKey: K;
 	dataOffset: number;
 	dataLimit: number;

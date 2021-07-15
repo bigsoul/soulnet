@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 
 import { IStore } from "../../classes/store";
-import { IDataItem } from "./TreeItem";
+import { IDataItemUI } from "./TreeItem";
 import { ITreeItemProps } from "./TreeItem";
 
 const ListBox = styled.div`
@@ -106,7 +106,7 @@ const treeListCreator = function <K extends string, T, F = {}>(
 	};
 
 	type TreeListReduxProps = {
-		dataList: (T & IDataItem)[];
+		dataList: (T & IDataItemUI)[];
 		isLoading: boolean;
 		dataOffset: number;
 		dataLimit: number;
@@ -211,7 +211,7 @@ const treeListCreator = function <K extends string, T, F = {}>(
 		const list = tree[listKey];
 
 		const props: TreeListReduxProps = {
-			dataList: list.list as (T & IDataItem)[],
+			dataList: list.list as (T & IDataItemUI)[],
 			isLoading: list.isLoading,
 			dataOffset: list.dataOffset,
 			dataLimit: 50,

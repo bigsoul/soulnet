@@ -1,6 +1,9 @@
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { doTreeIsVisibleConvert } from "../../classes/actions/ITreeAction";
+import {
+	doTreeClearCurrentRows,
+	doTreeIsVisibleConvert,
+} from "../../classes/actions/ITreeAction";
 import ELearningState from "../../enums/ELearningState";
 import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
@@ -211,6 +214,12 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 							template="icon"
 							svgPath={treeCancel}
 							onClick={() => {
+								doTreeClearCurrentRows({
+									listKey: ETreeList.LearningRunning,
+								});
+								doTreeClearCurrentRows({
+									listKey: ETreeList.LearningStoring,
+								});
 								history.push("/learning");
 							}}
 						/>

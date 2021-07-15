@@ -15,12 +15,15 @@ const Item = styled.div<{ selected?: boolean }>`
 export interface IDataItem {
 	id: string;
 	version: string;
+}
+
+export interface IDataItemUI extends IDataItem {
 	selected: boolean;
 }
 
 export interface ITreeItemProps<T> {
 	index: number;
-	dataItem: T & IDataItem;
+	dataItem: T & IDataItemUI;
 	select: () => void;
 }
 
