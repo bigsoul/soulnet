@@ -14,6 +14,7 @@ export interface ILearning extends IDataItem {
 }
 
 export interface ILearningFilter {
+	id?: string;
 	isArchive?: boolean;
 }
 

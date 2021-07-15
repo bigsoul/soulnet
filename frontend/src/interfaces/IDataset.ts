@@ -5,6 +5,8 @@ export interface IDataset extends IDataItem {
 	isLoaded: boolean;
 }
 
-export interface IDatasetFilter {}
+export interface IDatasetFilter {
+	id?: string;
+}
 
 export default IDataset;

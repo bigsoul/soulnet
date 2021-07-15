@@ -92,7 +92,7 @@ export type TTreeAction<K, T, F> =
 export const doTreeOnLoadEvent = <K, F>(
 	payload: Omit<ITreeOnLoadEventAction<K, F>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeOnLoadEventAction<K, F>>({
 		type: TREE_ON_LOAD_EVENT,
 		listKey: payload.listKey,
 		dataOffset: payload.dataOffset,
@@ -105,7 +105,7 @@ export const doTreeOnLoadEvent = <K, F>(
 export const doTreeOnLoad = <K, T>(
 	payload: Omit<ITreeOnLoadAction<K, T>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeOnLoadAction<K, T>>({
 		type: TREE_ON_LOAD,
 		list: payload.list,
 		listKey: payload.listKey,
@@ -117,7 +117,7 @@ export const doTreeOnLoad = <K, T>(
 export const doTreeOnScroll = <K>(
 	payload: Omit<ITreeOnScrollAction<K>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeOnScrollAction<K>>({
 		type: TREE_ON_SCROLL,
 		listKey: payload.listKey,
 		scrollOffset: payload.scrollOffset,
@@ -127,7 +127,7 @@ export const doTreeOnScroll = <K>(
 export const doTreeIsLoading = <K>(
 	payload: Omit<ITreeIsLoadingAction<K>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeIsLoadingAction<K>>({
 		type: TREE_IS_LOADING,
 		listKey: payload.listKey,
 		loading: payload.loading,
@@ -137,7 +137,7 @@ export const doTreeIsLoading = <K>(
 export const doTreeIsVisible = <K>(
 	payload: Omit<ITreeIsVisibleAction<K>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeIsVisibleAction<K>>({
 		type: TREE_IS_VISIBLE,
 		listKey: payload.listKey,
 		visible: payload.visible,
@@ -147,7 +147,7 @@ export const doTreeIsVisible = <K>(
 export const doTreeIsVisibleConvert = <K>(
 	payload: Omit<ITreeIsVisibleConvertAction<K>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeIsVisibleConvertAction<K>>({
 		type: TREE_IS_VISIBLE_CONVERT,
 		listKey: payload.listKey,
 	});
@@ -156,7 +156,7 @@ export const doTreeIsVisibleConvert = <K>(
 export const doTreeItemSelect = <K>(
 	payload: Omit<ITreeItemSelectAction<K>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeItemSelectAction<K>>({
 		type: TREE_ITEM_SELECT,
 		listKey: payload.listKey,
 		id: payload.id,
@@ -166,7 +166,7 @@ export const doTreeItemSelect = <K>(
 export const doTreeSetCurrentRow = <K>(
 	payload: Omit<ITreeSetCurrentRowAction<K>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeSetCurrentRowAction<K>>({
 		type: TREE_SET_CURRENT_ROW,
 		listKey: payload.listKey,
 		id: payload.id,
@@ -176,7 +176,7 @@ export const doTreeSetCurrentRow = <K>(
 export const doTreeClearCurrentRows = <K>(
 	payload: Omit<ITreeClearCurrentRowsAction<K>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeClearCurrentRowsAction<K>>({
 		type: TREE_CLEAR_CURRENT_ROWS,
 		listKey: payload.listKey,
 	});
@@ -185,7 +185,7 @@ export const doTreeClearCurrentRows = <K>(
 export const doTreeInitialize = <K>(
 	payload: Omit<ITreeInitializeAction<K>, "type">
 ) => {
-	store.dispatch({
+	store.dispatch<ITreeInitializeAction<K>>({
 		type: TREE_INITIALIZE,
 		listKey: payload.listKey,
 		config: payload.config,

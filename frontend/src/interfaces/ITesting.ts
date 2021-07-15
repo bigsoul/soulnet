@@ -17,6 +17,7 @@ export interface ITesting extends IDataItem {
 }
 
 export interface ITestingFilter {
+	id?: string;
 	isArchive?: boolean;
 }
 

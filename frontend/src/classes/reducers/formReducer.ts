@@ -11,9 +11,9 @@ type FormsReducer<K extends string, T> = {
 	[key in K]: FormReducer<T>;
 };
 
-const formsReducer = <K extends string, T>(
+const formsReducer = <K extends string, T, F>(
 	curState: FormsReducer<K, T> = ({} as unknown) as FormsReducer<K, T>,
-	action: TFormAction<K, T>
+	action: TFormAction<K, T, F>
 ): FormsReducer<K, T> => {
 	switch (action.type) {
 		case "FORM/INITIALIZE": {
