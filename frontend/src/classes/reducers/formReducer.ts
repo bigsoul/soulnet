@@ -1,23 +1,38 @@
 import TFormAction from "../actions/IFormAction";
 
-type FormReducer<K extends string, T> = {
-	[key in K]: T;
+export type FormReducer<T> = {
+	initialValues: T;
+	values: T;
+	isLoading: boolean;
+	isLoaded: boolean;
+};
+
+type FormsReducer<K extends string, T> = {
+	[key in K]: FormReducer<T>;
 };
 
 const formsReducer = <K extends string, T>(
-	curState: FormReducer<K, T> = ({} as unknown) as FormReducer<K, T>,
+	curState: FormsReducer<K, T> = ({} as unknown) as FormsReducer<K, T>,
 	action: TFormAction<K, T>
-): FormReducer<K, T> => {
+): FormsReducer<K, T> => {
 	switch (action.type) {
 		case "FORM/INITIALIZE": {
 			const newState = { ...curState };
-			newState[action.formKey] = action.values;
+			newState[action.formKey] = {
+				initialValues: action.values,
+				values: action.values,
+				isLoading: false,
+				isLoaded: false,
+			};
 			return newState;
 		}
 		case "FORM/CHANGE": {
 			const newState = { ...curState };
 			newState[action.formKey] = { ...newState[action.formKey] };
-			newState[action.formKey][action.field] = action.value;
+			newState[action.formKey].values = {
+				...newState[action.formKey].values,
+				[action.field]: action.value,
+			};
 			return newState;
 		}
 		default:

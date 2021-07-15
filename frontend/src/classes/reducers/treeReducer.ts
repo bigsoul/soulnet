@@ -29,7 +29,7 @@ export type TreeListReducer<T> = {
 };
 
 export type TreeReducer<K extends string, T> = {
-	[key in K]: TreeListReducer<IDataItemUI & T>;
+	[key in K]: TreeListReducer<T & IDataItemUI>;
 };
 
 const treeList = {

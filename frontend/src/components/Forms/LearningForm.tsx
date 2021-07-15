@@ -13,7 +13,7 @@ import Icon from "../Icon";
 import Select from "../Select";
 import TreeColumn from "../Tree/TreeColumn";
 import TreeHeader from "../Tree/TreeHeader";
-import TreeItem, { ITreeItemProps } from "../Tree/TreeItem";
+import TreeItem, { IDataItem, ITreeItemProps } from "../Tree/TreeItem";
 import treeListCreator from "../Tree/TreeList";
 import entityDataset from "./../../assets/svg/entity-dataset.svg";
 import treeTree from "./../../assets/svg/tree-tree.svg";
@@ -85,7 +85,7 @@ interface ILearningFormProps {
 	entityId?: string;
 }
 
-interface ILearningFormData {
+interface ILearningFormData extends IDataItem {
 	name: string;
 	datasetId: string;
 	datasetName: string;
@@ -94,14 +94,24 @@ interface ILearningFormData {
 	state: ELearningState;
 }
 
-const Form = formCreator<"LearningForm", ILearningFormData>("LearningForm", {
+const LearningFormDataDefault = {
+	id: "",
+	version: "",
 	name: "",
 	datasetId: "",
 	datasetName: "",
 	inputNeuronsCount: 0,
 	deepLayersCount: 0,
 	state: ELearningState.Config,
-});
+};
+
+const Form = formCreator<"LearningForm", ILearningFormData>(
+	"LearningForm",
+	LearningFormDataDefault,
+	{
+		controller: "/learning",
+	}
+);
 
 const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
 	ETreeList.DatasetLearningSelect,
@@ -111,10 +121,39 @@ const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
 	}
 );
 
+type ChildrenProps = IFormState<ILearningFormData> &
+	IFormDispatch<ILearningFormData>;
+
 class LearningForm extends PureComponent<ILearningFormProps> {
-	formBodyRender = (
-		props: IFormState<ILearningFormData> & IFormDispatch<ILearningFormData>
-	) => {
+	renderHeader = (props: ChildrenProps) => {
+		return (
+			<TreeHeader svgPath={treeTree}>
+				<TreeColumn>Learning</TreeColumn>
+				<TreeColumn align="right">
+					<ButtonStyled
+						template="icon"
+						svgPath={treeRefresh}
+						onClick={undefined}
+					/>
+					<ButtonStyled
+						template="icon"
+						svgPath={treeCancel}
+						onClick={() => {
+							doTreeClearCurrentRows({
+								listKey: ETreeList.LearningRunning,
+							});
+							doTreeClearCurrentRows({
+								listKey: ETreeList.LearningStoring,
+							});
+							history.push("/learning");
+						}}
+					/>
+				</TreeColumn>
+			</TreeHeader>
+		);
+	};
+
+	renderBody = (props: ChildrenProps) => {
 		const { values, change } = props;
 
 		return (
@@ -201,32 +240,16 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 	render = () => {
 		if (!this.props.entityId) return null;
 		return (
-			<>
-				<TreeHeader svgPath={treeTree}>
-					<TreeColumn>Learning</TreeColumn>
-					<TreeColumn align="right">
-						<ButtonStyled
-							template="icon"
-							svgPath={treeRefresh}
-							onClick={undefined}
-						/>
-						<ButtonStyled
-							template="icon"
-							svgPath={treeCancel}
-							onClick={() => {
-								doTreeClearCurrentRows({
-									listKey: ETreeList.LearningRunning,
-								});
-								doTreeClearCurrentRows({
-									listKey: ETreeList.LearningStoring,
-								});
-								history.push("/learning");
-							}}
-						/>
-					</TreeColumn>
-				</TreeHeader>
-				<Form render={this.formBodyRender} />
-			</>
+			<Form>
+				{(props: ChildrenProps) => {
+					return (
+						<>
+							{this.renderHeader(props)}
+							{this.renderBody(props)}
+						</>
+					);
+				}}
+			</Form>
 		);
 	};
 }
