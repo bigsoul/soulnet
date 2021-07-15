@@ -10,6 +10,7 @@ export interface ILearning extends IDataItem {
 	inputNeuronsCount: number;
 	deepLayersCount: number;
 	datasetId: string;
+	datasetName: string;
 }
 
 export interface ILearningFilter {

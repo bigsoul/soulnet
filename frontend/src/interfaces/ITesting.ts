@@ -11,7 +11,9 @@ export interface ITesting extends IDataItem {
 	startDeposit: number;
 	endDeposit: number;
 	learningId: string;
+	learningName: string;
 	datasetId: string;
+	datasetName: string;
 }
 
 export interface ITestingFilter {

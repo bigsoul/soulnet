@@ -87,19 +87,19 @@ interface ILearningFormProps {
 
 interface ILearningFormData {
 	name: string;
-	dataset: string;
 	datasetId: string;
-	inputNeurons: number;
-	deepLayers: number;
+	datasetName: string;
+	inputNeuronsCount: number;
+	deepLayersCount: number;
 	state: ELearningState;
 }
 
 const Form = formCreator<"LearningForm", ILearningFormData>("LearningForm", {
 	name: "",
-	dataset: "",
 	datasetId: "",
-	inputNeurons: 0,
-	deepLayers: 0,
+	datasetName: "",
+	inputNeuronsCount: 0,
+	deepLayersCount: 0,
 	state: ELearningState.Config,
 });
 
@@ -138,8 +138,8 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					type="text"
 					placeholder="Select dataset"
 					autoComplete={"off"}
-					value={values.dataset}
-					onChange={(value) => change("dataset", value)}
+					value={values.datasetName}
+					onChange={(value) => change("datasetName", value)}
 				>
 					<TreeListContainer>
 						<DatasetList
@@ -154,7 +154,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 										level={1}
 										onClick={() => {
 											change(
-												"dataset",
+												"datasetName",
 												props.dataItem.name
 											);
 											change(
@@ -182,16 +182,16 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					type="number"
 					placeholder="input neurons"
 					autoComplete="off"
-					value={values.inputNeurons}
-					onChange={(value) => change("inputNeurons", value)}
+					value={values.inputNeuronsCount}
+					onChange={(value) => change("inputNeuronsCount", value)}
 				/>
 				<EditStyled10
 					name="deepLayers"
 					type="number"
 					placeholder="deep layers"
 					autoComplete="off"
-					value={values.deepLayers}
-					onChange={(value) => change("deepLayers", value)}
+					value={values.deepLayersCount}
+					onChange={(value) => change("deepLayersCount", value)}
 				/>
 				<label>{"state: " + props.values.state.toString()}</label>
 			</FormStyled>
