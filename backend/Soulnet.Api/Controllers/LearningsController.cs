@@ -32,7 +32,7 @@ namespace Soulnet.Api.Controllers
             var _filter = JsonConvert.DeserializeObject<LearningFilter>(filter);
 
             var section = learningRepository.ReadSection(dataOffset, dataLimit, _filter);
-
+            
             var result = new List<LearningViewModel>();
 
             foreach(var item in section.List) {
@@ -59,9 +59,28 @@ namespace Soulnet.Api.Controllers
         }
 
         [HttpPut]
-        public ActionResult<TreeResultViewModel<LearningViewModel>> Put(int dataOffset, int dataLimit, string filter)
+        public ActionResult<TreeResultViewModel<LearningViewModel>> Put(int dataOffset, int dataLimit, string filter, [FromBody]LearningViewModel model)
         {
-            return Ok();
+            learningRepository.Write(new Learning {
+                Id = new Guid(model.Id),
+                Version = model.Version,
+                Name = model.Name,
+                State = model.State,
+                IsArchive = model.IsArchive,
+                IterationCount = model.IterationCount,
+                IterationCurrent = model.IterationCurrent,
+                InputNeuronsCount = model.InputNeuronsCount,
+                DeepLayersCount = model.DeepLayersCount,
+                DatasetId = new Guid(model.DatasetId),
+                DatasetName = model.DatasetName,
+                Testing = new List<Testing>()
+            });
+
+            return Ok(new TreeResultViewModel<LearningViewModel> {
+                DataOffset = dataOffset,
+                DataLimit = dataLimit,
+                List = new List<LearningViewModel>() { model }
+            });
         }
     } 
 }

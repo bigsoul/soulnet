@@ -22,10 +22,13 @@ import treeCancel from "./../../assets/svg/tree-cancel.svg";
 import loading from "./../../assets/gif/loading.gif";
 import Button from "./../Button";
 import { history } from "../../classes/reducers/routerReducer";
-import { doFormOnLoadEvent } from "../../classes/actions/IFormAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
+`;
+
+const ButtonSave = styled(Button)`
+	margin-top: 10px;
 `;
 
 const EditStyled10 = styled(Edit)`
@@ -163,14 +166,10 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 	};
 
 	renderBody = (props: ChildrenProps) => {
-		const { values, change } = props;
+		const { values, change, submit } = props;
 
 		return (
-			<FormStyled
-				onSubmit={() => {
-					console.log("submit");
-				}}
-			>
+			<FormStyled onSubmit={submit}>
 				<NameStyled
 					name="name"
 					type="text"
@@ -241,7 +240,8 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					value={values.deepLayersCount}
 					onChange={(value) => change("deepLayersCount", value)}
 				/>
-				<label>{"state: " + props.values.state.toString()}</label>
+				<label>{"state: " + ELearningState[props.values.state]}</label>
+				<ButtonSave type="submit">Save</ButtonSave>
 			</FormStyled>
 		);
 	};

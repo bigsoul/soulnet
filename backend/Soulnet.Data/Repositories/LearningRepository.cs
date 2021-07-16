@@ -98,5 +98,29 @@ namespace Soulnet.Data.Repositories
                 DataLimit = result.Count()
             };
         }
+    
+        public void Write(Learning model) {
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
+                var query = @"UPDATE
+                                public.""Learning""
+                              SET
+                                ""Name"" = @Name,
+                                ""DatasetId"" = @DatasetId,
+                                ""InputNeuronsCount"" = @InputNeuronsCount,
+                                ""DeepLayersCount"" = @DeepLayersCount
+                              WHERE 
+                                ""Id"" = @Id;"; 
+
+                db.Query<Learning>(query, new {
+                    Id = model.Id,
+                    Name = model.Name,
+                    DatasetId = model.DatasetId,
+                    InputNeuronsCount = model.InputNeuronsCount,
+                    DeepLayersCount = model.DeepLayersCount
+                });
+            }
+        }
     }
 }

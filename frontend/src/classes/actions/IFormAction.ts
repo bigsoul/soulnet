@@ -8,6 +8,7 @@ export const FORM_IS_LOADING = "FORM/IS-LOADING";
 export const FORM_IS_LOADED = "FORM/IS-LOADED";
 
 export const FORM_ON_LOAD_EVENT = "FORM/ON-LOAD-EVENT";
+export const FORM_ON_SAVE_EVENT = "FORM/ON-SAVE-EVENT";
 
 export interface IFormInitializeAction<K, T> {
 	type: typeof FORM_INITIALIZE;
@@ -28,6 +29,13 @@ export interface IFormOnLoadEventAction<K, F> {
 	type: typeof FORM_ON_LOAD_EVENT;
 	formKey: K;
 	filter: F;
+	controller: string;
+}
+
+export interface IFormOnSaveEventAction<K, T> {
+	type: typeof FORM_ON_SAVE_EVENT;
+	formKey: K;
+	values: T & IDataItem;
 	controller: string;
 }
 
@@ -55,7 +63,8 @@ export type TFormAction<K, T, F> =
 	| IFormOnLoadEventAction<K, F>
 	| IFormOnLoadAction<K, T>
 	| IFormIsLoadingAction<K>
-	| IFormIsLoadedAction<K>;
+	| IFormIsLoadedAction<K>
+	| IFormOnSaveEventAction<K, T>;
 
 export const doInitialize = <K, T>(
 	payload: Omit<IFormInitializeAction<K, T>, "type">
@@ -87,6 +96,17 @@ export const doFormOnLoadEvent = <K, F>(
 		type: FORM_ON_LOAD_EVENT,
 		formKey: payload.formKey,
 		filter: payload.filter,
+		controller: payload.controller,
+	});
+};
+
+export const doFormOnSaveEvent = <K, T>(
+	payload: Omit<IFormOnSaveEventAction<K, T>, "type">
+) => {
+	store.dispatch<IFormOnSaveEventAction<K, T>>({
+		type: FORM_ON_SAVE_EVENT,
+		formKey: payload.formKey,
+		values: payload.values,
 		controller: payload.controller,
 	});
 };

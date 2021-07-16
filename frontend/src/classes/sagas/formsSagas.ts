@@ -60,8 +60,28 @@ function* workerFormOnLoadEvent<K extends string, T, F>(
 	});
 }
 
+function* workerFormOnSaveEvent<K, T>(
+	action: ACT.IFormOnSaveEventAction<K, T>
+) {
+	const requestData: REQ.ITreeRequest = {
+		dataOffset: 0,
+		dataLimit: 1,
+		filter: {},
+	};
+
+	const responseBody: { data: RES.ITreeResultResponse } = yield call(
+		service.put,
+		action.controller,
+		requestData,
+		action.values
+	);
+
+	console.log(responseBody.data);
+}
+
 function* formsSagas() {
 	yield takeEvery("FORM/ON-LOAD-EVENT", workerFormOnLoadEvent);
+	yield takeEvery("FORM/ON-SAVE-EVENT", workerFormOnSaveEvent);
 }
 
 export default formsSagas;

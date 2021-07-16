@@ -25,7 +25,7 @@ const post = (endpoint: string, requestData: TRequest) => {
 	return axios.post<TResponse>(user.serviceUrl + endpoint, requestData);
 };
 
-const put = (endpoint: string, requestData: TRequest) => {
+const put = <T>(endpoint: string, requestData: TRequest, payload: T) => {
 	const { user } = store.getState();
 
 	const config = {
@@ -36,7 +36,7 @@ const put = (endpoint: string, requestData: TRequest) => {
 		params: requestData,
 	};
 
-	return axios.put<TResponse>(endpoint, config);
+	return axios.put<TResponse>(user.serviceUrl + endpoint, payload, config);
 };
 
 const service = {

@@ -1,12 +1,15 @@
 import { PureComponent } from "react";
 import { connect } from "react-redux";
+import { formValueSelector } from "redux-form";
 import {
 	doInitialize,
 	doChange,
 	doFormOnLoadEvent,
+	doFormOnSaveEvent,
 } from "../../classes/actions/IFormAction";
 import { FormReducer } from "../../classes/reducers/formReducer";
 import { IStore } from "../../classes/store";
+import { IDataItem } from "../Tree/TreeItem";
 
 export interface IFormProps<T> {
 	children: (props: IFormState<T> & IFormDispatch<T>) => JSX.Element;
@@ -14,13 +17,14 @@ export interface IFormProps<T> {
 }
 
 export interface IFormState<T> {
-	values: T;
+	values: T & IDataItem;
 	isLoading: boolean;
 	isLoaded: boolean;
 }
 
 export interface IFormDispatch<T> {
 	change: (field: keyof T, value: T[keyof T]) => void;
+	submit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export interface IFormConfig {
@@ -62,6 +66,14 @@ const formCreator = function <K extends string, T>(
 			});
 		};
 
+		submitHendler = (props: IFormState<T>) => {
+			doFormOnSaveEvent({
+				formKey: formKey,
+				values: props.values,
+				controller: config.controller,
+			});
+		};
+
 		renderProp = (props: IFormState<T>) => {
 			const { children: RenderProp } = this.props;
 			const { isLoading, isLoaded } = props;
@@ -70,6 +82,10 @@ const formCreator = function <K extends string, T>(
 				<RenderProp
 					values={props.values}
 					change={this.changeHendler}
+					submit={(e) => {
+						e.preventDefault();
+						this.submitHendler(props);
+					}}
 					isLoading={isLoading}
 					isLoaded={isLoaded}
 				/>
