@@ -57,5 +57,11 @@ namespace Soulnet.Api.Controllers
                 List = result
             });
         }
+
+        [HttpPut]
+        public ActionResult<TreeResultViewModel<LearningViewModel>> Put(int dataOffset, int dataLimit, string filter)
+        {
+            return Ok();
+        }
     } 
 }

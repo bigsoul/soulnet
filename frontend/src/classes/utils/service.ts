@@ -25,9 +25,24 @@ const post = (endpoint: string, requestData: TRequest) => {
 	return axios.post<TResponse>(user.serviceUrl + endpoint, requestData);
 };
 
+const put = (endpoint: string, requestData: TRequest) => {
+	const { user } = store.getState();
+
+	const config = {
+		baseURL: user.serviceUrl,
+		headers: {
+			Authorization: "Bearer " + user.serviceJwtToken,
+		},
+		params: requestData,
+	};
+
+	return axios.put<TResponse>(endpoint, config);
+};
+
 const service = {
 	post,
 	get,
+	put,
 };
 
 export default service;
