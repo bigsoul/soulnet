@@ -24,6 +24,34 @@ namespace Soulnet.Data.Repositories
             _configuration = configuration;
         }
 
+        public void Create(Learning model)
+        {
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {
+                var query = @"INSERT INTO public.""Learning"" (
+                                ""Id"", ""Name"", ""State"", ""IsArchive"", ""IterationCount"", 
+                                ""IterationCurrent"", ""InputNeuronsCount"", ""DeepLayersCount"", ""DatasetId""
+                              )
+                              VALUES (
+                                @Id, @Name, @State, @IsArchive, @IterationCount, @IterationCurrent,
+                                @InputNeuronsCount, @DeepLayersCount, @DatasetId
+                              );"; 
+
+                db.Query<Learning>(query, new {
+                    Id = model.Id,
+                    Name = model.Name,
+                    State = model.State,
+                    IsArchive = model.IsArchive,
+                    IterationCount = model.IterationCount,
+                    IterationCurrent = model.IterationCurrent,
+                    InputNeuronsCount = model.InputNeuronsCount,
+                    DeepLayersCount = model.DeepLayersCount,
+                    DatasetId = model.DatasetId,
+                });
+            }
+        }
+
         public Section<Learning> ReadSection(int dataOffset, int dataLimit, LearningFilter filter) {
 
             var connectionString = _configuration.GetConnectionString("SoulnetContext");
@@ -99,9 +127,9 @@ namespace Soulnet.Data.Repositories
             };
         }
     
-        public void Write(Learning model) {
+        public void Update(Learning model) {
             var connectionString = _configuration.GetConnectionString("SoulnetContext");
-            
+
             using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
                 var query = @"UPDATE
                                 public.""Learning""

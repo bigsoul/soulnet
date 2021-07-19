@@ -64,6 +64,7 @@ function* workerUserSignIn(action: ACT.IUserSignInAction) {
 		const responseBody: { data: RES.IAuthDataResponse } = yield call(
 			service.post,
 			"/auth/signin",
+			requestData,
 			requestData
 		);
 
@@ -113,6 +114,7 @@ function* workerUserSignUp(action: ACT.IUserSignUpAction) {
 		const responseBody: { data: RES.IAuthDataResponse } = yield call(
 			service.post,
 			"/auth/signup",
+			requestData,
 			requestData
 		);
 

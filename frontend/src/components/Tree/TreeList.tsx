@@ -413,11 +413,12 @@ const treeListCreator = function <K extends string, T, F = {}>(
 					(row) => row === props.currentRow
 				);
 
-				const inList = !!props.dataList.filter(
+				/*const inList = !!props.dataList.filter(
 					(item) => item.id === props.currentRow
-				).length;
+				).length;*/
 
-				if (props.currentRow && !inCurrent && inList) {
+				if (props.currentRow && !inCurrent) {
+					// && inList) {
 					doTreeSetCurrentRow({
 						listKey: listKey,
 						id: props.currentRow,

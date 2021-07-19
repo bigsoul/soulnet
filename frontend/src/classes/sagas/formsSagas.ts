@@ -6,6 +6,11 @@ import * as ACT from "../actions/IFormAction";
 import * as REQ from "../../interfaces/IRequest";
 import * as RES from "../../interfaces/IResponse";
 
+import { history } from "../../classes/reducers/routerReducer";
+
+import { EmptyGuid } from "../..";
+import { IDataItem } from "../../components/Tree/TreeItem";
+
 //import store, { IStore } from "../store";
 
 function* workerFormOnLoadEvent<K extends string, T, F>(
@@ -81,7 +86,25 @@ function* workerFormOnSaveEvent<K, T>(
 		saving: true,
 	});
 
-	yield call(service.put, action.controller, requestData, action.values);
+	const isNew = action.values.id === EmptyGuid;
+
+	const saveMethod = isNew ? service.post : service.put;
+
+	const responseBody: { data: RES.ITreeResultResponse } = yield call(
+		saveMethod,
+		action.controller,
+		requestData,
+		action.values
+	);
+
+	const Entity = responseBody.data.list[0] as T & IDataItem;
+
+	if (isNew)
+		yield put<ACT.IFormOnLoadAction<K, T>>({
+			type: ACT.FORM_ON_LOAD,
+			formKey: action.formKey,
+			values: Entity,
+		});
 
 	yield put<ACT.IFormIsSavingAction<K>>({
 		type: ACT.FORM_IS_SAVING,
@@ -94,6 +117,8 @@ function* workerFormOnSaveEvent<K, T>(
 		formKey: action.formKey,
 		saved: true,
 	});
+
+	if (isNew) history.push(`/learning/${Entity.id}`);
 }
 
 function* formsSagas() {

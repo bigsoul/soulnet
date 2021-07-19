@@ -27,9 +27,36 @@ namespace Soulnet.Api.Controllers
         }
 
         [HttpPost]
-        public ActionResult<TreeResultViewModel<LearningViewModel>> Post(int dataOffset, int dataLimit, string filter)
+        public ActionResult<TreeResultViewModel<LearningViewModel>> Post(int dataOffset, int dataLimit, string filter, [FromBody]LearningViewModel model)
         {
-            return Ok();
+            var id = new Guid(model.Id);
+
+            if (id != Guid.Empty) {
+                throw new ArgumentException("The id field must be empty");
+            }
+
+            model.Id = Guid.NewGuid().ToString();
+
+            learningRepository.Create(new Learning {
+                Id = new Guid(model.Id),
+                Version = model.Version,
+                Name = model.Name,
+                State = model.State,
+                IsArchive = model.IsArchive,
+                IterationCount = model.IterationCount,
+                IterationCurrent = model.IterationCurrent,
+                InputNeuronsCount = model.InputNeuronsCount,
+                DeepLayersCount = model.DeepLayersCount,
+                DatasetId = new Guid(model.DatasetId),
+                DatasetName = model.DatasetName,
+                Testing = new List<Testing>()
+            });
+
+            return Ok(new TreeResultViewModel<LearningViewModel> {
+                DataOffset = dataOffset,
+                DataLimit = dataLimit,
+                List = new List<LearningViewModel>() { model }
+            });
         }
 
         [HttpGet]
@@ -67,7 +94,7 @@ namespace Soulnet.Api.Controllers
         [HttpPut]
         public ActionResult<TreeResultViewModel<LearningViewModel>> Put(int dataOffset, int dataLimit, string filter, [FromBody]LearningViewModel model)
         {
-            learningRepository.Write(new Learning {
+            learningRepository.Update(new Learning {
                 Id = new Guid(model.Id),
                 Version = model.Version,
                 Name = model.Name,

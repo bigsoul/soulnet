@@ -1,3 +1,4 @@
+import { EmptyGuid } from "../..";
 import { IDataItem } from "../../components/Tree/TreeItem";
 import TFormAction from "../actions/IFormAction";
 
@@ -22,8 +23,18 @@ const formsReducer = <K extends string, T, F>(
 		case "FORM/INITIALIZE": {
 			const newState = { ...curState };
 			newState[action.formKey] = {
-				initialValues: action.values,
-				values: { ...action.values },
+				initialValues: {
+					...action.values,
+					id: action.values.id
+						? action.values.id
+						: "00000000-0000-0000-0000-000000000000",
+				},
+				values: {
+					...action.values,
+					id: action.values.id
+						? action.values.id
+						: "00000000-0000-0000-0000-000000000000",
+				},
 				isLoading: !!action.loading,
 				isLoaded: !!action.loaded,
 				isSaving: !!action.saving,
