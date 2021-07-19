@@ -86,14 +86,14 @@ const TreeItemStyled = styled(TreeItem)<{ level: number }>`
 	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
 `;
 
-const formKey = "LearningForm";
+export const formKey = "LearningForm";
 const controller = "/learnings";
 
 interface ILearningFormProps {
 	entityId?: string;
 }
 
-interface ILearningFormData extends IDataItem {
+export interface ILearningFormData extends IDataItem {
 	name: string;
 	datasetId: string;
 	datasetName: string;
@@ -102,7 +102,7 @@ interface ILearningFormData extends IDataItem {
 	state: ELearningState;
 }
 
-const LearningFormDataDefault = {
+export const LearningFormDataDefault: ILearningFormData = {
 	id: "",
 	version: "",
 	name: "",
@@ -135,13 +135,13 @@ type ChildrenProps = IFormState<ILearningFormData> &
 
 class LearningForm extends PureComponent<ILearningFormProps> {
 	renderHeader = (props: ChildrenProps) => {
-		const { isLoading, load } = props;
+		const { isLoading, isSaving, load } = props;
 
 		return (
 			<TreeHeader svgPath={treeTree}>
 				<TreeColumn>Learning</TreeColumn>
 				<TreeColumn align="right">
-					{isLoading && <IconStyled path={loading} />}
+					{(isLoading || isSaving) && <IconStyled path={loading} />}
 					<ButtonStyled
 						template="icon"
 						svgPath={treeRefresh}
@@ -246,21 +246,17 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 		);
 	};
 
-	render = () => {
-		if (!this.props.entityId) return null;
+	renderForm = (props: ChildrenProps) => {
 		return (
-			<Form entityId={this.props.entityId}>
-				{(props: ChildrenProps) => {
-					return (
-						<>
-							{this.renderHeader(props)}
-							{/*!props.isLoading && this.renderBody(props)*/}
-							{this.renderBody(props)}
-						</>
-					);
-				}}
-			</Form>
+			<>
+				{this.renderHeader(props)}
+				{this.renderBody(props)}
+			</>
 		);
+	};
+
+	render = () => {
+		return <Form entityId={this.props.entityId}>{this.renderForm}</Form>;
 	};
 }
 

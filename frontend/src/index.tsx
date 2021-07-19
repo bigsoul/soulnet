@@ -10,6 +10,8 @@ import { Provider } from "react-redux";
 import store from "./classes/store";
 import { history } from "./classes/reducers/routerReducer";
 
+export const EmptyGuid = "00000000-0000-0000-0000-000000000000";
+
 /* <React.StrictMode> */
 
 ReactDOM.render(

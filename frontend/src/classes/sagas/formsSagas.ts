@@ -69,14 +69,31 @@ function* workerFormOnSaveEvent<K, T>(
 		filter: {},
 	};
 
-	const responseBody: { data: RES.ITreeResultResponse } = yield call(
-		service.put,
-		action.controller,
-		requestData,
-		action.values
-	);
+	yield put<ACT.IFormIsSavedAction<K>>({
+		type: ACT.FORM_IS_SAVED,
+		formKey: action.formKey,
+		saved: false,
+	});
 
-	console.log(responseBody.data);
+	yield put<ACT.IFormIsSavingAction<K>>({
+		type: ACT.FORM_IS_SAVING,
+		formKey: action.formKey,
+		saving: true,
+	});
+
+	yield call(service.put, action.controller, requestData, action.values);
+
+	yield put<ACT.IFormIsSavingAction<K>>({
+		type: ACT.FORM_IS_SAVING,
+		formKey: action.formKey,
+		saving: false,
+	});
+
+	yield put<ACT.IFormIsSavedAction<K>>({
+		type: ACT.FORM_IS_SAVED,
+		formKey: action.formKey,
+		saved: true,
+	});
 }
 
 function* formsSagas() {

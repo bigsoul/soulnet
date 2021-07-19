@@ -37,6 +37,7 @@ import {
 } from "../../classes/actions/ITreeAction";
 import { history } from "../../classes/reducers/routerReducer";
 import { match } from "react-router";
+import { EmptyGuid } from "../..";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -176,6 +177,10 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 		});
 	};
 
+	hendlerTreeAdd = () => {
+		history.push(`/learning/${EmptyGuid}`);
+	};
+
 	render = () => {
 		const {
 			runningIsVisible,
@@ -184,7 +189,7 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 			storingIsLoading,
 			match,
 		} = this.props;
-		//console.log("match: ", match);
+
 		const result = (
 			<Content>
 				<Tree>
@@ -196,7 +201,11 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 								svgPath={treeRefresh}
 								onClick={this.hendlerTreeRefresh}
 							/>
-							<ButtonStyled template="icon" svgPath={treeAdd} />
+							<ButtonStyled
+								template="icon"
+								svgPath={treeAdd}
+								onClick={this.hendlerTreeAdd}
+							/>
 						</TreeColumn>
 					</TreeHeader>
 					<TreeBranchStyled>

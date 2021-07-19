@@ -1,6 +1,6 @@
 import { PureComponent } from "react";
 import { connect } from "react-redux";
-import { formValueSelector } from "redux-form";
+import { EmptyGuid } from "../..";
 import {
 	doInitialize,
 	doChange,
@@ -20,6 +20,8 @@ export interface IFormState<T> {
 	values: T & IDataItem;
 	isLoading: boolean;
 	isLoaded: boolean;
+	isSaving: boolean;
+	isSaved: boolean;
 }
 
 export interface IFormDispatch<T> {
@@ -32,6 +34,8 @@ export interface IFormConfig {
 	controller: string;
 	loading?: boolean;
 	loaded?: boolean;
+	saving?: boolean;
+	saved?: boolean;
 }
 
 const formCreator = function <K extends string, T>(
@@ -44,6 +48,8 @@ const formCreator = function <K extends string, T>(
 		values: initialValues,
 		loading: config.loading,
 		loaded: config.loaded,
+		saving: config.saving,
+		saved: config.saved,
 	});
 
 	const mapStateToProps = (state: IStore): IFormState<T> => {
@@ -53,6 +59,8 @@ const formCreator = function <K extends string, T>(
 			values: form.values,
 			isLoading: form.isLoading,
 			isLoaded: form.isLoaded,
+			isSaving: form.isSaving,
+			isSaved: form.isSaved,
 		};
 	};
 
@@ -86,6 +94,9 @@ const formCreator = function <K extends string, T>(
 		renderProp = (props: IFormState<T>) => {
 			const { children: RenderProp } = this.props;
 			const { isLoading, isLoaded } = props;
+			const { isSaving, isSaved } = props;
+
+			if (!this.props.entityId) return null;
 
 			return (
 				<RenderProp
@@ -98,6 +109,8 @@ const formCreator = function <K extends string, T>(
 					}}
 					isLoading={isLoading}
 					isLoaded={isLoaded}
+					isSaving={isSaving}
+					isSaved={isSaved}
 				/>
 			);
 		};
@@ -108,11 +121,33 @@ const formCreator = function <K extends string, T>(
 		};
 
 		componentDidMount = () => {
-			this.loadHendler();
+			const { entityId } = this.props;
+
+			if (entityId && entityId !== EmptyGuid) {
+				this.loadHendler();
+			} else if (entityId === EmptyGuid) {
+				doInitialize<typeof formKey, T>({
+					formKey: formKey,
+					values: initialValues,
+				});
+			}
 		};
 
 		componentDidUpdate = (prevProps: IFormProps<T>) => {
-			if (prevProps.entityId !== this.props.entityId) this.loadHendler();
+			const { entityId } = this.props;
+
+			if (
+				entityId &&
+				entityId !== EmptyGuid &&
+				prevProps.entityId !== entityId
+			) {
+				this.loadHendler();
+			} else if (entityId === EmptyGuid) {
+				doInitialize<typeof formKey, T>({
+					formKey: formKey,
+					values: initialValues,
+				});
+			}
 		};
 	};
 };

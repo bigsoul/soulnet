@@ -6,6 +6,8 @@ export const FORM_ON_LOAD = "FORM/ON-LOAD";
 export const FORM_CHANGE = "FORM/CHANGE";
 export const FORM_IS_LOADING = "FORM/IS-LOADING";
 export const FORM_IS_LOADED = "FORM/IS-LOADED";
+export const FORM_IS_SAVING = "FORM/IS-SAVING";
+export const FORM_IS_SAVED = "FORM/IS-SAVED";
 
 export const FORM_ON_LOAD_EVENT = "FORM/ON-LOAD-EVENT";
 export const FORM_ON_SAVE_EVENT = "FORM/ON-SAVE-EVENT";
@@ -16,6 +18,8 @@ export interface IFormInitializeAction<K, T> {
 	values: T;
 	loading?: boolean;
 	loaded?: boolean;
+	saving?: boolean;
+	saved?: boolean;
 }
 
 export interface IFormChangeAction<K, T> {
@@ -57,6 +61,18 @@ export interface IFormIsLoadedAction<K> {
 	loaded: boolean;
 }
 
+export interface IFormIsSavingAction<K> {
+	type: typeof FORM_IS_SAVING;
+	formKey: K;
+	saving: boolean;
+}
+
+export interface IFormIsSavedAction<K> {
+	type: typeof FORM_IS_SAVED;
+	formKey: K;
+	saved: boolean;
+}
+
 export type TFormAction<K, T, F> =
 	| IFormInitializeAction<K, T>
 	| IFormChangeAction<K, T>
@@ -64,7 +80,9 @@ export type TFormAction<K, T, F> =
 	| IFormOnLoadAction<K, T>
 	| IFormIsLoadingAction<K>
 	| IFormIsLoadedAction<K>
-	| IFormOnSaveEventAction<K, T>;
+	| IFormOnSaveEventAction<K, T>
+	| IFormIsSavingAction<K>
+	| IFormIsSavedAction<K>;
 
 export const doInitialize = <K, T>(
 	payload: Omit<IFormInitializeAction<K, T>, "type">
@@ -75,6 +93,8 @@ export const doInitialize = <K, T>(
 		values: payload.values,
 		loading: payload.loading,
 		loaded: payload.loaded,
+		saving: payload.saving,
+		saved: payload.saved,
 	});
 };
 
@@ -138,6 +158,26 @@ export const doFormIsLoaded = <K>(
 		type: FORM_IS_LOADED,
 		formKey: payload.formKey,
 		loaded: payload.loaded,
+	});
+};
+
+export const doFormIsSaving = <K>(
+	payload: Omit<IFormIsSavingAction<K>, "type">
+) => {
+	store.dispatch<IFormIsSavingAction<K>>({
+		type: FORM_IS_SAVING,
+		formKey: payload.formKey,
+		saving: payload.saving,
+	});
+};
+
+export const doFormIsSaved = <K>(
+	payload: Omit<IFormIsSavedAction<K>, "type">
+) => {
+	store.dispatch<IFormIsSavedAction<K>>({
+		type: FORM_IS_SAVED,
+		formKey: payload.formKey,
+		saved: payload.saved,
 	});
 };
 

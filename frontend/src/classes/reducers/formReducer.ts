@@ -6,6 +6,8 @@ export type FormReducer<T> = {
 	values: T & IDataItem;
 	isLoading: boolean;
 	isLoaded: boolean;
+	isSaving: boolean;
+	isSaved: boolean;
 };
 
 type FormsReducer<K extends string, T> = {
@@ -21,9 +23,11 @@ const formsReducer = <K extends string, T, F>(
 			const newState = { ...curState };
 			newState[action.formKey] = {
 				initialValues: action.values,
-				values: action.values,
+				values: { ...action.values },
 				isLoading: !!action.loading,
 				isLoaded: !!action.loaded,
+				isSaving: !!action.saving,
+				isSaved: !!action.saved,
 			};
 			return newState;
 		}
@@ -52,6 +56,18 @@ const formsReducer = <K extends string, T, F>(
 			const newState = { ...curState };
 			newState[action.formKey] = { ...newState[action.formKey] };
 			newState[action.formKey].isLoaded = action.loaded;
+			return newState;
+		}
+		case "FORM/IS-SAVING": {
+			const newState = { ...curState };
+			newState[action.formKey] = { ...newState[action.formKey] };
+			newState[action.formKey].isSaving = action.saving;
+			return newState;
+		}
+		case "FORM/IS-SAVED": {
+			const newState = { ...curState };
+			newState[action.formKey] = { ...newState[action.formKey] };
+			newState[action.formKey].isSaved = action.saved;
 			return newState;
 		}
 		default:
