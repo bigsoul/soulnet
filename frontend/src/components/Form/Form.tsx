@@ -24,7 +24,8 @@ export interface IFormState<T> {
 
 export interface IFormDispatch<T> {
 	change: (field: keyof T, value: T[keyof T]) => void;
-	submit: (e: React.FormEvent<HTMLFormElement>) => void;
+	load: () => void;
+	save: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export interface IFormConfig {
@@ -66,7 +67,15 @@ const formCreator = function <K extends string, T>(
 			});
 		};
 
-		submitHendler = (props: IFormState<T>) => {
+		loadHendler = () => {
+			doFormOnLoadEvent({
+				formKey: formKey,
+				filter: { id: this.props.entityId },
+				controller: config.controller,
+			});
+		};
+
+		saveHendler = (props: IFormState<T>) => {
 			doFormOnSaveEvent({
 				formKey: formKey,
 				values: props.values,
@@ -82,9 +91,10 @@ const formCreator = function <K extends string, T>(
 				<RenderProp
 					values={props.values}
 					change={this.changeHendler}
-					submit={(e) => {
+					load={this.loadHendler}
+					save={(e) => {
 						e.preventDefault();
-						this.submitHendler(props);
+						this.saveHendler(props);
 					}}
 					isLoading={isLoading}
 					isLoaded={isLoaded}
@@ -98,20 +108,11 @@ const formCreator = function <K extends string, T>(
 		};
 
 		componentDidMount = () => {
-			doFormOnLoadEvent({
-				formKey: formKey,
-				filter: { id: this.props.entityId },
-				controller: config.controller,
-			});
+			this.loadHendler();
 		};
 
 		componentDidUpdate = (prevProps: IFormProps<T>) => {
-			if (prevProps.entityId !== this.props.entityId)
-				doFormOnLoadEvent({
-					formKey: formKey,
-					filter: { id: this.props.entityId },
-					controller: config.controller,
-				});
+			if (prevProps.entityId !== this.props.entityId) this.loadHendler();
 		};
 	};
 };

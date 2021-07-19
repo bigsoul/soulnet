@@ -26,11 +26,17 @@ namespace Soulnet.Api.Controllers
             this.learningRepository = learningRepository;
         }
 
+        [HttpPost]
+        public ActionResult<TreeResultViewModel<LearningViewModel>> Post(int dataOffset, int dataLimit, string filter)
+        {
+            return Ok();
+        }
+
         [HttpGet]
         public ActionResult<TreeResultViewModel<LearningViewModel>> Get(int dataOffset, int dataLimit, string filter)
         {
             var _filter = JsonConvert.DeserializeObject<LearningFilter>(filter);
-
+            
             var section = learningRepository.ReadSection(dataOffset, dataLimit, _filter);
             
             var result = new List<LearningViewModel>();

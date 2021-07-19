@@ -101,7 +101,7 @@ namespace Soulnet.Data.Repositories
     
         public void Write(Learning model) {
             var connectionString = _configuration.GetConnectionString("SoulnetContext");
-
+            
             using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
                 var query = @"UPDATE
                                 public.""Learning""

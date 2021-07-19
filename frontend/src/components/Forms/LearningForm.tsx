@@ -135,7 +135,7 @@ type ChildrenProps = IFormState<ILearningFormData> &
 
 class LearningForm extends PureComponent<ILearningFormProps> {
 	renderHeader = (props: ChildrenProps) => {
-		const { isLoading } = props;
+		const { isLoading, load } = props;
 
 		return (
 			<TreeHeader svgPath={treeTree}>
@@ -145,7 +145,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					<ButtonStyled
 						template="icon"
 						svgPath={treeRefresh}
-						onClick={undefined}
+						onClick={load}
 					/>
 					<ButtonStyled
 						template="icon"
@@ -166,10 +166,10 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 	};
 
 	renderBody = (props: ChildrenProps) => {
-		const { values, change, submit } = props;
+		const { values, change, save } = props;
 
 		return (
-			<FormStyled onSubmit={submit}>
+			<FormStyled onSubmit={save}>
 				<NameStyled
 					name="name"
 					type="text"
