@@ -150,5 +150,21 @@ namespace Soulnet.Data.Repositories
                 });
             }
         }
+
+        public void Delete(Guid id)
+        {
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+            
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
+                var query = @"DELETE FROM
+                                public.""Learning""
+                              WHERE 
+                                ""Id"" = @Id;"; 
+
+                db.Query<Learning>(query, new {
+                    Id = id,
+                });
+            }
+        }
     }
 }

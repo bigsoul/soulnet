@@ -115,5 +115,12 @@ namespace Soulnet.Api.Controllers
                 List = new List<LearningViewModel>() { model }
             });
         }
+
+        [HttpDelete]
+        public ActionResult Delete(int dataOffset, int dataLimit, string filter, [FromBody]LearningViewModel model)
+        {
+            learningRepository.Delete(new Guid(model.Id));
+            return Ok();
+        }
     } 
 }

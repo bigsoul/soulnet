@@ -47,10 +47,25 @@ const put = <T>(endpoint: string, requestData: TRequest, payload: T) => {
 	return axios.put<TResponse>(user.serviceUrl + endpoint, payload, config);
 };
 
+const del = <T>(endpoint: string, requestData: TRequest, payload: T) => {
+	const { user } = store.getState();
+
+	const config = {
+		baseURL: user.serviceUrl,
+		headers: {
+			Authorization: "Bearer " + user.serviceJwtToken,
+		},
+		params: requestData,
+	};
+
+	return axios.delete<TResponse>(user.serviceUrl + endpoint, config);
+};
+
 const service = {
 	post,
 	get,
 	put,
+	delete: del,
 };
 
 export default service;

@@ -11,6 +11,7 @@ export const FORM_IS_SAVED = "FORM/IS-SAVED";
 
 export const FORM_ON_LOAD_EVENT = "FORM/ON-LOAD-EVENT";
 export const FORM_ON_SAVE_EVENT = "FORM/ON-SAVE-EVENT";
+export const FORM_ON_DELETE_EVENT = "FORM/ON-DELETE-EVENT";
 
 export interface IFormInitializeAction<K, T> {
 	type: typeof FORM_INITIALIZE;
@@ -73,6 +74,12 @@ export interface IFormIsSavedAction<K> {
 	saved: boolean;
 }
 
+export interface IFormOnDeleteAction<K, T> {
+	type: typeof FORM_ON_DELETE_EVENT;
+	formKey: K;
+	values: T & IDataItem;
+}
+
 export type TFormAction<K, T, F> =
 	| IFormInitializeAction<K, T>
 	| IFormChangeAction<K, T>
@@ -82,7 +89,8 @@ export type TFormAction<K, T, F> =
 	| IFormIsLoadedAction<K>
 	| IFormOnSaveEventAction<K, T>
 	| IFormIsSavingAction<K>
-	| IFormIsSavedAction<K>;
+	| IFormIsSavedAction<K>
+	| IFormOnDeleteAction<K, T>;
 
 export const doInitialize = <K, T>(
 	payload: Omit<IFormInitializeAction<K, T>, "type">
@@ -178,6 +186,16 @@ export const doFormIsSaved = <K>(
 		type: FORM_IS_SAVED,
 		formKey: payload.formKey,
 		saved: payload.saved,
+	});
+};
+
+export const doFormOnDelete = <K, T>(
+	payload: Omit<IFormOnDeleteAction<K, T>, "type">
+) => {
+	store.dispatch({
+		type: FORM_ON_DELETE_EVENT,
+		formKey: payload.formKey,
+		values: payload.values,
 	});
 };
 
