@@ -7,6 +7,7 @@ import * as REQ from "../../interfaces/IRequest";
 import * as RES from "../../interfaces/IResponse";
 
 import store, { IStore } from "../store";
+import { IDataItemUI } from "../../components/Tree/TreeItem";
 
 function* workerTreeOnLoadEvent<K extends string, T, F>(
 	action: ACT.ITreeOnLoadEventAction<K, F>
@@ -29,11 +30,9 @@ function* workerTreeOnLoadEvent<K extends string, T, F>(
 		loading: true,
 	});
 
-	const responseBody: { data: RES.ITreeResultResponse } = yield call(
-		service.get,
-		action.controller,
-		requestData
-	);
+	const responseBody: {
+		data: RES.ITreeResultResponse<T & IDataItemUI>;
+	} = yield call(service.get, action.controller, requestData);
 
 	yield put<ACT.ITreeOnLoadAction<K, T>>({
 		type: ACT.TREE_ON_LOAD,
@@ -50,8 +49,33 @@ function* workerTreeOnLoadEvent<K extends string, T, F>(
 	});
 }
 
+function* workerTreeOnDeleteEvent<K extends string>(
+	action: ACT.ITreeOnDeleteEventAction<K>
+) {
+	const requestData: REQ.ITreeRequest = {
+		dataOffset: 0,
+		dataLimit: 0,
+		filter: { id: action.id },
+	};
+
+	yield put<ACT.ITreeIsLoadingAction<K>>({
+		type: ACT.TREE_IS_LOADING,
+		listKey: action.listKey,
+		loading: true,
+	});
+
+	yield call(service.delete, action.controller, requestData);
+
+	yield put<ACT.ITreeIsLoadingAction<K>>({
+		type: ACT.TREE_IS_LOADING,
+		listKey: action.listKey,
+		loading: false,
+	});
+}
+
 function* treeSagas() {
 	yield takeEvery("TREE/ON-LOAD-EVENT", workerTreeOnLoadEvent);
+	yield takeEvery("TREE/ON-DELETE-EVENT", workerTreeOnDeleteEvent);
 }
 
 export default treeSagas;

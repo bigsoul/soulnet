@@ -117,9 +117,16 @@ namespace Soulnet.Api.Controllers
         }
 
         [HttpDelete]
-        public ActionResult Delete(int dataOffset, int dataLimit, string filter, [FromBody]LearningViewModel model)
+        public ActionResult Delete(int dataOffset, int dataLimit, string filter)
         {
-            learningRepository.Delete(new Guid(model.Id));
+            var _filter = JsonConvert.DeserializeObject<LearningFilter>(filter);
+
+            if (_filter.Id == null || _filter.Id == Guid.Empty) {
+                throw new ArgumentException("The id field must be empty");
+            } 
+                
+            learningRepository.Delete(_filter.Id.Value);            
+
             return Ok();
         }
     } 

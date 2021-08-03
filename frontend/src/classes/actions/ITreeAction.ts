@@ -13,6 +13,7 @@ export const TREE_SET_CURRENT_ROW = "TREE/SET-CURRENT-ROW";
 export const TREE_CLEAR_CURRENT_ROWS = "TREE/CLEAR-CURRENT-ROWS";
 
 export const TREE_ON_LOAD_EVENT = "TREE/ON-LOAD-EVENT";
+export const TREE_ON_DELETE_EVENT = "TREE/ON-DELETE-EVENT";
 
 export interface ITreeInitializeAction<K> {
 	type: typeof TREE_INITIALIZE;
@@ -77,6 +78,13 @@ export interface ITreeClearCurrentRowsAction<K> {
 	listKey: K;
 }
 
+export interface ITreeOnDeleteEventAction<K> {
+	type: typeof TREE_ON_DELETE_EVENT;
+	listKey: K;
+	id: string;
+	controller: string;
+}
+
 export type TTreeAction<K, T, F> =
 	| ITreeOnLoadEventAction<K, F>
 	| ITreeOnLoadAction<K, T>
@@ -87,7 +95,8 @@ export type TTreeAction<K, T, F> =
 	| ITreeItemSelectAction<K>
 	| ITreeSetCurrentRowAction<K>
 	| ITreeClearCurrentRowsAction<K>
-	| ITreeInitializeAction<K>;
+	| ITreeInitializeAction<K>
+	| ITreeOnDeleteEventAction<K>;
 
 export const doTreeOnLoadEvent = <K, F>(
 	payload: Omit<ITreeOnLoadEventAction<K, F>, "type">
@@ -189,6 +198,17 @@ export const doTreeInitialize = <K>(
 		type: TREE_INITIALIZE,
 		listKey: payload.listKey,
 		config: payload.config,
+	});
+};
+
+export const doTreeOnDeleteEvent = <K>(
+	payload: Omit<ITreeOnDeleteEventAction<K>, "type">
+) => {
+	store.dispatch<ITreeOnDeleteEventAction<K>>({
+		type: TREE_ON_DELETE_EVENT,
+		listKey: payload.listKey,
+		id: payload.id,
+		controller: payload.controller,
 	});
 };
 

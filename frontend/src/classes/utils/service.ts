@@ -47,7 +47,7 @@ const put = <T>(endpoint: string, requestData: TRequest, payload: T) => {
 	return axios.put<TResponse>(user.serviceUrl + endpoint, payload, config);
 };
 
-const del = <T>(endpoint: string, requestData: TRequest, payload: T) => {
+const del = (endpoint: string, requestData: TRequest) => {
 	const { user } = store.getState();
 
 	const config = {
@@ -62,8 +62,8 @@ const del = <T>(endpoint: string, requestData: TRequest, payload: T) => {
 };
 
 const service = {
-	post,
 	get,
+	post,
 	put,
 	delete: del,
 };

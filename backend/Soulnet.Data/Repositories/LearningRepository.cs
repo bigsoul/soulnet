@@ -137,7 +137,8 @@ namespace Soulnet.Data.Repositories
                                 ""Name"" = @Name,
                                 ""DatasetId"" = @DatasetId,
                                 ""InputNeuronsCount"" = @InputNeuronsCount,
-                                ""DeepLayersCount"" = @DeepLayersCount
+                                ""DeepLayersCount"" = @DeepLayersCount,
+                                ""IsArchive"" = @IsArchive
                               WHERE 
                                 ""Id"" = @Id;"; 
 
@@ -146,7 +147,8 @@ namespace Soulnet.Data.Repositories
                     Name = model.Name,
                     DatasetId = model.DatasetId,
                     InputNeuronsCount = model.InputNeuronsCount,
-                    DeepLayersCount = model.DeepLayersCount
+                    DeepLayersCount = model.DeepLayersCount,
+                    IsArchive = model.IsArchive,
                 });
             }
         }

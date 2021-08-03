@@ -6,10 +6,10 @@ export interface IAuthDataResponse {
 	id: string;
 }
 
-export interface ITreeResultResponse {
+export interface ITreeResultResponse<T> {
 	dataOffset: number;
 	dataLimit: number;
-	list: any[];
+	list: T[];
 }
 
 // standart response

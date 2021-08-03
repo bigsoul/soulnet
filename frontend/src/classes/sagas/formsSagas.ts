@@ -40,11 +40,9 @@ function* workerFormOnLoadEvent<K extends string, T, F>(
 		loading: true,
 	});
 
-	const responseBody: { data: RES.ITreeResultResponse } = yield call(
-		service.get,
-		action.controller,
-		requestData
-	);
+	const responseBody: {
+		data: RES.ITreeResultResponse<T & IDataItem>;
+	} = yield call(service.get, action.controller, requestData);
 
 	yield put<ACT.IFormOnLoadAction<K, T>>({
 		type: ACT.FORM_ON_LOAD,
@@ -90,12 +88,9 @@ function* workerFormOnSaveEvent<K, T>(
 
 	const saveMethod = isNew ? service.post : service.put;
 
-	const responseBody: { data: RES.ITreeResultResponse } = yield call(
-		saveMethod,
-		action.controller,
-		requestData,
-		action.values
-	);
+	const responseBody: {
+		data: RES.ITreeResultResponse<T & IDataItem>;
+	} = yield call(saveMethod, action.controller, requestData, action.values);
 
 	const Entity = responseBody.data.list[0] as T & IDataItem;
 

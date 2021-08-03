@@ -27,17 +27,19 @@ import ILearning, { ILearningFilter } from "../../interfaces/ILearning";
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
 
-import LearningForm from "../Forms/LearningForm";
+import LearningForm, { formKey } from "../Forms/LearningForm";
 import store, { IStore } from "../../classes/store";
 
 import {
 	doTreeClearCurrentRows,
 	doTreeIsVisible,
+	doTreeOnDeleteEvent,
 	doTreeOnLoadEvent,
 } from "../../classes/actions/ITreeAction";
 import { history } from "../../classes/reducers/routerReducer";
 import { match } from "react-router";
 import { EmptyGuid } from "../..";
+import { doFormOnSaveEvent } from "../../classes/actions/IFormAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -260,9 +262,14 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 											template="icon"
 											svgPath={treeFolder}
 											onClick={() => {
-												console.log(
-													"click: treeFolder"
-												);
+												doFormOnSaveEvent({
+													formKey: formKey,
+													values: {
+														...props.dataItem,
+														isArchive: true,
+													},
+													controller: controller,
+												});
 											}}
 										/>
 									</TreeItemStyled>
@@ -320,9 +327,12 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 											template="icon"
 											svgPath={treeDelete}
 											onClick={() => {
-												console.log(
-													"click: treeDelete"
-												);
+												doTreeOnDeleteEvent({
+													listKey:
+														ETreeList.LearningStoring,
+													id: props.dataItem.id,
+													controller: controller,
+												});
 											}}
 										/>
 									</TreeItemStyled>
