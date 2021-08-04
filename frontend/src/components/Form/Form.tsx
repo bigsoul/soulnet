@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { EmptyGuid } from "../..";
 import {
 	doInitialize,
-	doChange,
+	doFormChange,
 	doFormOnLoadEvent,
 	doFormOnSaveEvent,
 } from "../../classes/actions/IFormAction";
@@ -18,6 +18,8 @@ export interface IFormProps<T> {
 
 export interface IFormState<T> {
 	values: T & IDataItem;
+	errors: { [key in keyof T]?: string[] };
+	isMutated: boolean;
 	isLoading: boolean;
 	isLoaded: boolean;
 	isSaving: boolean;
@@ -57,6 +59,8 @@ const formCreator = function <K extends string, T>(
 		const form = forms[formKey] as FormReducer<T>;
 		return {
 			values: form.values,
+			errors: form.errors,
+			isMutated: form.isMutated,
 			isLoading: form.isLoading,
 			isLoaded: form.isLoaded,
 			isSaving: form.isSaving,
@@ -67,8 +71,10 @@ const formCreator = function <K extends string, T>(
 	const connector = connect(mapStateToProps);
 
 	return class Form extends PureComponent<IFormProps<T>> {
+		isMutated = false;
+
 		changeHendler = (field: keyof T, value: T[keyof T]) => {
-			doChange<K, T>({
+			doFormChange<K, T>({
 				formKey: formKey,
 				field: field,
 				value: value,
@@ -93,20 +99,25 @@ const formCreator = function <K extends string, T>(
 
 		renderProp = (props: IFormState<T>) => {
 			const { children: RenderProp } = this.props;
+			const { isMutated } = props;
 			const { isLoading, isLoaded } = props;
 			const { isSaving, isSaved } = props;
+
+			this.isMutated = isMutated;
 
 			if (!this.props.entityId) return null;
 
 			return (
 				<RenderProp
 					values={props.values}
+					errors={props.errors}
 					change={this.changeHendler}
 					load={this.loadHendler}
 					save={(e) => {
 						e.preventDefault();
 						this.saveHendler(props);
 					}}
+					isMutated={isMutated}
 					isLoading={isLoading}
 					isLoaded={isLoaded}
 					isSaving={isSaving}
@@ -124,7 +135,7 @@ const formCreator = function <K extends string, T>(
 			const { entityId } = this.props;
 
 			if (entityId && entityId !== EmptyGuid) {
-				this.loadHendler();
+				if (!this.isMutated) this.loadHendler();
 			} else if (entityId === EmptyGuid) {
 				doInitialize<typeof formKey, T>({
 					formKey: formKey,

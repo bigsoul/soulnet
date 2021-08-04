@@ -166,7 +166,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 	};
 
 	renderBody = (props: ChildrenProps) => {
-		const { values, change, save } = props;
+		const { values, errors, change, save } = props;
 
 		return (
 			<FormStyled onSubmit={save}>
@@ -177,6 +177,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					autoComplete="off"
 					value={values.name}
 					onChange={(value) => change("name", value)}
+					error={errors.name}
 				/>
 
 				<SelectStyled

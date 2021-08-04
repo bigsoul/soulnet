@@ -4,6 +4,8 @@ import store from "../store";
 export const FORM_INITIALIZE = "FORM/INITIALIZE";
 export const FORM_ON_LOAD = "FORM/ON-LOAD";
 export const FORM_CHANGE = "FORM/CHANGE";
+export const FORM_ERROR = "FORM/ERROR";
+export const FORM_FIELD_ERROR = "FORM/FIELD-ERROR";
 export const FORM_IS_LOADING = "FORM/IS-LOADING";
 export const FORM_IS_LOADED = "FORM/IS-LOADED";
 export const FORM_IS_SAVING = "FORM/IS-SAVING";
@@ -80,6 +82,13 @@ export interface IFormOnDeleteAction<K, T> {
 	values: T & IDataItem;
 }
 
+export interface IFormFieldErrorAction<K, T> {
+	type: typeof FORM_FIELD_ERROR;
+	formKey: K;
+	field: keyof T;
+	value: string[];
+}
+
 export type TFormAction<K, T, F> =
 	| IFormInitializeAction<K, T>
 	| IFormChangeAction<K, T>
@@ -90,7 +99,8 @@ export type TFormAction<K, T, F> =
 	| IFormOnSaveEventAction<K, T>
 	| IFormIsSavingAction<K>
 	| IFormIsSavedAction<K>
-	| IFormOnDeleteAction<K, T>;
+	| IFormOnDeleteAction<K, T>
+	| IFormFieldErrorAction<K, T>;
 
 export const doInitialize = <K, T>(
 	payload: Omit<IFormInitializeAction<K, T>, "type">
@@ -106,7 +116,7 @@ export const doInitialize = <K, T>(
 	});
 };
 
-export const doChange = <K, T>(
+export const doFormChange = <K, T>(
 	payload: Omit<IFormChangeAction<K, T>, "type">
 ) => {
 	store.dispatch<IFormChangeAction<K, T>>({
@@ -196,6 +206,17 @@ export const doFormOnDelete = <K, T>(
 		type: FORM_ON_DELETE_EVENT,
 		formKey: payload.formKey,
 		values: payload.values,
+	});
+};
+
+export const doFieldError = <K, T>(
+	payload: Omit<IFormFieldErrorAction<K, T>, "type">
+) => {
+	store.dispatch<IFormFieldErrorAction<K, T>>({
+		type: FORM_FIELD_ERROR,
+		formKey: payload.formKey,
+		field: payload.field,
+		value: payload.value,
 	});
 };
 
