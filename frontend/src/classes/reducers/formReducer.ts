@@ -101,7 +101,7 @@ const formsReducer = <K extends string, T, F>(
 			const newState = { ...curState };
 			newState[action.formKey] = { ...newState[action.formKey] };
 			newState[action.formKey].isSaved = action.saved;
-			newState[action.formKey].isMutated = false;
+			if (action.saved) newState[action.formKey].isMutated = false;
 			return newState;
 		}
 		case "FORM/FIELD-ERROR": {

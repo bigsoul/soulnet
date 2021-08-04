@@ -127,12 +127,6 @@ function* workerFormOnSaveEvent<K, T>(
 			saving: false,
 		});
 
-		yield put<ACT.IFormIsSavedAction<K>>({
-			type: ACT.FORM_IS_SAVED,
-			formKey: action.formKey,
-			saved: false,
-		});
-
 		const errors = err.response.data.errors;
 
 		for (const key in errors) {
