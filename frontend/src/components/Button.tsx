@@ -1,4 +1,3 @@
-import { EBADF } from "node:constants";
 import React, { Component, ReactNode } from "react";
 import styled from "styled-components";
 import { history } from "./../classes/reducers/routerReducer";
@@ -98,7 +97,8 @@ class Button extends Component<IButtonProps> {
 		if (this.props.onClick) this.props.onClick();
 		if (this.props.path) history.push(this.props.path);
 		if (this.props.clearFocus) e.currentTarget.blur();
-		e.stopPropagation();
+		// TODO - this is need propagation ?
+		//e.stopPropagation();
 	};
 
 	render = () => {

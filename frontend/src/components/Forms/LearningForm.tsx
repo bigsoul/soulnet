@@ -127,6 +127,7 @@ const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
 	{
 		controller: "/datasets",
 		visible: false,
+		selectMode: true,
 	}
 );
 

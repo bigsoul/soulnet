@@ -22,6 +22,7 @@ export type TreeListReducer<T> = {
 	list: T[];
 	isVisible: boolean;
 	isLoading: boolean;
+	isSelectMode: boolean;
 	scrollOffset: number;
 	dataLimit: number;
 	dataOffset: number;
@@ -36,6 +37,7 @@ const treeList = {
 	list: [],
 	isVisible: true,
 	isLoading: false,
+	isSelectMode: false,
 	scrollOffset: 0,
 	dataOffset: 0,
 	dataLimit: 0,
@@ -64,6 +66,7 @@ const treeReducer = <K extends string, T, F>(
 				action.config.visible === undefined
 					? true
 					: action.config.visible;
+			treeList.isSelectMode = !!action.config.selectMode;
 			return newState;
 		}
 		case "TREE/ON-LOAD": {

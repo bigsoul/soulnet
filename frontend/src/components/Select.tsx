@@ -100,7 +100,12 @@ const Select = (props: ISelectProps & ISelectState) => {
 	};
 
 	return (
-		<div>
+		<div
+			onClick={(e) => {
+				// TODO - delete this wrapper function
+				e.detail = 55;
+			}}
+		>
 			<SelectContainer
 				className={props.className}
 				isVisible={props.isVisible}

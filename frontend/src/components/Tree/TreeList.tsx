@@ -49,6 +49,7 @@ const ListBox = styled.div`
 export interface ITreeListConfig {
 	controller: string;
 	visible?: boolean;
+	selectMode?: boolean;
 }
 
 type MutationState<K, T, F> = {

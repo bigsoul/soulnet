@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect, Route, Switch } from "react-router";
 import styled from "styled-components";
+import { doGlobalClickEvent } from "../classes/actions/IGlobalAction";
 import Content from "./Content";
 import ContentDataset from "./Content/ContentDataset";
 import ContentLearning from "./Content/ContentLearning";
@@ -17,9 +18,13 @@ const Root = styled.div`
 	color: white;
 `;
 
+const clickHendler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	doGlobalClickEvent({ detail: e.detail });
+};
+
 function App() {
 	return (
-		<Root>
+		<Root onClick={clickHendler}>
 			<Header />
 			<Switch>
 				<Route exact path="/" component={Content} />
