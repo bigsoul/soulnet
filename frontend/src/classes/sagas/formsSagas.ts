@@ -130,8 +130,9 @@ function* workerFormOnSaveEvent<K, T>(
 		const errors = err.response.data.errors;
 
 		for (const key in errors) {
-			const keyLcc = (key.charAt(0).toLowerCase() +
-				key.slice(1)) as keyof T;
+			const keyLcc = (key.charAt(0) === "$"
+				? key.slice(2)
+				: key.charAt(0).toLowerCase() + key.slice(1)) as keyof T;
 
 			yield put<ACT.IFormFieldErrorAction<K, T>>({
 				type: ACT.FORM_FIELD_ERROR,

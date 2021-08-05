@@ -13,8 +13,11 @@ namespace Soulnet.Api.ViewModels
         public bool IsArchive { get; set; }
         public int IterationCount { get; set; }
         public int IterationCurrent { get; set; }
+        [Required]
         public int InputNeuronsCount { get; set; }
+        [Required]
         public int DeepLayersCount { get; set; }
+        [Required]
         public string DatasetId { get; set; }
         public string DatasetName { get; set; }
     }

@@ -232,6 +232,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					autoComplete="off"
 					value={values.inputNeuronsCount}
 					onChange={(value) => change("inputNeuronsCount", value)}
+					error={errors.inputNeuronsCount}
 				/>
 				<EditStyled10
 					name="deepLayers"
@@ -240,6 +241,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					autoComplete="off"
 					value={values.deepLayersCount}
 					onChange={(value) => change("deepLayersCount", value)}
+					error={errors.deepLayersCount}
 				/>
 				<label>{"state: " + ELearningState[props.values.state]}</label>
 				<ButtonSave type="submit">Save</ButtonSave>

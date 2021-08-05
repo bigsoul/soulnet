@@ -63,6 +63,10 @@ const formsReducer = <K extends string, T, F>(
 				[action.field]: action.value,
 			};
 			newState[action.formKey].isMutated = true;
+			newState[action.formKey].errors = {
+				...newState[action.formKey].errors,
+				[action.field]: [],
+			};
 			return newState;
 		}
 		case "FORM/ON-LOAD": {
