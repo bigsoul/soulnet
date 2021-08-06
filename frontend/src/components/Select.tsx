@@ -103,7 +103,7 @@ const Select = (props: ISelectProps & ISelectState) => {
 		<div
 			onClick={(e) => {
 				// TODO - delete this wrapper function
-				e.detail = 55;
+				e.detail = 101;
 			}}
 		>
 			<SelectContainer
