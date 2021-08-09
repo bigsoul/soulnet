@@ -76,6 +76,12 @@ export interface ISelectState {
 	isVisible?: boolean;
 }
 
+const selectClickHandler = (
+	e: React.MouseEvent<HTMLDivElement, MouseEvent>
+) => {
+	e.detail = 101;
+};
+
 const mapStateToProps = (
 	state: IStore,
 	ownProps: ISelectProps
@@ -93,19 +99,14 @@ const mapStateToProps = (
 const connector = connect(mapStateToProps);
 
 const Select = (props: ISelectProps & ISelectState) => {
-	const clickHandler = () => {
+	const buttonClickHandler = () => {
 		doTreeIsVisibleConvert({
 			listKey: props.listKey,
 		});
 	};
 
 	return (
-		<div
-			onClick={(e) => {
-				// TODO - delete this wrapper function
-				e.detail = 101;
-			}}
-		>
+		<div onClick={selectClickHandler}>
 			<SelectContainer
 				className={props.className}
 				isVisible={props.isVisible}
@@ -125,7 +126,7 @@ const Select = (props: ISelectProps & ISelectState) => {
 					clearFocus
 					svgPath={combobox}
 					path={props.path}
-					onClick={clickHandler}
+					onClick={buttonClickHandler}
 				/>
 			</SelectContainer>
 			{props.isVisible && props.children}
