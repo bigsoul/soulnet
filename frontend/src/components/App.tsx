@@ -10,6 +10,7 @@ import ContentSignIn from "./Content/ContentSignIn";
 import ContentSignUp from "./Content/ContentSignUp";
 import ContentTesting from "./Content/ContentTesting";
 import Header from "./Header";
+import Notification from "./Notification";
 
 const Root = styled.div`
 	width: 100%;
@@ -40,6 +41,7 @@ function App() {
 				<Route exact path="/results" component={ContentResults} />
 				<Redirect to="/" />
 			</Switch>
+			<Notification />
 		</Root>
 	);
 }
