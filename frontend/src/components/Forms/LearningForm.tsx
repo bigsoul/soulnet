@@ -22,7 +22,10 @@ import treeCancel from "./../../assets/svg/tree-cancel.svg";
 import loading from "./../../assets/gif/loading.gif";
 import Button from "./../Button";
 import { history } from "../../classes/reducers/routerReducer";
-import { doNotificatioOpen } from "../../classes/actions/INotificationAction";
+import {
+	doNotificatioSuccessOpenEvent,
+	doNotificatioErrorOpenEvent,
+} from "../../classes/actions/INotificationAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -248,12 +251,17 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 				<label>{"state: " + ELearningState[props.values.state]}</label>
 				<ButtonSave
 					type="submit"
-					onClick={() =>
-						doNotificatioOpen({
-							heading: "Success",
-							message: "It's work !",
-						})
-					}
+					onClick={() => {
+						if (values.inputNeuronsCount === 0)
+							doNotificatioSuccessOpenEvent({
+								heading: "Success !!!",
+								message: "It's work !",
+							});
+						else
+							doNotificatioErrorOpenEvent({
+								message: "It's don't work !",
+							});
+					}}
 				>
 					Save
 				</ButtonSave>
