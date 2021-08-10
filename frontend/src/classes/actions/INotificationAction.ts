@@ -17,14 +17,14 @@ export interface INotificationOpenAction {
 	type: typeof NOTIFICATION_OPEN;
 	status: ENotificationStatus;
 	timeStart: number;
+	timeEnd: number;
 	heading?: string;
 	message: string;
 }
 
 export interface INotificationCloseAction {
 	type: typeof NOTIFICATION_CLOSE;
-	heading?: string;
-	message: string;
+	timeStart: number;
 }
 
 export type TNotificationAction =
@@ -36,14 +36,6 @@ type NotificatioOpenEvent = Pick<
 	INotificationOpenEventAction,
 	Exclude<
 		keyof INotificationOpenEventAction,
-		keyof { type: string; status: ENotificationStatus }
-	>
->;
-
-type NotificatioOpen = Pick<
-	INotificationOpenAction,
-	Exclude<
-		keyof INotificationOpenAction,
 		keyof { type: string; status: ENotificationStatus }
 	>
 >;
@@ -68,21 +60,14 @@ export const doNotificatioErrorOpenEvent = (payload: NotificatioOpenEvent) => {
 	});
 };
 
-export const doNotificatioErrorOpen = (payload: NotificatioOpen) => {
+export const doNotificatioOpen = (
+	payload: Omit<INotificationOpenAction, "type">
+) => {
 	store.dispatch<INotificationOpenAction>({
 		type: NOTIFICATION_OPEN,
 		timeStart: payload.timeStart,
-		status: ENotificationStatus.error,
-		heading: payload.heading,
-		message: payload.message,
-	});
-};
-
-export const doNotificatioSuccessOpen = (payload: NotificatioOpen) => {
-	store.dispatch<INotificationOpenAction>({
-		type: NOTIFICATION_OPEN,
-		timeStart: payload.timeStart,
-		status: ENotificationStatus.success,
+		timeEnd: payload.timeEnd,
+		status: payload.status,
 		heading: payload.heading,
 		message: payload.message,
 	});
@@ -93,8 +78,7 @@ export const doNotificatioClose = (
 ) => {
 	store.dispatch<INotificationCloseAction>({
 		type: NOTIFICATION_CLOSE,
-		heading: payload.heading,
-		message: payload.message,
+		timeStart: payload.timeStart,
 	});
 };
 

@@ -1,16 +1,27 @@
-import { call, takeEvery } from "redux-saga/effects";
+import { call, delay, takeEvery } from "redux-saga/effects";
 
 import * as ACT from "../actions/INotificationAction";
 
 function* workerNotificationOpenEvent(
 	action: ACT.INotificationOpenEventAction
 ) {
-	yield console.log("NOTIFICATION/OPEN-EVENT");
+	const pause = 5000;
 
-	yield call(ACT.doNotificatioSuccessOpen, {
+	const timeStart = Date.now();
+	const timeEnd = timeStart + pause;
+
+	yield call(ACT.doNotificatioOpen, {
+		status: action.status,
 		heading: action.heading,
 		message: action.message,
-		timeStart: Date.now(),
+		timeStart: timeStart,
+		timeEnd: timeEnd,
+	});
+
+	yield delay(pause);
+
+	yield call(ACT.doNotificatioClose, {
+		timeStart: timeStart,
 	});
 }
 

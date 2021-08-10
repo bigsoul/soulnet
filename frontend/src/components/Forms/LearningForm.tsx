@@ -249,22 +249,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					error={errors.deepLayersCount}
 				/>
 				<label>{"state: " + ELearningState[props.values.state]}</label>
-				<ButtonSave
-					type="submit"
-					onClick={() => {
-						if (values.inputNeuronsCount === 0)
-							doNotificatioSuccessOpenEvent({
-								heading: "Success !!!",
-								message: "It's work !",
-							});
-						else
-							doNotificatioErrorOpenEvent({
-								message: "It's don't work !",
-							});
-					}}
-				>
-					Save
-				</ButtonSave>
+				<ButtonSave type="submit">Save</ButtonSave>
 			</FormStyled>
 		);
 	};

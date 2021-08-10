@@ -10,6 +10,10 @@ import { history } from "../../classes/reducers/routerReducer";
 
 import { EmptyGuid } from "../..";
 import { IDataItem } from "../../components/Tree/TreeItem";
+import {
+	doNotificatioErrorOpenEvent,
+	doNotificatioSuccessOpenEvent,
+} from "../actions/INotificationAction";
 
 //import store, { IStore } from "../store";
 
@@ -119,6 +123,11 @@ function* workerFormOnSaveEvent<K, T>(
 			saved: true,
 		});
 
+		yield call(doNotificatioSuccessOpenEvent, {
+			heading: "Success",
+			message: "Entity was saved",
+		});
+
 		if (isNew) history.push(`/learning/${Entity.id}`);
 	} catch (err) {
 		yield put<ACT.IFormIsSavingAction<K>>({
@@ -141,6 +150,10 @@ function* workerFormOnSaveEvent<K, T>(
 				value: errors[key],
 			});
 		}
+
+		yield call(doNotificatioErrorOpenEvent, {
+			message: "Entity dont saved",
+		});
 	}
 }
 

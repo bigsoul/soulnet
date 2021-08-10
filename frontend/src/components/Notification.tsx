@@ -8,12 +8,6 @@ import treeCancel from "./../assets/svg/tree-cancel.svg";
 import { doNotificatioClose } from "../classes/actions/INotificationAction";
 import ENotificationStatus from "../enums/ENotificationStatus";
 
-interface INotificationProps {
-	status: ENotificationStatus;
-	heading: string;
-	message: string;
-}
-
 const MainDiv = styled.div<{ color: string }>`
 	position: fixed;
 	z-index: 2;
@@ -46,8 +40,16 @@ const ButtonStyled = styled(Button)`
 	margin-left: auto;
 `;
 
+interface INotificationProps {
+	timeStart: number;
+	status: ENotificationStatus;
+	heading: string;
+	message: string;
+}
+
 const mapStateToProps = (state: IStore): INotificationProps => {
 	return {
+		timeStart: state.notification.timeStart,
 		status: state.notification.status,
 		heading: state.notification.heading,
 		message: state.notification.message,
@@ -61,7 +63,7 @@ class Notification extends PureComponent<INotificationProps> {
 	error = "#971919";
 
 	render = () => {
-		const { status, heading, message } = this.props;
+		const { status, heading, message, timeStart } = this.props;
 
 		if (status === ENotificationStatus.none) return null;
 
@@ -79,7 +81,7 @@ class Notification extends PureComponent<INotificationProps> {
 						svgPath={treeCancel}
 						onClick={() => {
 							doNotificatioClose({
-								message: "",
+								timeStart: timeStart,
 							});
 						}}
 					/>
