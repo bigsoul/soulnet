@@ -38,6 +38,8 @@ export interface IFormConfig {
 	loaded?: boolean;
 	saving?: boolean;
 	saved?: boolean;
+	BeforeWrite?: () => void;
+	AfterWrite?: () => void;
 }
 
 const formCreator = function <K extends string, T>(

@@ -22,10 +22,6 @@ import treeCancel from "./../../assets/svg/tree-cancel.svg";
 import loading from "./../../assets/gif/loading.gif";
 import Button from "./../Button";
 import { history } from "../../classes/reducers/routerReducer";
-import {
-	doNotificatioSuccessOpenEvent,
-	doNotificatioErrorOpenEvent,
-} from "../../classes/actions/INotificationAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
