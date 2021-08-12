@@ -1,11 +1,22 @@
 import { IDataItem } from "../../components/Tree/TreeItem";
 import TFormAction from "../actions/IFormAction";
 
+export interface IFormConfig {
+	controller: string;
+	loading?: boolean;
+	loaded?: boolean;
+	saving?: boolean;
+	saved?: boolean;
+	beforeWrite?: () => void;
+	afterWrite?: () => void;
+}
+
 export type FieldErrors<T> = {
 	[key in keyof T]?: string[];
 };
 
 export type FormReducer<T> = {
+	config: IFormConfig;
 	initialValues: T;
 	values: T & IDataItem;
 	errors: FieldErrors<T>;
@@ -29,6 +40,7 @@ const formsReducer = <K extends string, T, F>(
 			const newState = { ...curState };
 
 			newState[action.formKey] = {
+				config: { ...action.config },
 				initialValues: {
 					...action.values,
 					id: action.values.id
@@ -43,10 +55,10 @@ const formsReducer = <K extends string, T, F>(
 				},
 				errors: {}, // ({ ...action.values } as unknown) as FieldErrors<T>
 				isMutated: false,
-				isLoading: !!action.loading,
-				isLoaded: !!action.loaded,
-				isSaving: !!action.saving,
-				isSaved: !!action.saved,
+				isLoading: !!action.config.loading,
+				isLoaded: !!action.config.loaded,
+				isSaving: !!action.config.saving,
+				isSaved: !!action.config.saved,
 			};
 
 			for (const key in newState[action.formKey].errors) {

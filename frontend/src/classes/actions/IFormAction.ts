@@ -1,4 +1,5 @@
 import { IDataItem } from "../../components/Tree/TreeItem";
+import { IFormConfig } from "../reducers/formReducer";
 import store from "../store";
 
 export const FORM_INITIALIZE = "FORM/INITIALIZE";
@@ -19,10 +20,7 @@ export interface IFormInitializeAction<K, T> {
 	type: typeof FORM_INITIALIZE;
 	formKey: K;
 	values: T;
-	loading?: boolean;
-	loaded?: boolean;
-	saving?: boolean;
-	saved?: boolean;
+	config: IFormConfig;
 }
 
 export interface IFormChangeAction<K, T> {
@@ -36,14 +34,12 @@ export interface IFormOnLoadEventAction<K, F> {
 	type: typeof FORM_ON_LOAD_EVENT;
 	formKey: K;
 	filter: F;
-	controller: string;
 }
 
 export interface IFormOnSaveEventAction<K, T> {
 	type: typeof FORM_ON_SAVE_EVENT;
 	formKey: K;
 	values: T & IDataItem;
-	controller: string;
 }
 
 export interface IFormOnLoadAction<K, T> {
@@ -109,10 +105,7 @@ export const doInitialize = <K, T>(
 		type: FORM_INITIALIZE,
 		formKey: payload.formKey,
 		values: payload.values,
-		loading: payload.loading,
-		loaded: payload.loaded,
-		saving: payload.saving,
-		saved: payload.saved,
+		config: payload.config,
 	});
 };
 
@@ -134,7 +127,6 @@ export const doFormOnLoadEvent = <K, F>(
 		type: FORM_ON_LOAD_EVENT,
 		formKey: payload.formKey,
 		filter: payload.filter,
-		controller: payload.controller,
 	});
 };
 
@@ -145,7 +137,6 @@ export const doFormOnSaveEvent = <K, T>(
 		type: FORM_ON_SAVE_EVENT,
 		formKey: payload.formKey,
 		values: payload.values,
-		controller: payload.controller,
 	});
 };
 

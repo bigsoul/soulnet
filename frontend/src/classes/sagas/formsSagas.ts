@@ -14,17 +14,15 @@ import {
 	doNotificatioErrorOpenEvent,
 	doNotificatioSuccessOpenEvent,
 } from "../actions/INotificationAction";
+import store, { IStore } from "../store";
 
 //import store, { IStore } from "../store";
 
 function* workerFormOnLoadEvent<K extends string, T, F>(
 	action: ACT.IFormOnLoadEventAction<K, F>
 ) {
-	//const state: IStore = yield call(store.getState);
-
-	//const { forms } = state;
-
-	//if (forms[action.formKey].isLoading) return;
+	const state: IStore = yield call(store.getState);
+	const form = state.forms[action.formKey];
 
 	const requestData: REQ.ITreeRequest = {
 		dataOffset: 0,
@@ -46,7 +44,7 @@ function* workerFormOnLoadEvent<K extends string, T, F>(
 
 	const responseBody: {
 		data: RES.ITreeResultResponse<T & IDataItem>;
-	} = yield call(service.get, action.controller, requestData);
+	} = yield call(service.get, form.config.controller, requestData);
 
 	yield put<ACT.IFormOnLoadAction<K, T>>({
 		type: ACT.FORM_ON_LOAD,
@@ -67,10 +65,13 @@ function* workerFormOnLoadEvent<K extends string, T, F>(
 	});
 }
 
-function* workerFormOnSaveEvent<K, T>(
+function* workerFormOnSaveEvent<K extends string, T>(
 	action: ACT.IFormOnSaveEventAction<K, T>
 ) {
 	try {
+		const state: IStore = yield call(store.getState);
+		const form = state.forms[action.formKey];
+
 		const requestData: REQ.ITreeRequest = {
 			dataOffset: 0,
 			dataLimit: 1,
@@ -97,7 +98,7 @@ function* workerFormOnSaveEvent<K, T>(
 			data: RES.ITreeResultResponse<T & IDataItem>;
 		} = yield call(
 			saveMethod,
-			action.controller,
+			form.config.controller,
 			requestData,
 			action.values
 		);

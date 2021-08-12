@@ -7,7 +7,7 @@ import {
 	doFormOnLoadEvent,
 	doFormOnSaveEvent,
 } from "../../classes/actions/IFormAction";
-import { FormReducer } from "../../classes/reducers/formReducer";
+import { FormReducer, IFormConfig } from "../../classes/reducers/formReducer";
 import { IStore } from "../../classes/store";
 import { IDataItem } from "../Tree/TreeItem";
 
@@ -17,6 +17,7 @@ export interface IFormProps<T> {
 }
 
 export interface IFormState<T> {
+	config: IFormConfig;
 	values: T & IDataItem;
 	errors: { [key in keyof T]?: string[] };
 	isMutated: boolean;
@@ -32,16 +33,6 @@ export interface IFormDispatch<T> {
 	save: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export interface IFormConfig {
-	controller: string;
-	loading?: boolean;
-	loaded?: boolean;
-	saving?: boolean;
-	saved?: boolean;
-	BeforeWrite?: () => void;
-	AfterWrite?: () => void;
-}
-
 const formCreator = function <K extends string, T>(
 	formKey: K,
 	initialValues: T,
@@ -50,16 +41,14 @@ const formCreator = function <K extends string, T>(
 	doInitialize<K, T>({
 		formKey: formKey,
 		values: initialValues,
-		loading: config.loading,
-		loaded: config.loaded,
-		saving: config.saving,
-		saved: config.saved,
+		config: config,
 	});
 
 	const mapStateToProps = (state: IStore): IFormState<T> => {
 		const { forms } = state;
 		const form = forms[formKey] as FormReducer<T>;
 		return {
+			config: form.config,
 			values: form.values,
 			errors: form.errors,
 			isMutated: form.isMutated,
@@ -87,7 +76,6 @@ const formCreator = function <K extends string, T>(
 			doFormOnLoadEvent({
 				formKey: formKey,
 				filter: { id: this.props.entityId },
-				controller: config.controller,
 			});
 		};
 
@@ -95,7 +83,6 @@ const formCreator = function <K extends string, T>(
 			doFormOnSaveEvent({
 				formKey: formKey,
 				values: props.values,
-				controller: config.controller,
 			});
 		};
 
@@ -111,6 +98,7 @@ const formCreator = function <K extends string, T>(
 
 			return (
 				<RenderProp
+					config={props.config}
 					values={props.values}
 					errors={props.errors}
 					change={this.changeHendler}
@@ -142,6 +130,7 @@ const formCreator = function <K extends string, T>(
 				doInitialize<typeof formKey, T>({
 					formKey: formKey,
 					values: initialValues,
+					config: config,
 				});
 			}
 		};
@@ -159,6 +148,7 @@ const formCreator = function <K extends string, T>(
 				doInitialize<typeof formKey, T>({
 					formKey: formKey,
 					values: initialValues,
+					config: config,
 				});
 			}
 		};

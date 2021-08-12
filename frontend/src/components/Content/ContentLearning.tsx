@@ -268,7 +268,6 @@ class ContentLearning extends PureComponent<IContentLearningProps> {
 														...props.dataItem,
 														isArchive: true,
 													},
-													controller: controller,
 												});
 											}}
 										/>
