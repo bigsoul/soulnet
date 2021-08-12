@@ -1,14 +1,14 @@
 import { IDataItem } from "../../components/Tree/TreeItem";
 import TFormAction from "../actions/IFormAction";
 
-export interface IFormConfig {
+export interface IFormConfig<T> {
 	controller: string;
 	loading?: boolean;
 	loaded?: boolean;
 	saving?: boolean;
 	saved?: boolean;
-	beforeWrite?: () => void;
-	afterWrite?: () => void;
+	beforeWrite?: () => boolean;
+	afterWrite?: (isNew: boolean, Entity: T & IDataItem) => boolean;
 }
 
 export type FieldErrors<T> = {
@@ -16,7 +16,7 @@ export type FieldErrors<T> = {
 };
 
 export type FormReducer<T> = {
-	config: IFormConfig;
+	config: IFormConfig<T>;
 	initialValues: T;
 	values: T & IDataItem;
 	errors: FieldErrors<T>;

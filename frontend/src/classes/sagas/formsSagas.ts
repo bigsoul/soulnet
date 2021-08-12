@@ -124,12 +124,21 @@ function* workerFormOnSaveEvent<K extends string, T>(
 			saved: true,
 		});
 
-		yield call(doNotificatioSuccessOpenEvent, {
-			heading: "Success",
-			message: "Entity was saved",
-		});
+		let standardProcessing = true;
 
-		if (isNew) history.push(`/learning/${Entity.id}`);
+		if (form.config.afterWrite)
+			standardProcessing = yield call(
+				form.config.afterWrite,
+				isNew,
+				Entity
+			);
+
+		if (standardProcessing) {
+			yield call(doNotificatioSuccessOpenEvent, {
+				heading: "Success",
+				message: "Entity was saved",
+			});
+		}
 	} catch (err) {
 		yield put<ACT.IFormIsSavingAction<K>>({
 			type: ACT.FORM_IS_SAVING,

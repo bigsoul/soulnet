@@ -113,12 +113,18 @@ export const LearningFormDataDefault: ILearningFormData = {
 	state: ELearningState.Config,
 };
 
+const afterWrite = (isNew: boolean, Entity: ILearningFormData) => {
+	if (isNew) history.push(`/learning/${Entity.id}`);
+
+	return true;
+};
+
 const Form = formCreator<typeof formKey, ILearningFormData>(
 	formKey,
 	LearningFormDataDefault,
 	{
 		controller: controller,
-		loading: true,
+		afterWrite: afterWrite,
 	}
 );
 

@@ -17,7 +17,7 @@ export interface IFormProps<T> {
 }
 
 export interface IFormState<T> {
-	config: IFormConfig;
+	config: IFormConfig<T>;
 	values: T & IDataItem;
 	errors: { [key in keyof T]?: string[] };
 	isMutated: boolean;
@@ -36,7 +36,7 @@ export interface IFormDispatch<T> {
 const formCreator = function <K extends string, T>(
 	formKey: K,
 	initialValues: T,
-	config: IFormConfig
+	config: IFormConfig<T>
 ) {
 	doInitialize<K, T>({
 		formKey: formKey,

@@ -20,7 +20,7 @@ export interface IFormInitializeAction<K, T> {
 	type: typeof FORM_INITIALIZE;
 	formKey: K;
 	values: T;
-	config: IFormConfig;
+	config: IFormConfig<T>;
 }
 
 export interface IFormChangeAction<K, T> {
