@@ -1,12 +1,11 @@
 import service from "../utils/service";
 
 import { call, put, takeEvery } from "redux-saga/effects";
+import store, { IStore } from "../store";
 
 import * as ACT from "../actions/IFormAction";
 import * as REQ from "../../interfaces/IRequest";
 import * as RES from "../../interfaces/IResponse";
-
-import { history } from "../../classes/reducers/routerReducer";
 
 import { EmptyGuid } from "../..";
 import { IDataItem } from "../../components/Tree/TreeItem";
@@ -14,7 +13,6 @@ import {
 	doNotificatioErrorOpenEvent,
 	doNotificatioSuccessOpenEvent,
 } from "../actions/INotificationAction";
-import store, { IStore } from "../store";
 
 //import store, { IStore } from "../store";
 
@@ -146,24 +144,30 @@ function* workerFormOnSaveEvent<K extends string, T>(
 			saving: false,
 		});
 
-		const errors = err.response.data.errors;
+		if (err.response === undefined) {
+			yield call(doNotificatioErrorOpenEvent, {
+				message: err.message,
+			});
+		} else {
+			const errors = err.response.data.errors;
 
-		for (const key in errors) {
-			const keyLcc = (key.charAt(0) === "$"
-				? key.slice(2)
-				: key.charAt(0).toLowerCase() + key.slice(1)) as keyof T;
+			for (const key in errors) {
+				const keyLcc = (key.charAt(0) === "$"
+					? key.slice(2)
+					: key.charAt(0).toLowerCase() + key.slice(1)) as keyof T;
 
-			yield put<ACT.IFormFieldErrorAction<K, T>>({
-				type: ACT.FORM_FIELD_ERROR,
-				formKey: action.formKey,
-				field: keyLcc,
-				value: errors[key],
+				yield put<ACT.IFormFieldErrorAction<K, T>>({
+					type: ACT.FORM_FIELD_ERROR,
+					formKey: action.formKey,
+					field: keyLcc,
+					value: errors[key],
+				});
+			}
+
+			yield call(doNotificatioErrorOpenEvent, {
+				message: "Entity dont saved",
 			});
 		}
-
-		yield call(doNotificatioErrorOpenEvent, {
-			message: "Entity dont saved",
-		});
 	}
 }
 

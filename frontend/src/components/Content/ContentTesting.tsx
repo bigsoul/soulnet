@@ -28,9 +28,14 @@ import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
 import store, { IStore } from "../../classes/store";
 import {
+	doTreeClearCurrentRows,
 	doTreeIsVisible,
 	doTreeOnLoadEvent,
 } from "../../classes/actions/ITreeAction";
+import TestingForm from "../Forms/TestingForm";
+import { match } from "react-router";
+import { EmptyGuid } from "../..";
+import { history } from "../../classes/reducers/routerReducer";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -84,6 +89,11 @@ const StoringContainer = styled(BasisContainer)<{
 	position: relative;
 `;
 
+const ItemContainer = styled.div`
+	width: 100%;
+	height: 100%;
+`;
+
 const controller = "/testings";
 const filterRunning = { isArchive: false };
 const filterStoring = { isArchive: true };
@@ -107,6 +117,7 @@ interface IContentTestingProps {
 	runningIsLoading: boolean;
 	storingIsVisible: boolean;
 	storingIsLoading: boolean;
+	match?: match<{ id: string }>;
 }
 
 const mapStateToProps = (state: IStore): IContentTestingProps => {
@@ -168,12 +179,17 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 		});
 	};
 
+	hendlerTreeAdd = () => {
+		history.push(`/testing/${EmptyGuid}`);
+	};
+
 	render = () => {
 		const {
 			runningIsVisible,
 			runningIsLoading,
 			storingIsVisible,
 			storingIsLoading,
+			match,
 		} = this.props;
 
 		return (
@@ -187,7 +203,11 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 								svgPath={treeRefresh}
 								onClick={this.hendlerTreeRefresh}
 							/>
-							<ButtonStyled template="icon" svgPath={treeAdd} />
+							<ButtonStyled
+								template="icon"
+								svgPath={treeAdd}
+								onClick={this.hendlerTreeAdd}
+							/>
 						</TreeColumn>
 					</TreeHeader>
 					<TreeBranchStyled>
@@ -214,10 +234,23 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
+							currentRow={match?.params.id}
 						>
 							{(props: ITreeItemProps<ITesting>) => {
 								return (
-									<TreeItemStyled level={1}>
+									<TreeItemStyled
+										level={1}
+										selected={props.dataItem.selected}
+										onClick={() => {
+											doTreeClearCurrentRows({
+												listKey:
+													ETreeList.TestingStoring,
+											});
+											history.push(
+												`/testing/${props.dataItem.id}`
+											);
+										}}
+									>
 										<TreeColumn>
 											<IconStyled path={entityTesting} />
 											{props.dataItem.name}
@@ -258,10 +291,23 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
+							currentRow={match?.params.id}
 						>
 							{(props: ITreeItemProps<ITesting>) => {
 								return (
-									<TreeItemStyled level={1}>
+									<TreeItemStyled
+										level={1}
+										selected={props.dataItem.selected}
+										onClick={() => {
+											doTreeClearCurrentRows({
+												listKey:
+													ETreeList.TestingRunning,
+											});
+											history.push(
+												`/testing/${props.dataItem.id}`
+											);
+										}}
+									>
 										<TreeColumn>
 											<IconStyled path={entityTesting} />
 											{props.dataItem.name}
@@ -276,6 +322,9 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 						</TreeListStoring>
 					</StoringContainer>
 				</Tree>
+				<ItemContainer>
+					<TestingForm entityId={this.props.match?.params.id} />
+				</ItemContainer>
 			</Content>
 		);
 	};

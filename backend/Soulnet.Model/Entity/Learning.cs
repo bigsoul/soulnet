@@ -17,6 +17,5 @@ namespace Soulnet.Model.Entity
         public int DeepLayersCount { get; set; }
         public Guid DatasetId { get; set; }
         public string DatasetName { get; set; }
-        public List<Testing> Testing { get; set; }
     }
 }

@@ -24,6 +24,21 @@ namespace Soulnet.Api.Controllers
             this.testingRepository = testingRepository;
         }
 
+        [HttpPost]
+        public ActionResult<TreeResultViewModel<TestingViewModel>> Post(int dataOffset, int dataLimit, string filter, 
+                                                                                        [FromBody]TestingViewModel model)
+        {
+            var id = new Guid(model.Id);
+
+            if (id != Guid.Empty) {
+                throw new ArgumentException("The id field must be empty");
+            }
+
+            model.Id = Guid.NewGuid().ToString();
+            
+            return Ok();
+        }
+
         [HttpGet]
         public ActionResult<TreeResultViewModel<TestingViewModel>> Get(int dataOffset, int dataLimit, string filter)
         {
@@ -55,6 +70,19 @@ namespace Soulnet.Api.Controllers
                 DataLimit = section.DataLimit,
                 List = result
             });
+        }
+
+        [HttpPut]
+        public ActionResult<TreeResultViewModel<LearningViewModel>> Put(int dataOffset, int dataLimit, string filter, 
+                                                                                        [FromBody]LearningViewModel model)
+        {
+            return Ok();
+        }
+
+        [HttpDelete]
+        public ActionResult Delete(int dataOffset, int dataLimit, string filter)
+        {
+            return Ok();
         }
     } 
 }

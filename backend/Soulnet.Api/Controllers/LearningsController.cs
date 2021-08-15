@@ -49,7 +49,6 @@ namespace Soulnet.Api.Controllers
                 DeepLayersCount = model.DeepLayersCount,
                 DatasetId = new Guid(model.DatasetId),
                 DatasetName = model.DatasetName,
-                Testing = new List<Testing>()
             });
 
             return Ok(new TreeResultViewModel<LearningViewModel> {
@@ -106,7 +105,6 @@ namespace Soulnet.Api.Controllers
                 DeepLayersCount = model.DeepLayersCount,
                 DatasetId = new Guid(model.DatasetId),
                 DatasetName = model.DatasetName,
-                Testing = new List<Testing>()
             });
 
             return Ok(new TreeResultViewModel<LearningViewModel> {

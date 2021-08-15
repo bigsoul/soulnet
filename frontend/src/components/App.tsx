@@ -37,7 +37,7 @@ function App() {
 					path="/learning/:id?"
 					component={ContentLearning}
 				/>
-				<Route exact path="/testing" component={ContentTesting} />
+				<Route exact path="/testing/:id?" component={ContentTesting} />
 				<Route exact path="/results" component={ContentResults} />
 				<Redirect to="/" />
 			</Switch>

@@ -87,7 +87,6 @@ const TreeItemStyled = styled(TreeItem)<{ level: number }>`
 `;
 
 export const formKey = "LearningForm";
-const controller = "/learnings";
 
 interface ILearningFormProps {
 	entityId?: string;
@@ -123,7 +122,7 @@ const Form = formCreator<typeof formKey, ILearningFormData>(
 	formKey,
 	LearningFormDataDefault,
 	{
-		controller: controller,
+		controller: "/learnings",
 		afterWrite: afterWrite,
 	}
 );

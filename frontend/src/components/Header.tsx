@@ -50,6 +50,7 @@ interface IHeaderProps {
 	isAuth: boolean;
 	pathname: string;
 	learningId: string;
+	testingId: string;
 }
 
 function Header(props: IHeaderProps) {
@@ -84,7 +85,9 @@ function Header(props: IHeaderProps) {
 							Learning
 						</ButtonStyled>
 						<ButtonStyled
-							path={testing}
+							path={`${testing}${
+								props.testingId && "/" + props.testingId
+							}`}
 							svgPath={entityTesting}
 							selected={pathname.startsWith(testing)}
 						>
@@ -109,6 +112,8 @@ function Header(props: IHeaderProps) {
 const mapStateToProps = (state: IStore): IHeaderProps => {
 	const { user, tree } = state;
 
+	// learning
+
 	const lerningTreeRunning = tree[ETreeList.LearningRunning];
 	const lerningTreeStoring = tree[ETreeList.LearningStoring];
 
@@ -120,10 +125,24 @@ const mapStateToProps = (state: IStore): IHeaderProps => {
 		learningId = lerningTreeStoring.currentRows[0];
 	}
 
+	// testing
+
+	const testingTreeRunning = tree[ETreeList.TestingRunning];
+	const testingTreeStoring = tree[ETreeList.TestingStoring];
+
+	let testingId = "";
+
+	if (testingTreeRunning.currentRows.length) {
+		testingId = testingTreeRunning.currentRows[0];
+	} else if (testingTreeStoring.currentRows.length) {
+		testingId = testingTreeStoring.currentRows[0];
+	}
+
 	return {
 		isAuth: user.isAuth,
 		pathname: state.router.location.pathname,
 		learningId: learningId,
+		testingId: testingId,
 	};
 };
 
