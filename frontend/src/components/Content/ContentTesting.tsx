@@ -32,10 +32,11 @@ import {
 	doTreeIsVisible,
 	doTreeOnLoadEvent,
 } from "../../classes/actions/ITreeAction";
-import TestingForm from "../Forms/TestingForm";
+import TestingForm, { formKey } from "../Forms/TestingForm";
 import { match } from "react-router";
 import { EmptyGuid } from "../..";
 import { history } from "../../classes/reducers/routerReducer";
+import { doFormOnSaveEvent } from "../../classes/actions/IFormAction";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -261,6 +262,15 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 										<ButtonStyled
 											template="icon"
 											svgPath={treeFolder}
+											onClick={() => {
+												doFormOnSaveEvent({
+													formKey: formKey,
+													values: {
+														...props.dataItem,
+														isArchive: true,
+													},
+												});
+											}}
 										/>
 									</TreeItemStyled>
 								);

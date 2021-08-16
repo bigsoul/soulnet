@@ -54,7 +54,7 @@ namespace Soulnet.Data.Repositories
                                 CASE WHEN @IsArchive IS NULL THEN true ELSE ""Testing"".""IsArchive"" = @IsArchive END
                                 AND
                                 CASE WHEN @Id IS NULL THEN true ELSE ""Testing"".""Id"" = @Id END
-                            ORDER BY ""Name"" ASC LIMIT 1 OFFSET 0;"; 
+                            ORDER BY ""Name"" ASC LIMIT @Limit OFFSET @Offset;"; 
 
                 result = db.Query<Testing>(query, new {
                     Offset = dataOffset, 
@@ -115,7 +115,7 @@ namespace Soulnet.Data.Repositories
                               )
                               VALUES (
                                 @Id, @Name, @State, @IsArchive, @IterationCount, @IterationCurrent,
-                                @StopLossPercent, @StartDeposit, @DatasetId, 
+                                @StopLossPercent, @StartDeposit, @LearningId, @DatasetId 
                               );"; 
 
                 db.Query<Testing>(query, new {
@@ -145,7 +145,7 @@ namespace Soulnet.Data.Repositories
                                 ""StopLossPercent"" = @StopLossPercent,
                                 ""StartDeposit"" = @StartDeposit,
                                 ""LearningId"" = @LearningId,
-                                ""DatasetId"" = @DatasetId,                                
+                                ""DatasetId"" = @DatasetId                                
                               WHERE 
                                 ""Id"" = @Id;"; 
 
