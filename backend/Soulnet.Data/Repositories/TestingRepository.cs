@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +12,8 @@ using Microsoft.Extensions.Configuration;
 namespace Soulnet.Data.Repositories 
 {
     public class TestingFilter {
-        public bool IsArchive { get; set; }
+        public Guid? Id { get; set; }
+        public bool? IsArchive { get; set; }
     }
 
     public class TestingRepository : EntityBaseRepository<Testing>
@@ -40,15 +43,24 @@ namespace Soulnet.Data.Repositories
                                 public.""Testing"".""StartDeposit"",
                                 public.""Testing"".""EndDeposit"",
                                 public.""Testing"".""LearningId"",
-                                public.""Testing"".""DatasetId""
-                              FROM public.""Testing"" 
-                              WHERE ""IsArchive"" = @IsArchive 
-                              ORDER BY ""Name"" ASC LIMIT @Limit OFFSET @Offset;"; 
+                                public.""Learning"".""Name"" AS ""LearningName"",
+                                public.""Testing"".""DatasetId"",
+                                public.""Dataset"".""Name"" AS ""DatasetName""
+                            FROM 
+                                public.""Testing"" 
+                                LEFT OUTER JOIN public.""Dataset"" ON (public.""Testing"".""DatasetId"" = public.""Dataset"".""Id"")
+                                LEFT OUTER JOIN public.""Learning"" ON (public.""Testing"".""LearningId"" = public.""Learning"".""Id"")
+                            WHERE 
+                                CASE WHEN @IsArchive IS NULL THEN true ELSE ""Testing"".""IsArchive"" = @IsArchive END
+                                AND
+                                CASE WHEN @Id IS NULL THEN true ELSE ""Testing"".""Id"" = @Id END
+                            ORDER BY ""Name"" ASC LIMIT 1 OFFSET 0;"; 
 
                 result = db.Query<Testing>(query, new {
                     Offset = dataOffset, 
                     Limit = dataLimit,
-                    IsArchive = filter.IsArchive
+                    IsArchive = filter.IsArchive,
+                    Id = filter.Id
                 });
 
                 if (result.Count() == dataLimit) {
@@ -65,7 +77,8 @@ namespace Soulnet.Data.Repositories
                     result = db.Query<Testing>(query, new {
                         Offset = dataOffsetMax - dataLimit, 
                         Limit = dataLimit,
-                        IsArchive = filter.IsArchive
+                        IsArchive = filter.IsArchive,
+                        Id = filter.Id
                     });
 
                     return new Section<Testing> {
@@ -78,7 +91,8 @@ namespace Soulnet.Data.Repositories
                 result = db.Query<Testing>(query, new {
                     Offset = 0, 
                     Limit = dataLimit,
-                    IsArchive = filter.IsArchive
+                    IsArchive = filter.IsArchive,
+                    Id = filter.Id
                 });
             }
 

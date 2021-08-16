@@ -14,6 +14,7 @@ import loading from "./../../assets/gif/loading.gif";
 import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeCancel from "./../../assets/svg/tree-cancel.svg";
 import { history } from "../../classes/reducers/routerReducer";
+import Edit from "../Edit";
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;
@@ -21,6 +22,21 @@ const IconStyled = styled(Icon)`
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
+`;
+
+const FormStyled = styled.form`
+	display: flex;
+	align-items: start;
+	justify-content: center;
+	flex-direction: column;
+	padding-top: 10px;
+	padding-left: 6px;
+`;
+
+const NameStyled = styled(Edit)`
+	margin-bottom: 10px;
+	width: 400px;
+	text-align: left;
 `;
 
 interface ITestingFormProps {
@@ -96,7 +112,23 @@ class TestingForm extends PureComponent<ITestingFormProps> {
 		);
 	};
 
-	renderBody = (props: ChildrenProps) => {};
+	renderBody = (props: ChildrenProps) => {
+		const { values, errors, change, save } = props;
+
+		return (
+			<FormStyled onSubmit={save}>
+				<NameStyled
+					name="name"
+					type="text"
+					placeholder="Learning name"
+					autoComplete="off"
+					value={values.name}
+					onChange={(value) => change("name", value)}
+					error={errors.name}
+				/>
+			</FormStyled>
+		);
+	};
 
 	renderForm = (props: ChildrenProps) => {
 		return (
