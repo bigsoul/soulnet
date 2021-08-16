@@ -114,7 +114,6 @@ export const LearningFormDataDefault: ILearningFormData = {
 
 const afterWrite = (isNew: boolean, Entity: ILearningFormData) => {
 	if (isNew) history.push(`/learning/${Entity.id}`);
-
 	return true;
 };
 
