@@ -31,7 +31,7 @@ function App() {
 				<Route exact path="/" component={Content} />
 				<Route exact path="/signin" component={ContentSignIn} />
 				<Route exact path="/signup" component={ContentSignUp} />
-				<Route exact path="/dataset" component={ContentDataset} />
+				<Route exact path="/dataset/:id?" component={ContentDataset} />
 				<Route
 					exact
 					path="/learning/:id?"

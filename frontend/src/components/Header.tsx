@@ -51,6 +51,7 @@ interface IHeaderProps {
 	pathname: string;
 	learningId: string;
 	testingId: string;
+	datasetId: string;
 }
 
 function Header(props: IHeaderProps) {
@@ -69,7 +70,9 @@ function Header(props: IHeaderProps) {
 				{props.isAuth && (
 					<>
 						<ButtonStyled
-							path={dataset}
+							path={`${dataset}${
+								props.datasetId && "/" + props.datasetId
+							}`}
 							svgPath={entityDataset}
 							selected={pathname.startsWith(dataset)}
 						>
@@ -138,11 +141,22 @@ const mapStateToProps = (state: IStore): IHeaderProps => {
 		testingId = testingTreeStoring.currentRows[0];
 	}
 
+	// dataset
+
+	const datasetTree = tree[ETreeList.Dataset];
+
+	let datasetId = "";
+
+	if (datasetTree.currentRows.length) {
+		datasetId = datasetTree.currentRows[0];
+	}
+
 	return {
 		isAuth: user.isAuth,
 		pathname: state.router.location.pathname,
 		learningId: learningId,
 		testingId: testingId,
+		datasetId: datasetId,
 	};
 };
 

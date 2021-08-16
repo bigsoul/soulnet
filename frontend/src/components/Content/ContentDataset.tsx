@@ -22,8 +22,14 @@ import IDataset from "../../interfaces/IDataset";
 import treeListCreator from "../Tree/TreeList";
 import ETreeList from "../../enums/ETreeList";
 
-import { doTreeOnLoadEvent } from "../../classes/actions/ITreeAction";
+import {
+	doTreeClearCurrentRows,
+	doTreeOnLoadEvent,
+} from "../../classes/actions/ITreeAction";
 import store, { IStore } from "../../classes/store";
+import DatasetForm from "../Forms/DatasetForm";
+import { match } from "react-router";
+import { history } from "../../classes/reducers/routerReducer";
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;
@@ -51,12 +57,18 @@ const TreeListContainer = styled(BasisContainer)`
 	position: relative;
 `;
 
+const ItemContainer = styled.div`
+	width: 100%;
+	height: 100%;
+`;
+
 const TreeList = treeListCreator<ETreeList, IDataset>(ETreeList.Dataset, {
 	controller: "/datasets",
 });
 
 interface IContentDatasetProps {
 	isLoading: boolean;
+	match?: match<{ id: string }>;
 }
 
 const mapStateToProps = (state: IStore): IContentDatasetProps => {
@@ -86,7 +98,7 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 	};
 
 	render = () => {
-		const { isLoading } = this.props;
+		const { isLoading, match } = this.props;
 
 		return (
 			<Content>
@@ -109,10 +121,22 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 							dataItemHeight={30}
 							preLoaderUpMaxHeight={150}
 							preLoaderDownMaxHeight={150}
+							currentRow={match?.params.id}
 						>
 							{(props: ITreeItemProps<IDataset>) => {
 								return (
-									<TreeItemStyled level={1}>
+									<TreeItemStyled
+										level={1}
+										selected={props.dataItem.selected}
+										onClick={() => {
+											doTreeClearCurrentRows({
+												listKey: ETreeList.Dataset,
+											});
+											history.push(
+												`/dataset/${props.dataItem.id}`
+											);
+										}}
+									>
 										<TreeColumn>
 											<IconStyled path={entityDataset} />
 											{props.dataItem.name}
@@ -127,6 +151,11 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 						</TreeList>
 					</TreeListContainer>
 				</Tree>
+				<ItemContainer>
+					<DatasetForm
+						entityId={this.props.match?.params.id}
+					></DatasetForm>
+				</ItemContainer>
 			</Content>
 		);
 	};

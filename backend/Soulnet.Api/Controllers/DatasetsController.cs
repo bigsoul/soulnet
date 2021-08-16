@@ -43,7 +43,7 @@ namespace Soulnet.Api.Controllers
 
             return Ok(new TreeResultViewModel<DatasetViewModel> {
                 DataOffset = section.DataOffset,
-                DataLimit = section.DataLimit,
+                DataLimit = dataLimit,
                 List = result
             });
         }
