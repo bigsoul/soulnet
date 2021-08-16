@@ -22,6 +22,7 @@ import treeListCreator from "../Tree/TreeList";
 import IDataset from "../../interfaces/IDataset";
 import Select from "../Select";
 import entityDataset from "./../../assets/svg/entity-dataset.svg";
+import ILearning from "../../interfaces/ILearning";
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;
@@ -77,6 +78,15 @@ const TreeItemStyled = styled(TreeItem)<{ level: number }>`
 	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
 `;
 
+const EditStyled10 = styled(Edit)`
+	margin-bottom: 10px;
+	width: 101px;
+`;
+
+const ButtonSave = styled(Button)`
+	margin-top: 10px;
+`;
+
 interface ITestingFormProps {
 	entityId?: string;
 }
@@ -119,6 +129,15 @@ const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
 	ETreeList.TestingDatasetSelect,
 	{
 		controller: "/datasets",
+		visible: false,
+		selectMode: true,
+	}
+);
+
+const LearningList = treeListCreator<ETreeList, ILearning, {}>(
+	ETreeList.TestingLearningSelect,
+	{
+		controller: "/learnings",
 		visible: false,
 		selectMode: true,
 	}
@@ -218,6 +237,71 @@ class TestingForm extends PureComponent<ITestingFormProps> {
 						</DatasetList>
 					</TreeListContainer>
 				</SelectStyled>
+				<SelectStyled
+					listKey={ETreeList.TestingLearningSelect}
+					name="learning"
+					type="text"
+					placeholder="Select learning"
+					autoComplete={"off"}
+					value={values.learningName}
+					onChange={(value) => change("learningName", value)}
+				>
+					<TreeListContainer>
+						<LearningList
+							filter={{}}
+							dataItemHeight={30}
+							preLoaderUpMaxHeight={150}
+							preLoaderDownMaxHeight={150}
+						>
+							{(props: ITreeItemProps<ILearning>) => {
+								return (
+									<TreeItemStyled
+										level={1}
+										onClick={() => {
+											change(
+												"learningName",
+												props.dataItem.name
+											);
+											change(
+												"learningId",
+												props.dataItem.id
+											);
+											doTreeIsVisibleConvert({
+												listKey:
+													ETreeList.TestingLearningSelect,
+											});
+										}}
+									>
+										<TreeColumn>
+											<IconStyled path={entityDataset} />
+											{props.dataItem.name}
+										</TreeColumn>
+									</TreeItemStyled>
+								);
+							}}
+						</LearningList>
+					</TreeListContainer>
+				</SelectStyled>
+				<EditStyled10
+					name="stopLossPercent"
+					type="number"
+					placeholder="input stop loss percent"
+					autoComplete="off"
+					value={values.stopLossPercent}
+					onChange={(value) => change("stopLossPercent", value)}
+					error={errors.stopLossPercent}
+				/>
+				<EditStyled10
+					name="startDeposit"
+					type="number"
+					placeholder="deep start deposit"
+					autoComplete="off"
+					value={values.startDeposit}
+					onChange={(value) => change("startDeposit", value)}
+					error={errors.startDeposit}
+				/>
+				<label>{"state: " + ETestingState[props.values.state]}</label>
+				<ButtonSave type="submit">Save</ButtonSave>
 			</FormStyled>
 		);
 	};

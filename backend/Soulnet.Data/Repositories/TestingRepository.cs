@@ -103,30 +103,76 @@ namespace Soulnet.Data.Repositories
             };
         }
 
-        public void Create(Learning model)
+        public void Create(Testing model)
         {
             var connectionString = _configuration.GetConnectionString("SoulnetContext");
 
             using(IDbConnection db = new NpgsqlConnection(connectionString)) {
-                var query = @"INSERT INTO public.""Learning"" (
+                var query = @"INSERT INTO public.""Testing"" (
                                 ""Id"", ""Name"", ""State"", ""IsArchive"", ""IterationCount"", 
-                                ""IterationCurrent"", ""InputNeuronsCount"", ""DeepLayersCount"", ""DatasetId""
+                                ""IterationCurrent"", ""StopLossPercent"", ""StartDeposit"", 
+                                ""LearningId"", ""DatasetId""
                               )
                               VALUES (
                                 @Id, @Name, @State, @IsArchive, @IterationCount, @IterationCurrent,
-                                @InputNeuronsCount, @DeepLayersCount, @DatasetId
+                                @StopLossPercent, @StartDeposit, @DatasetId, 
                               );"; 
 
-                db.Query<Learning>(query, new {
+                db.Query<Testing>(query, new {
                     Id = model.Id,
                     Name = model.Name,
                     State = model.State,
                     IsArchive = model.IsArchive,
                     IterationCount = model.IterationCount,
                     IterationCurrent = model.IterationCurrent,
-                    InputNeuronsCount = model.InputNeuronsCount,
-                    DeepLayersCount = model.DeepLayersCount,
+                    StopLossPercent = model.StopLossPercent,
+                    StartDeposit = model.StartDeposit,
+                    LearningId = model.LearningId,
                     DatasetId = model.DatasetId,
+                });
+            }
+        }
+
+        public void Update(Testing model) {
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
+                var query = @"UPDATE
+                                public.""Testing""
+                              SET
+                                ""Name"" = @Name,
+                                ""IsArchive"" = @IsArchive,                                
+                                ""StopLossPercent"" = @StopLossPercent,
+                                ""StartDeposit"" = @StartDeposit,
+                                ""LearningId"" = @LearningId,
+                                ""DatasetId"" = @DatasetId,                                
+                              WHERE 
+                                ""Id"" = @Id;"; 
+
+                db.Query<Testing>(query, new {
+                    Id = model.Id,
+                    Name = model.Name,
+                    IsArchive = model.IsArchive,                    
+                    StopLossPercent = model.StopLossPercent,
+                    StartDeposit = model.StartDeposit,
+                    LearningId = model.LearningId,
+                    DatasetId = model.DatasetId,
+                });
+            }
+        }
+
+        public void Delete(Guid id)
+        {
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+            
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
+                var query = @"DELETE FROM
+                                public.""Testing""
+                              WHERE 
+                                ""Id"" = @Id;"; 
+
+                db.Query<Testing>(query, new {
+                    Id = id,
                 });
             }
         }
