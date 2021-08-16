@@ -117,11 +117,17 @@ export const TestingFormDataDefault: ITestingFormData = {
 
 export const formKey = "TestingForm";
 
+const afterWrite = (isNew: boolean, Entity: ITestingFormData) => {
+	if (isNew) history.push(`/testing/${Entity.id}`);
+	return true;
+};
+
 const Form = formCreator<typeof formKey, ITestingFormData>(
 	formKey,
 	TestingFormDataDefault,
 	{
 		controller: "/testings",
+		afterWrite: afterWrite,
 	}
 );
 

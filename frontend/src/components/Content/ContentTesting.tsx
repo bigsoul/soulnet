@@ -30,6 +30,7 @@ import store, { IStore } from "../../classes/store";
 import {
 	doTreeClearCurrentRows,
 	doTreeIsVisible,
+	doTreeOnDeleteEvent,
 	doTreeOnLoadEvent,
 } from "../../classes/actions/ITreeAction";
 import TestingForm, { formKey } from "../Forms/TestingForm";
@@ -325,6 +326,14 @@ class ContentTesting extends PureComponent<IContentTestingProps> {
 										<ButtonStyled
 											template="icon"
 											svgPath={treeDelete}
+											onClick={() => {
+												doTreeOnDeleteEvent({
+													listKey:
+														ETreeList.TestingStoring,
+													id: props.dataItem.id,
+													controller: controller,
+												});
+											}}
 										/>
 									</TreeItemStyled>
 								);
