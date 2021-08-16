@@ -85,7 +85,7 @@ namespace Soulnet.Api.Controllers
 
             return Ok(new TreeResultViewModel<LearningViewModel> {
                 DataOffset = section.DataOffset,
-                DataLimit = section.DataLimit,
+                DataLimit = dataLimit,
                 List = result
             });
         }
