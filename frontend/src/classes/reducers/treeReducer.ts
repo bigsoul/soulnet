@@ -47,6 +47,8 @@ const treeList = {
 const preloadedState: unknown = {
 	Dataset: { ...treeList },
 	DatasetLearningSelect: { ...treeList },
+	TestingLearningSelect: { ...treeList },
+	TestingDatasetSelect: { ...treeList },
 	LearningRunning: { ...treeList },
 	LearningStoring: { ...treeList },
 	TestingRunning: { ...treeList },

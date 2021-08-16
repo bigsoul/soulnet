@@ -13,6 +13,8 @@ namespace Soulnet.Api.ViewModels
 	    public float StartDeposit { get; set; }
 	    public float EndDeposit { get; set; }
 	    public string LearningId { get; set; }
+		public string LearningName { get; set; }
 	    public string DatasetId { get; set; }
+		public string DatasetName { get; set; }
     }
 }

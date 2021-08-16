@@ -61,7 +61,9 @@ namespace Soulnet.Api.Controllers
                     StartDeposit = item.StartDeposit,
                     EndDeposit = item.EndDeposit,
                     LearningId = item.LearningId.ToString(),
-                    DatasetId = item.DatasetId.ToString()
+                    LearningName = item.LearningName,
+                    DatasetId = item.DatasetId.ToString(),
+                    DatasetName = item.DatasetName
                 });  
             }
 

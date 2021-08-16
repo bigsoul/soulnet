@@ -1,6 +1,9 @@
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { doTreeClearCurrentRows } from "../../classes/actions/ITreeAction";
+import {
+	doTreeClearCurrentRows,
+	doTreeIsVisibleConvert,
+} from "../../classes/actions/ITreeAction";
 import ETestingState from "../../enums/ETestingState";
 import ETreeList from "../../enums/ETreeList";
 import Button from "../Button";
@@ -8,13 +11,17 @@ import formCreator, { IFormDispatch, IFormState } from "../Form/Form";
 import Icon from "../Icon";
 import TreeColumn from "../Tree/TreeColumn";
 import TreeHeader from "../Tree/TreeHeader";
-import { IDataItem } from "../Tree/TreeItem";
+import TreeItem, { IDataItem, ITreeItemProps } from "../Tree/TreeItem";
 import treeTree from "./../../assets/svg/tree-tree.svg";
 import loading from "./../../assets/gif/loading.gif";
 import treeRefresh from "./../../assets/svg/tree-refresh.svg";
 import treeCancel from "./../../assets/svg/tree-cancel.svg";
 import { history } from "../../classes/reducers/routerReducer";
 import Edit from "../Edit";
+import treeListCreator from "../Tree/TreeList";
+import IDataset from "../../interfaces/IDataset";
+import Select from "../Select";
+import entityDataset from "./../../assets/svg/entity-dataset.svg";
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;
@@ -37,6 +44,37 @@ const NameStyled = styled(Edit)`
 	margin-bottom: 10px;
 	width: 400px;
 	text-align: left;
+`;
+
+const SelectStyled = styled(Select)`
+	margin-bottom: 10px;
+	width: 400px;
+	text-align: left;
+`;
+
+const BasisContainer = styled.div`
+	overflow-y: scroll;
+	&::-webkit-scrollbar {
+		width: 0px;
+	}
+	scrollbar-width: none;
+`;
+
+const TreeListContainer = styled(BasisContainer)`
+	height: 200px;
+	width: 400px;
+	overflow: hidden;
+	border: 1px solid #00f0ff;
+	border-top: none;
+	box-sizing: border-box;
+	position: absolute;
+	background-color: black;
+	z-index: 1;
+	margin-top: -10px;
+`;
+
+const TreeItemStyled = styled(TreeItem)<{ level: number }>`
+	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
 `;
 
 interface ITestingFormProps {
@@ -74,6 +112,15 @@ const Form = formCreator<typeof formKey, ITestingFormData>(
 	TestingFormDataDefault,
 	{
 		controller: "/testings",
+	}
+);
+
+const DatasetList = treeListCreator<ETreeList, IDataset, {}>(
+	ETreeList.TestingDatasetSelect,
+	{
+		controller: "/datasets",
+		visible: false,
+		selectMode: true,
 	}
 );
 
@@ -120,12 +167,57 @@ class TestingForm extends PureComponent<ITestingFormProps> {
 				<NameStyled
 					name="name"
 					type="text"
-					placeholder="Learning name"
+					placeholder="Testing name"
 					autoComplete="off"
 					value={values.name}
 					onChange={(value) => change("name", value)}
 					error={errors.name}
 				/>
+				<SelectStyled
+					listKey={ETreeList.TestingDatasetSelect}
+					name="dataset"
+					type="text"
+					placeholder="Select dataset"
+					autoComplete={"off"}
+					value={values.datasetName}
+					onChange={(value) => change("datasetName", value)}
+				>
+					<TreeListContainer>
+						<DatasetList
+							filter={{}}
+							dataItemHeight={30}
+							preLoaderUpMaxHeight={150}
+							preLoaderDownMaxHeight={150}
+						>
+							{(props: ITreeItemProps<IDataset>) => {
+								return (
+									<TreeItemStyled
+										level={1}
+										onClick={() => {
+											change(
+												"datasetName",
+												props.dataItem.name
+											);
+											change(
+												"datasetId",
+												props.dataItem.id
+											);
+											doTreeIsVisibleConvert({
+												listKey:
+													ETreeList.TestingDatasetSelect,
+											});
+										}}
+									>
+										<TreeColumn>
+											<IconStyled path={entityDataset} />
+											{props.dataItem.name}
+										</TreeColumn>
+									</TreeItemStyled>
+								);
+							}}
+						</DatasetList>
+					</TreeListContainer>
+				</SelectStyled>
 			</FormStyled>
 		);
 	};
