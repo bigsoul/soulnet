@@ -6,10 +6,13 @@ using Soulnet.Model.Entity;
 using Dapper;
 using Npgsql;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace Soulnet.Data.Repositories 
 {
-    public class DatasetFilter { }
+    public class DatasetFilter {
+        public Guid? Id { get; set; } 
+    }
 
     public class DatasetRepository : EntityBaseRepository<Dataset>
     {        
@@ -34,9 +37,12 @@ namespace Soulnet.Data.Repositories
                                 public.""Dataset"".""Name"",
                                 public.""Dataset"".""IsLoaded""
                               FROM public.""Dataset"" 
+                              WHERE 
+                                CASE WHEN @Id IS NULL THEN true ELSE ""Dataset"".""Id"" = @Id END
                               ORDER BY ""Name"" ASC LIMIT @Limit OFFSET @Offset;"; 
 
                 result = db.Query<Dataset>(query, new {
+                    Id = filter.Id,
                     Offset = dataOffset, 
                     Limit = dataLimit
                 });
@@ -53,6 +59,7 @@ namespace Soulnet.Data.Repositories
 
                 if (dataOffsetMax >= dataLimit) {
                     result = db.Query<Dataset>(query, new {
+                        Id = filter.Id,
                         Offset = dataOffsetMax - dataLimit, 
                         Limit = dataLimit
                     });
@@ -65,6 +72,7 @@ namespace Soulnet.Data.Repositories
                 }     
 
                 result = db.Query<Dataset>(query, new {
+                    Id = filter.Id,
                     Offset = 0, 
                     Limit = dataLimit
                 });
