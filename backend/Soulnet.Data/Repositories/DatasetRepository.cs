@@ -35,7 +35,8 @@ namespace Soulnet.Data.Repositories
                                 public.""Dataset"".xmin AS ""Version"",
                                 public.""Dataset"".""Id"",
                                 public.""Dataset"".""Name"",
-                                public.""Dataset"".""IsLoaded""
+                                public.""Dataset"".""IsLoaded"",
+                                public.""Dataset"".""Description""
                               FROM public.""Dataset"" 
                               WHERE 
                                 CASE WHEN @Id IS NULL THEN true ELSE ""Dataset"".""Id"" = @Id END
@@ -83,6 +84,62 @@ namespace Soulnet.Data.Repositories
                 DataOffset = 0,
                 DataLimit = result.Count()
             };
+        }
+
+        public void Create(Dataset model)
+        {
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {
+                var query = @"INSERT INTO public.""Dataset"" (
+                                ""Id"", ""Name"", ""Description""
+                              )
+                              VALUES (
+                                @Id, @Name, @Description
+                              );"; 
+
+                db.Query<Dataset>(query, new {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Description = model.Description,
+                });
+            }
+        }
+
+        public void Update(Dataset model) {
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
+                var query = @"UPDATE
+                                public.""Dataset""
+                              SET
+                                ""Name"" = @Name,
+                                ""Description"" = @Description
+                              WHERE 
+                                ""Id"" = @Id;"; 
+
+                db.Query<Dataset>(query, new {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Description = model.Description,
+                });
+            }
+        }
+
+        public void Delete(Guid id)
+        {
+            var connectionString = _configuration.GetConnectionString("SoulnetContext");
+            
+            using(IDbConnection db = new NpgsqlConnection(connectionString)) {   
+                var query = @"DELETE FROM
+                                public.""Dataset""
+                              WHERE 
+                                ""Id"" = @Id;"; 
+
+                db.Query<Dataset>(query, new {
+                    Id = id,
+                });
+            }
         }
     }
 }

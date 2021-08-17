@@ -8,6 +8,7 @@ using Soulnet.Api.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Soulnet.Data.Repositories;
 using Newtonsoft.Json;
+using Soulnet.Model.Entity;
 
 namespace Soulnet.Api.Controllers
 {
@@ -21,6 +22,30 @@ namespace Soulnet.Api.Controllers
         public DatasetsController(DatasetRepository datasetRepository)
         {
             this.datasetRepository = datasetRepository;
+        }
+
+        [HttpPost]
+        public ActionResult<TreeResultViewModel<DatasetViewModel>> Post(int dataOffset, int dataLimit, 
+                                                    string filter, [FromBody]DatasetViewModel model)
+        {
+            var id = new Guid(model.Id);
+
+            if (id != Guid.Empty) {
+                throw new ArgumentException("The id field must be empty");
+            }
+
+            datasetRepository.Create(new Dataset {
+                Id = new Guid(model.Id),
+                Version = model.Version,
+                Name = model.Name,
+                Description = model.Description,
+            });
+
+            return Ok(new TreeResultViewModel<DatasetViewModel> {
+                DataOffset = dataOffset,
+                DataLimit = dataLimit,
+                List = new List<DatasetViewModel>() { model }
+            });
         }
 
         [HttpGet]
@@ -46,6 +71,38 @@ namespace Soulnet.Api.Controllers
                 DataLimit = dataLimit,
                 List = result
             });
+        }
+
+        [HttpPut]
+        public ActionResult<TreeResultViewModel<DatasetViewModel>> Put(int dataOffset, int dataLimit, 
+                                                    string filter, [FromBody]DatasetViewModel model)
+        {
+            datasetRepository.Update(new Dataset {
+                Id = new Guid(model.Id),
+                Version = model.Version,
+                Name = model.Name,
+                Description = model.Description,
+            });
+
+            return Ok(new TreeResultViewModel<DatasetViewModel> {
+                DataOffset = dataOffset,
+                DataLimit = dataLimit,
+                List = new List<DatasetViewModel>() { model }
+            });
+        }
+
+        [HttpDelete]
+        public ActionResult Delete(int dataOffset, int dataLimit, string filter)
+        {
+            var _filter = JsonConvert.DeserializeObject<DatasetFilter>(filter);
+
+            if (_filter.Id == null || _filter.Id == Guid.Empty) {
+                throw new ArgumentException("The id field must be empty");
+            }   
+
+            datasetRepository.Delete(_filter.Id.Value);     
+
+            return Ok();
         }
     } 
 }
