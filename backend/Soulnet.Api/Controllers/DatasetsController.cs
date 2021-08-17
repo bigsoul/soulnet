@@ -34,6 +34,8 @@ namespace Soulnet.Api.Controllers
                 throw new ArgumentException("The id field must be empty");
             }
 
+            model.Id = Guid.NewGuid().ToString();
+
             datasetRepository.Create(new Dataset {
                 Id = new Guid(model.Id),
                 Version = model.Version,
@@ -62,7 +64,8 @@ namespace Soulnet.Api.Controllers
                     Id = item.Id.ToString(),
                     Version = item.Version,
                     Name = item.Name,
-                    IsLoaded = item.IsLoaded
+                    IsLoaded = item.IsLoaded,
+                    Description = item.Description,
                 });  
             }
 

@@ -49,6 +49,7 @@ interface IDatasetFormProps {
 export interface IDatasetFormData extends IDataItem {
 	name: string;
 	isLoaded: boolean;
+	description: string;
 }
 
 export const DatasetFormDataDefault: IDatasetFormData = {
@@ -56,15 +57,22 @@ export const DatasetFormDataDefault: IDatasetFormData = {
 	version: "",
 	name: "",
 	isLoaded: false,
+	description: "",
 };
 
 export const formKey = "DatasetForm";
+
+const afterWrite = (isNew: boolean, Entity: IDatasetFormData) => {
+	if (isNew) history.push(`/dataset/${Entity.id}`);
+	return true;
+};
 
 const Form = formCreator<typeof formKey, IDatasetFormData>(
 	formKey,
 	DatasetFormDataDefault,
 	{
 		controller: "/datasets",
+		afterWrite: afterWrite,
 	}
 );
 
@@ -113,6 +121,15 @@ class DatasetForm extends PureComponent<IDatasetFormProps> {
 					value={values.name}
 					onChange={(value) => change("name", value)}
 					error={errors.name}
+				/>
+				<NameStyled
+					name="description"
+					type="text"
+					placeholder="Description"
+					autoComplete="off"
+					value={values.description}
+					onChange={(value) => change("description", value)}
+					error={errors.description}
 				/>
 				<ButtonSave type="submit">Save</ButtonSave>
 			</FormStyled>

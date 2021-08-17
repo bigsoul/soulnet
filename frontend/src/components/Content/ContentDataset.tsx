@@ -24,12 +24,14 @@ import ETreeList from "../../enums/ETreeList";
 
 import {
 	doTreeClearCurrentRows,
+	doTreeOnDeleteEvent,
 	doTreeOnLoadEvent,
 } from "../../classes/actions/ITreeAction";
 import store, { IStore } from "../../classes/store";
 import DatasetForm from "../Forms/DatasetForm";
 import { match } from "react-router";
 import { history } from "../../classes/reducers/routerReducer";
+import { EmptyGuid } from "../..";
 
 const IconStyled = styled(Icon)`
 	margin-right: 5px;
@@ -82,6 +84,7 @@ const mapStateToProps = (state: IStore): IContentDatasetProps => {
 	return props;
 };
 
+const controller = "/datasets";
 const connector = connect(mapStateToProps);
 
 class ContentDataset extends PureComponent<IContentDatasetProps> {
@@ -93,8 +96,12 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 			dataLimit: list.dataLimit,
 			dataOffset: list.dataOffset,
 			filter: {},
-			controller: "/datasets",
+			controller: controller,
 		});
+	};
+
+	hendlerTreeAdd = () => {
+		history.push(`/dataset/${EmptyGuid}`);
 	};
 
 	render = () => {
@@ -112,7 +119,11 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 								svgPath={treeRefresh}
 								onClick={this.hendlerTreeRefresh}
 							/>
-							<ButtonStyled template="icon" svgPath={treeAdd} />
+							<ButtonStyled
+								template="icon"
+								svgPath={treeAdd}
+								onClick={this.hendlerTreeAdd}
+							/>
 						</TreeColumn>
 					</TreeHeader>
 					<TreeListContainer>
@@ -144,6 +155,13 @@ class ContentDataset extends PureComponent<IContentDatasetProps> {
 										<ButtonStyled
 											template="icon"
 											svgPath={treeDelete}
+											onClick={() => {
+												doTreeOnDeleteEvent({
+													listKey: ETreeList.Dataset,
+													id: props.dataItem.id,
+													controller: controller,
+												});
+											}}
 										/>
 									</TreeItemStyled>
 								);
