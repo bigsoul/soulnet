@@ -33,6 +33,16 @@ namespace Soulnet.Api
         {
             services.AddCors();
 
+            /*services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                                .SetIsOriginAllowed(hostName => true)
+                                .AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials());
+            });*/
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -81,8 +91,7 @@ namespace Soulnet.Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Soulnet.Api v1"));
             }
 
-            app.UseHttpsRedirection();
-
+            //app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseCors(builder => builder
@@ -90,6 +99,20 @@ namespace Soulnet.Api
                 .AllowAnyHeader()
                 .AllowAnyMethod()
             );
+
+            /*app.UseCors(builder => builder
+                .SetIsOriginAllowed(_ => true)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+            );*/
+
+            /*var origins = new string[3];
+            origins[0] = "http://localhost:3000";
+            origins[1] = "http://localhost:5000";
+            origins[2] = "https://localhost:5001";*/
+
+            //app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
