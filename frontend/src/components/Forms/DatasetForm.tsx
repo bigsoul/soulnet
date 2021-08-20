@@ -14,6 +14,7 @@ import { doTreeClearCurrentRows } from "../../classes/actions/ITreeAction";
 import ETreeList from "../../enums/ETreeList";
 import { history } from "../../classes/reducers/routerReducer";
 import Edit from "../Edit";
+import Upload from "../Upload";
 
 const ButtonStyled = styled(Button)`
 	margin-right: 5px;
@@ -131,6 +132,7 @@ class DatasetForm extends PureComponent<IDatasetFormProps> {
 					onChange={(value) => change("description", value)}
 					error={errors.description}
 				/>
+				<Upload />
 				<ButtonSave type="submit">Save</ButtonSave>
 			</FormStyled>
 		);
