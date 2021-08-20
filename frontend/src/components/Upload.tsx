@@ -1,4 +1,4 @@
-import { PureComponent } from "react";
+import { createRef, PureComponent } from "react";
 import styled from "styled-components";
 
 const Input = styled.input`
@@ -72,15 +72,93 @@ const LabelName = styled.label`
 	margin-left: 5px;
 `;
 
-class Upload extends PureComponent {
+interface IUpload {
+	fileName: string;
+	fileSize: number;
+	progress: number;
+}
+
+const fileNameDefault = "file not selected";
+
+class Upload extends PureComponent<Partial<IUpload>, IUpload> {
+	constructor(props: Partial<IUpload>) {
+		super(props);
+		this.state = {
+			fileName: fileNameDefault,
+			fileSize: 0,
+			progress: 0,
+		};
+	}
+
+	inputRef = createRef<HTMLInputElement>();
+
+	static getDerivedStateFromProps = (
+		props: Partial<IUpload>,
+		state: IUpload
+	): IUpload => {
+		let fileName = fileNameDefault;
+		let fileSize = 0;
+		let progress = 0;
+
+		if (props.fileName) {
+			fileName = props.fileName;
+		} else if (state.fileName) {
+			fileName = state.fileName;
+		}
+
+		if (props.fileSize) {
+			fileSize = props.fileSize;
+		} else if (state.fileName) {
+			fileSize = state.fileSize;
+		}
+
+		if (props.progress) {
+			progress = props.progress;
+		} else if (state.fileName) {
+			progress = state.progress;
+		}
+
+		return {
+			fileName: fileName,
+			fileSize: fileSize,
+			progress: progress,
+		};
+	};
+
+	hendlerChange = () => {
+		const files = this.inputRef.current?.files;
+
+		if (files) {
+			this.setState({ fileName: files[0].name, fileSize: files[0].size });
+		} else {
+			this.setState({ fileName: fileNameDefault, fileSize: 0 });
+		}
+	};
+
+	fileNamePresentation = () => {
+		const { fileName, fileSize, progress } = this.state;
+
+		let str = fileName;
+
+		if (fileSize) str += " (" + this.state.fileSize + " byte)";
+		if (progress) str += " - " + this.state.progress.toString() + "%";
+
+		return str;
+	};
+
 	render = () => {
 		return (
 			<Wrapper>
-				<Input type="file" id="input__file" />
+				<Input
+					type="file"
+					id="input__file"
+					ref={this.inputRef}
+					onChange={this.hendlerChange}
+				/>
 				<LabelDefault htmlFor="input__file" selected={false}>
 					Select file
 				</LabelDefault>
-				<LabelName>file-name.csv - 100%</LabelName>
+				<LabelName>{this.fileNamePresentation()}</LabelName>
 			</Wrapper>
 		);
 	};
