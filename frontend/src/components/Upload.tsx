@@ -96,32 +96,10 @@ class Upload extends PureComponent<Partial<IUpload>, IUpload> {
 		props: Partial<IUpload>,
 		state: IUpload
 	): IUpload => {
-		let fileName = fileNameDefault;
-		let fileSize = 0;
-		let progress = 0;
-
-		if (props.fileName) {
-			fileName = props.fileName;
-		} else if (state.fileName) {
-			fileName = state.fileName;
-		}
-
-		if (props.fileSize) {
-			fileSize = props.fileSize;
-		} else if (state.fileName) {
-			fileSize = state.fileSize;
-		}
-
-		if (props.progress) {
-			progress = props.progress;
-		} else if (state.fileName) {
-			progress = state.progress;
-		}
-
 		return {
-			fileName: fileName,
-			fileSize: fileSize,
-			progress: progress,
+			fileName: props.fileName ? props.fileName : state.fileName,
+			fileSize: props.fileSize ? props.fileSize : state.fileSize,
+			progress: props.progress ? props.progress : state.progress,
 		};
 	};
 
