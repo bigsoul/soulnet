@@ -1,9 +1,9 @@
 import { IDataItem } from "../components/Tree/TreeItem";
-import ELearningState from "../enums/ELearningState";
+import EPlayerState from "../enums/EPlayerState";
 
 export interface ILearning extends IDataItem {
 	name: string;
-	state: ELearningState;
+	state: EPlayerState;
 	isArchive: boolean;
 	iterationCount: number;
 	iterationCurrent: number;

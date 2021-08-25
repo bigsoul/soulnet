@@ -1,9 +1,9 @@
 import { IDataItem } from "../components/Tree/TreeItem";
-import ETestingState from "../enums/ETestingState";
+import EPlayerState from "../enums/EPlayerState";
 
 export interface ITesting extends IDataItem {
 	name: string;
-	state: ETestingState;
+	state: EPlayerState;
 	isArchive: boolean;
 	iterationCount: number;
 	iterationCurrent: number;

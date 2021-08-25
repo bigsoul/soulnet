@@ -4,7 +4,7 @@ import {
 	doTreeClearCurrentRows,
 	doTreeIsVisibleConvert,
 } from "../../classes/actions/ITreeAction";
-import ETestingState from "../../enums/ETestingState";
+import EPlayerState from "../../enums/EPlayerState";
 import ETreeList from "../../enums/ETreeList";
 import Button from "../Button";
 import formCreator, { IFormDispatch, IFormState } from "../Form/Form";
@@ -93,7 +93,7 @@ interface ITestingFormProps {
 
 export interface ITestingFormData extends IDataItem {
 	name: string;
-	state: ETestingState;
+	state: EPlayerState;
 	datasetId: string;
 	datasetName: string;
 	learningId: string;
@@ -112,7 +112,7 @@ export const TestingFormDataDefault: ITestingFormData = {
 	learningName: "",
 	stopLossPercent: 0,
 	startDeposit: 0,
-	state: ETestingState.Config,
+	state: EPlayerState.Config,
 };
 
 export const formKey = "TestingForm";
@@ -306,7 +306,7 @@ class TestingForm extends PureComponent<ITestingFormProps> {
 					onChange={(value) => change("startDeposit", value)}
 					error={errors.startDeposit}
 				/>
-				<label>{"state: " + ETestingState[props.values.state]}</label>
+				<label>{"state: " + EPlayerState[props.values.state]}</label>
 				<ButtonSave type="submit">Save</ButtonSave>
 			</FormStyled>
 		);

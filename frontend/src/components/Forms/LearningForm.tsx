@@ -4,7 +4,7 @@ import {
 	doTreeClearCurrentRows,
 	doTreeIsVisibleConvert,
 } from "../../classes/actions/ITreeAction";
-import ELearningState from "../../enums/ELearningState";
+import EPlayerState from "../../enums/EPlayerState";
 import ETreeList from "../../enums/ETreeList";
 import IDataset from "../../interfaces/IDataset";
 import Edit from "../Edit";
@@ -98,7 +98,7 @@ export interface ILearningFormData extends IDataItem {
 	datasetName: string;
 	inputNeuronsCount: number;
 	deepLayersCount: number;
-	state: ELearningState;
+	state: EPlayerState;
 }
 
 export const LearningFormDataDefault: ILearningFormData = {
@@ -109,7 +109,7 @@ export const LearningFormDataDefault: ILearningFormData = {
 	datasetName: "",
 	inputNeuronsCount: 0,
 	deepLayersCount: 0,
-	state: ELearningState.Config,
+	state: EPlayerState.Config,
 };
 
 const afterWrite = (isNew: boolean, Entity: ILearningFormData) => {
@@ -248,7 +248,7 @@ class LearningForm extends PureComponent<ILearningFormProps> {
 					onChange={(value) => change("deepLayersCount", value)}
 					error={errors.deepLayersCount}
 				/>
-				<label>{"state: " + ELearningState[props.values.state]}</label>
+				<label>{"state: " + EPlayerState[props.values.state]}</label>
 				<ButtonSave type="submit">Save</ButtonSave>
 			</FormStyled>
 		);
