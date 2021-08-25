@@ -62,7 +62,7 @@ namespace Soulnet.Api
             services.AddScoped<LearningRepository>();
             services.AddScoped<TestingRepository>();
             services.AddScoped<MainResultReportRepository>();
-
+            services.AddScoped<DataFileRepository>();
 
             services.AddSingleton<AuthService>(
                             new AuthService(
