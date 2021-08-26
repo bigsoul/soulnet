@@ -53,9 +53,7 @@ namespace Soulnet.Api
                             Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWTSecretKey"))
                         )
                     };
-                });
-
-            
+                });            
 
             services.AddScoped<UserRepository>();
             services.AddScoped<DatasetRepository>();

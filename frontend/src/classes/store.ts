@@ -10,6 +10,7 @@ import treeSagas from "./sagas/treeSagas";
 import formsSagas from "./sagas/formsSagas";
 import globalSagas from "./sagas/globalSagas";
 import notificationSagas from "./sagas/notificationSagas";
+import fileUploadSagas from "./sagas/fileUploadSagas";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -27,6 +28,7 @@ const configureStore = () => {
 	sagaMiddleware.run(formsSagas);
 	sagaMiddleware.run(globalSagas);
 	sagaMiddleware.run(notificationSagas);
+	sagaMiddleware.run(fileUploadSagas);
 
 	return store;
 };
