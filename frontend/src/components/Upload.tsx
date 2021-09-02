@@ -1,5 +1,6 @@
 import { createRef, PureComponent } from "react";
 import styled from "styled-components";
+import { doFileUploadSelectedEvent } from "../classes/actions/IFileUploadAction";
 
 const Input = styled.input`
 	opacity: 0;
@@ -72,18 +73,23 @@ const LabelName = styled.label`
 	margin-left: 5px;
 `;
 
-interface IUpload {
-	fileName: string;
-	fileSize: number;
-	progress: number;
+interface IUploadProps {
+	fileName?: string;
+	fileSize?: number;
+	progress?: number;
+}
+
+interface IUploadState extends Required<IUploadProps> {
+	file: File | null;
 }
 
 const fileNameDefault = "file not selected";
 
-class Upload extends PureComponent<Partial<IUpload>, IUpload> {
-	constructor(props: Partial<IUpload>) {
+class Upload extends PureComponent<IUploadProps, IUploadState> {
+	constructor(props: IUploadProps) {
 		super(props);
 		this.state = {
+			file: null,
 			fileName: fileNameDefault,
 			fileSize: 0,
 			progress: 0,
@@ -93,10 +99,11 @@ class Upload extends PureComponent<Partial<IUpload>, IUpload> {
 	inputRef = createRef<HTMLInputElement>();
 
 	static getDerivedStateFromProps = (
-		props: Partial<IUpload>,
-		state: IUpload
-	): IUpload => {
+		props: IUploadProps,
+		state: IUploadState
+	): IUploadState => {
 		return {
+			file: state.file,
 			fileName: props.fileName ? props.fileName : state.fileName,
 			fileSize: props.fileSize ? props.fileSize : state.fileSize,
 			progress: props.progress ? props.progress : state.progress,
@@ -107,9 +114,17 @@ class Upload extends PureComponent<Partial<IUpload>, IUpload> {
 		const files = this.inputRef.current?.files;
 
 		if (files) {
-			this.setState({ fileName: files[0].name, fileSize: files[0].size });
+			this.setState({
+				file: files[0],
+				fileName: files[0].name,
+				fileSize: files[0].size,
+			});
 		} else {
-			this.setState({ fileName: fileNameDefault, fileSize: 0 });
+			this.setState({
+				file: null,
+				fileName: fileNameDefault,
+				fileSize: 0,
+			});
 		}
 	};
 
@@ -139,6 +154,12 @@ class Upload extends PureComponent<Partial<IUpload>, IUpload> {
 				<LabelName>{this.fileNamePresentation()}</LabelName>
 			</Wrapper>
 		);
+	};
+
+	componentDidUpdate = (prevProps: IUploadProps, prevState: IUploadState) => {
+		if (prevState.file === null && this.state.file !== null) {
+			doFileUploadSelectedEvent({ file: this.state.file });
+		}
 	};
 }
 

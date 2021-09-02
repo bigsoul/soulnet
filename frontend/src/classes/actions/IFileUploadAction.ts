@@ -4,7 +4,7 @@ export const FILE_UPLOAD_START = "FILE-UPLOAD/START";
 export const FILE_UPLOAD_PAUSE = "FILE-UPLOAD/PAUSE";
 export const FILE_UPLOAD_STOP = "FILE-UPLOAD/STOP";
 
-export const FILE_UPLOAD_START_EVENT = "FILE-UPLOAD/START-EVENT";
+export const FILE_UPLOAD_SELECTED_EVENT = "FILE-UPLOAD/SELECTED-EVENT";
 export const FILE_UPLOAD_STOP_EVENT = "FILE-UPLOAD/STOP-EVENT";
 
 export interface IFileUploadStartAction {
@@ -19,8 +19,9 @@ export interface IFileUploadStopAction {
 	type: typeof FILE_UPLOAD_STOP;
 }
 
-export interface IFileUploadStartEventAction {
-	type: typeof FILE_UPLOAD_START_EVENT;
+export interface IFileUploadSelectedEventAction {
+	type: typeof FILE_UPLOAD_SELECTED_EVENT;
+	file: File;
 }
 
 export interface IFileUploadStopEventAction {
@@ -31,7 +32,7 @@ export type TFileUploadAction =
 	| IFileUploadStartAction
 	| IFileUploadPauseAction
 	| IFileUploadStopAction
-	| IFileUploadStartEventAction
+	| IFileUploadSelectedEventAction
 	| IFileUploadStopEventAction;
 
 export const doFileUploadStart = (
@@ -58,11 +59,12 @@ export const doFileUploadStop = (
 	});
 };
 
-export const doFileUploadStartEvent = (
-	payload: Omit<IFileUploadStartEventAction, "type">
+export const doFileUploadSelectedEvent = (
+	payload: Omit<IFileUploadSelectedEventAction, "type">
 ) => {
-	store.dispatch<IFileUploadStartEventAction>({
-		type: FILE_UPLOAD_START_EVENT,
+	store.dispatch<IFileUploadSelectedEventAction>({
+		type: FILE_UPLOAD_SELECTED_EVENT,
+		file: payload.file,
 	});
 };
 
