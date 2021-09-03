@@ -1,5 +1,5 @@
 import axios from "axios";
-import { takeLatest } from "redux-saga/effects";
+import { call, takeLatest } from "redux-saga/effects";
 
 import * as ACT from "../actions/IFileUploadAction";
 import store from "../store";
@@ -10,6 +10,7 @@ function* workerFileUploadSelectedEvent(
 	yield console.log("selected file: ", action.file);
 
 	const { user } = store.getState();
+	const chunkSize = 20_971_520;
 
 	const config = {
 		baseURL: user.serviceUrl,
@@ -17,24 +18,37 @@ function* workerFileUploadSelectedEvent(
 			Authorization: "Bearer " + user.serviceJwtToken,
 			"Content-Type": "application/octet-stream",
 		},
+		params: {
+			id: "7b7a6959-c7ca-4067-9482-b40017641e25",
+		},
+		onUploadProgress: (e: { loaded: number; total: number }) => {
+			console.log(e);
+		},
 	};
 
-	const blob = action.file.slice(0, action.file.size);
+	const file = action.file;
 
-	axios.post(user.serviceUrl + "/datafiles", blob, config);
+	const chancks: Blob[] = [];
 
-	/*let ab = new ArrayBuffer(action.file.size);
+	let bytesRemaining = file.size;
 
-	const fr = new FileReader();
-	fr.readAsArrayBuffer(action.file);
+	while (bytesRemaining > 0) {
+		const positionStart = file.size - bytesRemaining;
+		const positionEnd =
+			chunkSize <= bytesRemaining ? positionStart + chunkSize : file.size;
+		chancks.push(file.slice(positionStart, positionEnd));
+		bytesRemaining -= positionEnd - positionStart;
+	}
 
-	fr.onloadend = (e: ProgressEvent<FileReader>) => {
-		ab = e.target?.result as ArrayBuffer;
-
-		console.log("bytes: ", ab);
-
-		return axios.post(user.serviceUrl + "/datafiles", ab, config);
-	};*/
+	for (let i = 0; i < chancks.length; i++) {
+		yield console.log("blob chunk: ", chancks[i]);
+		yield call(
+			axios.post,
+			user.serviceUrl + "/datafiles",
+			chancks[i],
+			config
+		);
+	}
 }
 
 function* workerFileUploadStopEvent(action: ACT.IFileUploadStopEventAction) {

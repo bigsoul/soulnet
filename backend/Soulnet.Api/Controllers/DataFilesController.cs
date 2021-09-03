@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace Soulnet.Api.Controllers
 {
@@ -14,7 +15,7 @@ namespace Soulnet.Api.Controllers
     public class DataFilesController : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> Post()
+        public async Task<IActionResult> Post(string id)
         {
             try
             {
