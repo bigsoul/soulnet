@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Dapper;
@@ -20,8 +21,8 @@ namespace Soulnet.Data.Repositories
 
         public UserRepository (IConfiguration configuration) { 
             _configuration = configuration;
-            _queryCreate = @"INSERT INTO public.""User"" (""Id"", ""Username"", ""Email"", ""Password"")
-                            VALUES (@Id, @Username, @Email, @Password)";
+            _queryCreate = @"INSERT INTO public.""User"" (""Id"", ""Username"", ""Email"", ""Password"", ""DataCreate"")
+                            VALUES (@Id, @Username, @Email, @Password, @DataCreate)";
             _queryRead = @"SELECT * FROM public.""User""";
         }
 
@@ -67,7 +68,8 @@ namespace Soulnet.Data.Repositories
                     Id = user.Id,
                     Username = user.Username,
                     Email = user.Email,
-                    Password = user.Password
+                    Password = user.Password,
+                    DataCreate = DateTime.Now
                  });    
             }
         }
