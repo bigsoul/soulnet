@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Soulnet.Api.Controllers
 {
@@ -14,6 +17,13 @@ namespace Soulnet.Api.Controllers
     [Route("[controller]")]
     public class DataFilesController : ControllerBase
     {
+        private string pathFiles = "files"; // default name of repository
+
+        public DataFilesController(IConfiguration configuration)
+        {
+            pathFiles = configuration.GetValue<string>("FilesRepository");
+        }
+        
         [HttpPost]
         public async Task<IActionResult> Post(string id)
         {
