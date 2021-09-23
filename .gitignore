@@ -17,3 +17,5 @@ backend/Soulnet.Neuron/obj*
 backend/Soulnet.Neuron/bin*
 
 node_modules*
+
+dev/*
