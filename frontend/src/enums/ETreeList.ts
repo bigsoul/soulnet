@@ -1,10 +1,13 @@
 enum ETreeList {
 	Dataset = "Dataset",
+	DatasetLearningSelect = "DatasetLearningSelect",
+	TestingLearningSelect = "TestingLearningSelect",
+	TestingDatasetSelect = "TestingDatasetSelect",
 	LearningRunning = "LearningRunning",
 	LearningStoring = "LearningStoring",
 	TestingRunning = "TestingRunning",
 	TestingStoring = "TestingStoring",
-	Results = "Results",
+	MainResultReport = "MainResultReport",
 }
 
 export default ETreeList;

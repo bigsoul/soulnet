@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import IStore from "../interfaces/IStore";
+import { IStore } from "../classes/store";
 import Button from "./Button";
 import Logo from "./Logo";
 import Profile from "./Profile";
@@ -9,6 +9,7 @@ import Profile from "./Profile";
 import entityDataset from "./../assets/svg/entity-dataset.svg";
 import entityLearning from "./../assets/svg/entity-learning.svg";
 import entityTesting from "./../assets/svg/entity-testing.svg";
+import ETreeList from "../enums/ETreeList";
 
 const HeaderDiv = styled.div`
 	width: calc(100% - 2px);
@@ -48,6 +49,9 @@ const ButtonStyled = styled(Button)`
 interface IHeaderProps {
 	isAuth: boolean;
 	pathname: string;
+	learningId: string;
+	testingId: string;
+	datasetId: string;
 }
 
 function Header(props: IHeaderProps) {
@@ -66,29 +70,35 @@ function Header(props: IHeaderProps) {
 				{props.isAuth && (
 					<>
 						<ButtonStyled
-							path={dataset}
+							path={`${dataset}${
+								props.datasetId && "/" + props.datasetId
+							}`}
 							svgPath={entityDataset}
-							selected={pathname === dataset}
+							selected={pathname.startsWith(dataset)}
 						>
 							Dataset
 						</ButtonStyled>
 						<ButtonStyled
-							path={learning}
+							path={`${learning}${
+								props.learningId && "/" + props.learningId
+							}`}
 							svgPath={entityLearning}
-							selected={pathname === learning}
+							selected={pathname.startsWith(learning)}
 						>
 							Learning
 						</ButtonStyled>
 						<ButtonStyled
-							path={testing}
+							path={`${testing}${
+								props.testingId && "/" + props.testingId
+							}`}
 							svgPath={entityTesting}
-							selected={pathname === testing}
+							selected={pathname.startsWith(testing)}
 						>
 							Testing
 						</ButtonStyled>
 						<ButtonStyled
 							path={results}
-							selected={pathname === results}
+							selected={pathname.startsWith(results)}
 						>
 							Results
 						</ButtonStyled>
@@ -103,10 +113,50 @@ function Header(props: IHeaderProps) {
 }
 
 const mapStateToProps = (state: IStore): IHeaderProps => {
-	const { user } = state;
+	const { user, tree } = state;
+
+	// learning
+
+	const lerningTreeRunning = tree[ETreeList.LearningRunning];
+	const lerningTreeStoring = tree[ETreeList.LearningStoring];
+
+	let learningId = "";
+
+	if (lerningTreeRunning.currentRows.length) {
+		learningId = lerningTreeRunning.currentRows[0];
+	} else if (lerningTreeStoring.currentRows.length) {
+		learningId = lerningTreeStoring.currentRows[0];
+	}
+
+	// testing
+
+	const testingTreeRunning = tree[ETreeList.TestingRunning];
+	const testingTreeStoring = tree[ETreeList.TestingStoring];
+
+	let testingId = "";
+
+	if (testingTreeRunning.currentRows.length) {
+		testingId = testingTreeRunning.currentRows[0];
+	} else if (testingTreeStoring.currentRows.length) {
+		testingId = testingTreeStoring.currentRows[0];
+	}
+
+	// dataset
+
+	const datasetTree = tree[ETreeList.Dataset];
+
+	let datasetId = "";
+
+	if (datasetTree.currentRows.length) {
+		datasetId = datasetTree.currentRows[0];
+	}
+
 	return {
 		isAuth: user.isAuth,
 		pathname: state.router.location.pathname,
+		learningId: learningId,
+		testingId: testingId,
+		datasetId: datasetId,
 	};
 };
 

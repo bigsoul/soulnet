@@ -7,11 +7,25 @@ const ContentDiv = styled.div`
 	border-left: 1px solid #8a8a8a;
 	border-bottom: 1px solid #8a8a8a;
 	border-right: 1px solid #8a8a8a;
+	font-size: 14px;
+	display: flex;
 `;
 
-class Content<P = {}, S = {}, SS = {}> extends Component<P, S, SS> {
+interface IContentProps {
+	className?: string;
+}
+
+class Content<P = {}, S = {}, SS = {}> extends Component<
+	P & IContentProps,
+	S,
+	SS
+> {
 	render = () => {
-		return <ContentDiv>{this.props.children}</ContentDiv>;
+		return (
+			<ContentDiv className={this.props.className}>
+				{this.props.children}
+			</ContentDiv>
+		);
 	};
 }
 

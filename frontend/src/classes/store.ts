@@ -6,8 +6,11 @@ import createRootReducer from "./reducers";
 import userSagas from "./sagas/userSagas";
 import pathSagas from "./sagas/pathSagas";
 import formSagas from "./sagas/formSagas";
-import learningSagas from "./sagas/learningSagas";
 import treeSagas from "./sagas/treeSagas";
+import formsSagas from "./sagas/formsSagas";
+import globalSagas from "./sagas/globalSagas";
+import notificationSagas from "./sagas/notificationSagas";
+import fileUploadSagas from "./sagas/fileUploadSagas";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -21,10 +24,17 @@ const configureStore = () => {
 	sagaMiddleware.run(userSagas);
 	sagaMiddleware.run(pathSagas);
 	sagaMiddleware.run(formSagas);
-	sagaMiddleware.run(learningSagas);
 	sagaMiddleware.run(treeSagas);
+	sagaMiddleware.run(formsSagas);
+	sagaMiddleware.run(globalSagas);
+	sagaMiddleware.run(notificationSagas);
+	sagaMiddleware.run(fileUploadSagas);
 
 	return store;
 };
 
-export default configureStore();
+const store = configureStore();
+
+export type IStore = ReturnType<typeof store.getState>;
+
+export default store;

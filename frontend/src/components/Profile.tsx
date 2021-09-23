@@ -10,7 +10,7 @@ import TUserAction, {
 	IUserSignOutAction,
 	USER_SIGNOUT,
 } from "../classes/actions/IUserAction";
-import IStore from "../interfaces/IStore";
+import { IStore } from "../classes/store";
 import Button from "./Button";
 
 const PrfileDiv = styled.div<IProfileProps>`

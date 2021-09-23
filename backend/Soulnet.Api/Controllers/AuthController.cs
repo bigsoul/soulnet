@@ -26,9 +26,9 @@ namespace Soulnet.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var user = userRepository.GetSingle(u => u.Username == model.Username);
+            var user = userRepository.ReadFirstOrDefault(new UserFilter { Username = model.Username });
             
-            if (user == null) {
+            if (user.Id == Guid.Empty) {
                 return BadRequest(new { username = "no user with this login" });
             }
 
@@ -64,8 +64,7 @@ namespace Soulnet.Api.Controllers
                 Password = authService.HashPassword(model.Password)
             };
 
-            userRepository.Add(user);
-            userRepository.Commit();
+            userRepository.Create(user);
 
             return Ok(authService.GetAuthData(model.Username));
         }

@@ -16,9 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Soulnet.Api.Services;
 using Soulnet.Data;
-using Microsoft.EntityFrameworkCore;
 using Soulnet.Data.Repositories;
-using HibernatingRhinos.Profiler.Appender.EntityFramework;
 
 namespace Soulnet.Api
 {
@@ -28,8 +26,6 @@ namespace Soulnet.Api
         
         public Startup(IConfiguration configuration)
         {
-            EntityFrameworkProfiler.Initialize();
-
             Configuration = configuration;
         }
 
@@ -42,14 +38,6 @@ namespace Soulnet.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Soulnet.Api", Version = "v1" });
             });
-
-            services
-                .AddDbContext<SoulnetContext>(options =>
-                    options.UseNpgsql(
-                        Configuration.GetConnectionString("SoulnetContext"),
-                        o => o.MigrationsAssembly("Soulnet.Api")
-                    )
-                );
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -65,13 +53,14 @@ namespace Soulnet.Api
                             Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWTSecretKey"))
                         )
                     };
-                });
+                });            
 
             services.AddScoped<UserRepository>();
             services.AddScoped<DatasetRepository>();
             services.AddScoped<LearningRepository>();
             services.AddScoped<TestingRepository>();
-
+            services.AddScoped<MainResultReportRepository>();
+            services.AddScoped<DataFileRepository>();
 
             services.AddSingleton<AuthService>(
                             new AuthService(
@@ -89,8 +78,6 @@ namespace Soulnet.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Soulnet.Api v1"));
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

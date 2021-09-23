@@ -5,6 +5,7 @@ namespace Soulnet.Model.Entity
     public class Testing : IEntityBase
     {
         public Guid Id { get; set; }
+        public string Version { get; set; }
         public string Name { get; set; }
         public int State { get; set; }
         public bool IsArchive { get; set; }
@@ -13,5 +14,9 @@ namespace Soulnet.Model.Entity
         public float StopLossPercent { get; set; }
         public float StartDeposit { get; set; }
         public float EndDeposit { get; set; }
+        public Guid LearningId { get; set; }
+        public string LearningName { get; set; }
+        public Guid DatasetId { get; set; }
+        public string DatasetName { get; set; }
     }
 }

@@ -88,23 +88,30 @@ interface IButtonProps {
 	template?: "default" | "icon" | undefined;
 	selected?: boolean;
 	disabled?: boolean;
+	clearFocus?: boolean;
 	onClick?: () => void;
 }
 
 class Button extends Component<IButtonProps> {
-	to = () => {
+	to = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		if (this.props.onClick) this.props.onClick();
 		if (this.props.path) history.push(this.props.path);
+		if (this.props.clearFocus) e.currentTarget.blur();
+		// TODO - this is need propagation ?
+		//e.stopPropagation();
 	};
 
 	render = () => {
 		let TargetButton = ButtonDefault;
 		let TargetIcon: typeof IconDefault | typeof Icon = IconDefault;
+		let type = this.props.type;
 
 		if (this.props.template === "icon") {
 			TargetButton = ButtonIcon;
 			TargetIcon = Icon;
 		}
+
+		if (!type) type = "button";
 
 		const svgPath =
 			(this.props.selected
@@ -114,7 +121,7 @@ class Button extends Component<IButtonProps> {
 		return (
 			<TargetButton
 				className={this.props.className}
-				type={this.props.type}
+				type={type}
 				onClick={this.to}
 				selected={this.props.selected || false}
 				disabled={this.props.disabled}

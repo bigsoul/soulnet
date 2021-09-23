@@ -1,34 +1,46 @@
 import styled from "styled-components";
 
-const Item = styled.div<ITreeItemPrivateProps>`
+const Item = styled.div<{ selected?: boolean }>`
 	height: 29px;
 	border-bottom: 1px solid #8a8a8a;
 	display: flex;
 	align-items: center;
-	padding-left: calc(6px + ${(p) => (p.level || 0) * 23 + "px"});
+	background-color: ${(p) => (p.selected ? "#5C5C5C" : "#000000")};
+	cursor: pointer;
+	&:hover {
+		background-color: ${(p) => (p.selected ? "#5C5C5C" : "#1d1c1c")};
+	}
 `;
 
 export interface IDataItem {
 	id: string;
+	version: string;
 }
 
-export type DataItem<T, U = { id: string }> = {
-	[K in keyof (T & U)]: (T & U)[K];
-};
+export interface IDataItemUI extends IDataItem {
+	selected: boolean;
+}
 
 export interface ITreeItemProps<T> {
 	index: number;
-	dataItem: DataItem<T>;
+	dataItem: T & IDataItemUI;
+	select: () => void;
 }
 
 interface ITreeItemPrivateProps {
+	className?: string;
 	children?: React.ReactNode;
-	level?: number;
+	selected?: boolean;
+	onClick?: () => void;
 }
 
 const TreeItem = (props: ITreeItemPrivateProps) => {
 	return (
-		<Item id="tree-item" level={props.level || 0}>
+		<Item
+			className={props.className}
+			onClick={props.onClick}
+			selected={props.selected}
+		>
 			{props.children}
 		</Item>
 	);
