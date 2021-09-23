@@ -1,11 +1,23 @@
 import { TFileUploadAction } from "../actions/IFileUploadAction";
 
-export type FileUploadReducer = {};
+export type FileUploaderReducer = {
+	file: File;
+	chancks: Blob[];
+	chunkSize: number;
+	totalSize: number;
+	totalSended: number;
+};
 
-const fileUploadReducer = (
-	curState: FileUploadReducer = {},
+export type FileLoaderReducer<K extends string> =
+	| {
+			[key in K]: FileUploaderReducer;
+	  }
+	| {};
+
+const fileUploadReducer = <K extends string>(
+	curState: FileLoaderReducer<K> = {},
 	action: TFileUploadAction
-): FileUploadReducer => {
+): FileLoaderReducer<K> => {
 	switch (action.type) {
 		case "FILE-UPLOAD/START": {
 			return curState;

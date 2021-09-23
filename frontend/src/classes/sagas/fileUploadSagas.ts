@@ -9,22 +9,9 @@ function* workerFileUploadSelectedEvent(
 ) {
 	yield console.log("selected file: ", action.file);
 
-	const { user } = store.getState();
 	const chunkSize = 20_971_520;
 
-	const config = {
-		baseURL: user.serviceUrl,
-		headers: {
-			Authorization: "Bearer " + user.serviceJwtToken,
-			"Content-Type": "application/octet-stream",
-		},
-		params: {
-			id: "7b7a6959-c7ca-4067-9482-b40017641e25",
-		},
-		onUploadProgress: (e: { loaded: number; total: number }) => {
-			console.log(e);
-		},
-	};
+	// cut the file into pieces
 
 	const file = action.file;
 
@@ -40,8 +27,29 @@ function* workerFileUploadSelectedEvent(
 		bytesRemaining -= positionEnd - positionStart;
 	}
 
+	// setup axios request
+
+	const { user } = store.getState();
+
+	const config = {
+		baseURL: user.serviceUrl,
+		headers: {
+			Authorization: "Bearer " + user.serviceJwtToken,
+			"Content-Type": "application/octet-stream",
+		},
+		params: {
+			id: "7b7a6959-c7ca-4067-9482-b40017641e25",
+		},
+		onUploadProgress: (e: { loaded: number; total: number }) => {
+			console.log(e);
+		},
+	};
+
+	// sending file data
+
 	for (let i = 0; i < chancks.length; i++) {
 		yield console.log("blob chunk: ", chancks[i]);
+
 		yield call(
 			axios.post,
 			user.serviceUrl + "/datafiles",
