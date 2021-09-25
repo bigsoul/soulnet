@@ -17,11 +17,14 @@ namespace Soulnet.Api.Controllers
     [Route("[controller]")]
     public class DataFilesController : ControllerBase
     {
-        private string pathFiles = "files"; // default name of repository
+        private string pathFiles = Directory.GetCurrentDirectory() + @"\files";
 
         public DataFilesController(IConfiguration configuration)
         {
-            pathFiles = configuration.GetValue<string>("FilesRepository");
+            var filesRepository = configuration.GetValue<string>("FilesRepository");
+
+            if (filesRepository != "")
+                pathFiles = filesRepository;
         }
         
         [HttpPost]
@@ -29,25 +32,32 @@ namespace Soulnet.Api.Controllers
         {
             try
             {
-                int contentLength = (int)Request.ContentLength;
-                int totalBytesRecived = 0;
+                if (!Directory.Exists(pathFiles)) {
+                    Directory.CreateDirectory("files");
+                }
 
-                var buffer = new byte[contentLength];
-
-                while(contentLength > totalBytesRecived)
+                using (var fs = new FileStream(this.pathFiles + "/" + id, FileMode.OpenOrCreate)) 
                 {
-                    int bytesRemaining = contentLength - totalBytesRecived;                    
-                    int bytesRecived = await Request.Body.ReadAsync(buffer, totalBytesRecived, bytesRemaining);
+                    int contentLength = (int)Request.ContentLength;
+                    int totalBytesRecived = 0;
 
-                    totalBytesRecived += bytesRecived;
+                    var buffer = new byte[contentLength];
 
-                    System.Diagnostics.Trace.WriteLine("Chunk bytes resived: " + bytesRecived + " of " + bytesRemaining);
+                    while(contentLength > totalBytesRecived)
+                    {
+                        int bytesRemaining = contentLength - totalBytesRecived;                    
+                        int bytesRecived = await Request.Body.ReadAsync(buffer, totalBytesRecived, bytesRemaining);
+
+                        totalBytesRecived += bytesRecived;
+
+                        System.Diagnostics.Trace.WriteLine("Chunk bytes resived: " + bytesRecived + " of " + bytesRemaining);
+                    }
+                    
+                    
+                    System.Diagnostics.Trace.WriteLine("Total bytes resived: " + totalBytesRecived + " of " + contentLength);
+                    System.Diagnostics.Trace.WriteLine("-------------------------------------------");
                 }
                 
-                
-                System.Diagnostics.Trace.WriteLine("Total bytes resived: " + totalBytesRecived + " of " + contentLength);
-                System.Diagnostics.Trace.WriteLine("-------------------------------------------");
-
                 return StatusCode(200);
             }
             catch(Exception ex)
