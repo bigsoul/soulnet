@@ -19,3 +19,4 @@ backend/Soulnet.Neuron/bin*
 node_modules*
 
 dev/*
+backend/Soulnet.Api/files*

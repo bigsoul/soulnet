@@ -26,6 +26,30 @@ namespace Soulnet.Api.Controllers
             if (filesRepository != "")
                 pathFiles = filesRepository;
         }
+
+        [HttpGet]
+        public IActionResult Get(string id, ulong size)
+        {
+            try
+            {
+                string _id = id is null 
+                                ? Guid.NewGuid().ToString() + "-" + size.ToString()
+                                : id + "-" + size.ToString();
+
+                using (var fs = new FileStream(this.pathFiles + "/" + _id, FileMode.OpenOrCreate)) 
+                {
+                    return StatusCode(200, new {
+                        id = _id,
+                        totalSize = size,
+                        totalReceived = fs.Length
+                    });
+                }
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, $"Error. msg: {ex.Message}");
+            }
+        }
         
         [HttpPost]
         public async Task<IActionResult> Post(string id)
@@ -36,7 +60,7 @@ namespace Soulnet.Api.Controllers
                     Directory.CreateDirectory("files");
                 }
 
-                using (var fs = new FileStream(this.pathFiles + "/" + id, FileMode.OpenOrCreate)) 
+                using (var fs = new FileStream(this.pathFiles + "/" + id, FileMode.Open)) 
                 {
                     int contentLength = (int)Request.ContentLength;
                     int totalBytesRecived = 0;
@@ -53,11 +77,13 @@ namespace Soulnet.Api.Controllers
                         System.Diagnostics.Trace.WriteLine("Chunk bytes resived: " + bytesRecived + " of " + bytesRemaining);
                     }
                     
+                    fs.Position = fs.Length;
+                    await fs.WriteAsync(buffer); 
                     
                     System.Diagnostics.Trace.WriteLine("Total bytes resived: " + totalBytesRecived + " of " + contentLength);
                     System.Diagnostics.Trace.WriteLine("-------------------------------------------");
                 }
-                
+
                 return StatusCode(200);
             }
             catch(Exception ex)
